@@ -1,11 +1,12 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.FeatureViewService;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class FeatureViewController {
 
     @GetMapping("/{name}")
     public ResponseEntity<FeatureView> getFeatureViewByName(@PathVariable String name) throws SQLException {
-            return ResponseEntity.ok(featureViewService.getFeatureViewByName(name));
+        return ResponseEntity.ok(featureViewService.getFeatureViewByName(name));
     }
 
     @PostMapping

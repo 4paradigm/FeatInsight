@@ -45,26 +45,26 @@ public class FeaturesService {
 
     public Feature getFeatureByName(String featureViewName, String featureName) throws SQLException {
 
-            String sql = String.format("SELECT feature_view_name, feature_name, type, description FROM SYSTEM_FEATURE_PLATFORM.features WHERE feature_view_name='%s' AND feature_name='%s'", featureViewName, featureName);
-            Statement openmldbStatement = openmldbConnection.createStatement();
-            openmldbStatement.execute(sql);
-            ResultSet result = openmldbStatement.getResultSet();
+        String sql = String.format("SELECT feature_view_name, feature_name, type, description FROM SYSTEM_FEATURE_PLATFORM.features WHERE feature_view_name='%s' AND feature_name='%s'", featureViewName, featureName);
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute(sql);
+        ResultSet result = openmldbStatement.getResultSet();
 
-            if (result.getFetchSize() == 0) {
-                throw new SQLException("Can not get FeatureView with the feature view name: " + featureViewName + ", feature name: " + featureName);
+        if (result.getFetchSize() == 0) {
+            throw new SQLException("Can not get FeatureView with the feature view name: " + featureViewName + ", feature name: " + featureName);
 
-            } else if (result.getFetchSize() > 1) {
-                throw new SQLException("Get more FeatureView with the same name: " + featureViewName + ", feature name: " + featureName);
+        } else if (result.getFetchSize() > 1) {
+            throw new SQLException("Get more FeatureView with the same name: " + featureViewName + ", feature name: " + featureName);
 
-            } else {
-                while (result.next()) {
-                    Feature feature = new Feature(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
-                    System.out.print("Get feature: " + feature);
-                    openmldbStatement.close();
-                    return feature;
-                }
-                return null;
+        } else {
+            while (result.next()) {
+                Feature feature = new Feature(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
+                System.out.print("Get feature: " + feature);
+                openmldbStatement.close();
+                return feature;
             }
+            return null;
+        }
     }
 
     public List<Feature> getFeaturesByFeatureView(String featureViewName) throws SQLException {

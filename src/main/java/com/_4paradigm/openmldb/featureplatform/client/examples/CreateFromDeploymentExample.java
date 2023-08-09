@@ -25,7 +25,7 @@ public class CreateFromDeploymentExample {
             client.createFeatureServiceFromDeployment("demo_table_deploy", "demo_db", "demo_table_deploy");
 
             // Test feature service
-            String demoData  = client.getFeatureServiceRequestDemoData("demo_table_deploy");
+            String demoData = client.getFeatureServiceRequestDemoData("demo_table_deploy");
             HttpResponse response = client.requestFeatureService("demo_table_deploy", demoData);
             System.out.println(EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {

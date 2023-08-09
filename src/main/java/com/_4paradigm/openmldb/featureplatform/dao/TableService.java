@@ -35,9 +35,9 @@ public class TableService {
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> databases = openmldbSqlExecutor.showDatabases();
-        for (String database: databases) {
+        for (String database : databases) {
             List<String> tables = openmldbSqlExecutor.getTableNames(database);
-            for (String table: tables) {
+            for (String table : tables) {
                 Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
                 String schemaString = schema.toString();
                 SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);
@@ -62,10 +62,10 @@ public class TableService {
         FeatureServiceService featureServiceService = new FeatureServiceService(this.openmldbConnection, this.openmldbSqlExecutor);
         List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
-        for (FeatureService featureService: allFeatureServices) {
+        for (FeatureService featureService : allFeatureServices) {
             List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(featureService.getSql(), featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
 
-            for (Pair<String, String> tableItem: dependentTables) {
+            for (Pair<String, String> tableItem : dependentTables) {
                 String currentDb = tableItem.getKey();
                 String currentTable = tableItem.getValue();
 
@@ -87,10 +87,10 @@ public class TableService {
         FeatureViewService featureViewService = new FeatureViewService(this.openmldbConnection, this.openmldbSqlExecutor);
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
-        for (FeatureView featureView: allFeatureViews) {
+        for (FeatureView featureView : allFeatureViews) {
             List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(featureView.getSql(), featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
 
-            for (Pair<String, String> tableItem: dependentTables) {
+            for (Pair<String, String> tableItem : dependentTables) {
                 String currentDb = tableItem.getKey();
                 String currentTable = tableItem.getValue();
 

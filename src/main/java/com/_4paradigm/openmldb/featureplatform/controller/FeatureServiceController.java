@@ -1,5 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
+import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureServiceDeploymentRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.UpdateLatestVersionRequest;
 import com._4paradigm.openmldb.sdk.Schema;
@@ -8,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
+
 import java.sql.SQLException;
 import java.util.List;
-import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
-import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
 
 @CrossOrigin(origins = "*")
 @RestController

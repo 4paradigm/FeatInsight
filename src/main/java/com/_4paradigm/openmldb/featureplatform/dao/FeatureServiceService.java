@@ -3,6 +3,7 @@ package com._4paradigm.openmldb.featureplatform.dao;
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
+import com._4paradigm.openmldb.featureplatform.utils.TypeUtil;
 import com._4paradigm.openmldb.sdk.Column;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
@@ -18,13 +19,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com._4paradigm.openmldb.featureplatform.utils.TypeUtil;
 
 @Repository
 public class FeatureServiceService {
@@ -144,7 +148,7 @@ public class FeatureServiceService {
         }
     }
 
-    public String mergeSqlList(SqlClusterExecutor openmldbSqlExecutor, List<String> sqlList, String db, List<String> joinKeys, Map<String, Map<String, Schema >> tableSchema) throws SQLException {
+    public String mergeSqlList(SqlClusterExecutor openmldbSqlExecutor, List<String> sqlList, String db, List<String> joinKeys, Map<String, Map<String, Schema>> tableSchema) throws SQLException {
         if (sqlList.size() == 1) {
             return sqlList.get(0);
         } else {
@@ -172,7 +176,7 @@ public class FeatureServiceService {
         String[] featureList = featureService.getFeatureList().split(",");
         FeatureViewService featureViewService = new FeatureViewService(openmldbConnection, openmldbSqlExecutor);
         FeatureView latestFeatureView = null;
-        for (String splitFeatureList: featureList) {
+        for (String splitFeatureList : featureList) {
             String featureListItem = splitFeatureList.trim();
             if (!featureListItem.equals("")) {
                 // TODO: Support get item by feature name instead of all features from feature view
@@ -190,19 +194,19 @@ public class FeatureServiceService {
         String db = latestFeatureView.getDb();
         newFeatureService.setDb(db);
 
-        if (sqlList.size()==0) {
+        if (sqlList.size() == 0) {
             System.out.println("Can not get sql from feature views: " + String.join(",", featureList));
             return null;
         }
 
         EntityService entityService = new EntityService(openmldbConnection);
         List<String> joinKeys = new ArrayList<>();
-        for (String rawEntityName: latestFeatureView.getEntityNames().split(",")) {
+        for (String rawEntityName : latestFeatureView.getEntityNames().split(",")) {
             if (rawEntityName != null && !rawEntityName.trim().equals("")) {
                 String entityName = rawEntityName.trim();
                 Entity entity = entityService.getEntityByName(entityName);
                 if (entity != null) {
-                    for (String rawPrimaryKey: entity.getPrimaryKeys().split(",")) {
+                    for (String rawPrimaryKey : entity.getPrimaryKeys().split(",")) {
                         joinKeys.add(rawPrimaryKey.trim());
                     }
                 }
@@ -286,9 +290,9 @@ public class FeatureServiceService {
             int sqlStartIndex = -1;
             int sqlEndIndex = -1;
             boolean getStartIndex = false;
-            for (int i=0; i< internalSqlString.length(); ++i) {
+            for (int i = 0; i < internalSqlString.length(); ++i) {
                 if (internalSqlString.charAt(i) != '-') {
-                    if (getStartIndex == false) {
+                    if (!getStartIndex) {
                         sqlStartIndex = i;
                         getStartIndex = true;
                     }
@@ -351,7 +355,7 @@ public class FeatureServiceService {
     public void deleteFeatureService(String name) throws SQLException {
         List<String> versions = getFeatureServiceVersions(name);
 
-        for (String version: versions) {
+        for (String version : versions) {
             deleteFeatureService(name, version);
         }
     }
@@ -474,7 +478,7 @@ public class FeatureServiceService {
         StringBuilder demoBuilder = new StringBuilder();
         demoBuilder.append("{\"input\": [[");
 
-        for (int i=0; i<schema.getColumnList().size(); ++i) {
+        for (int i = 0; i < schema.getColumnList().size(); ++i) {
             Column column = schema.getColumnList().get(i);
             column.getSqlType();
             String demoValue = TypeUtil.javaSqlTypeToDemoData(column.getSqlType());
@@ -514,7 +518,7 @@ public class FeatureServiceService {
         List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureService.getSql(), featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
 
         List<String> fullNameTables = new ArrayList<>();
-        for (Pair<String, String> tableItem: tables) {
+        for (Pair<String, String> tableItem : tables) {
             fullNameTables.add(tableItem.getKey() + "." + tableItem.getValue());
         }
         return fullNameTables;

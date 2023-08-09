@@ -1,16 +1,15 @@
 package com._4paradigm.openmldb.featureplatform.client.examples;
 
-import java.io.IOException;
-import java.util.List;
-
-import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.client.FeaturePlatformClient;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import org.apache.http.HttpResponse;
 
+import java.io.IOException;
+import java.util.List;
+
 public class UseFeaturePlatformClient {
 
-    private static FeaturePlatformClient client = new FeaturePlatformClient("127.0.0.1", 8888);
+    private static final FeaturePlatformClient client = new FeaturePlatformClient("127.0.0.1", 8888);
 
     public static void useEntity() throws IOException {
         // List all entities
@@ -121,7 +120,7 @@ public class UseFeaturePlatformClient {
 
     public static void requestApiServer() throws IOException {
         HttpResponse response = client.requestApiServer("http://127.0.0.1:8090", "t2v1_s1", "{\"input\": [[\"abc\", 22]]}");
-        client.printResponse(response);
+        FeaturePlatformClient.printResponse(response);
     }
 
 
@@ -129,25 +128,25 @@ public class UseFeaturePlatformClient {
         String sql = "SELECT 100";
         // TODO: Fail and need to upgrade the internal validate logic
         HttpResponse response = client.validateSql(sql);
-        client.printResponse(response);
+        FeaturePlatformClient.printResponse(response);
 
         String sql2 = "SELECT * from SYSTEM_FEATURE_PLATFORM.entities";
         HttpResponse response2 = client.validateSql(sql2);
-        client.printResponse(response2);
+        FeaturePlatformClient.printResponse(response2);
 
         String sql3 = "SELECT col from db1.t100";
         HttpResponse response3 = client.validateSql(sql3);
-        client.printResponse(response3);
+        FeaturePlatformClient.printResponse(response3);
     }
 
     public static void accessExecuteSql() throws IOException {
         String sql = "CREATE DATABASE db1";
         HttpResponse response = client.executeSql(sql);
-        client.printResponse(response);
+        FeaturePlatformClient.printResponse(response);
 
         String sql2 = "SELECT 'abc', 100";
         HttpResponse response2 = client.executeSql(sql2);
-        client.printResponse(response2);
+        FeaturePlatformClient.printResponse(response2);
     }
 
     public static void accessTables() throws IOException {

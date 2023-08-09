@@ -32,7 +32,7 @@ public class DatabaseService {
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> tables = openmldbSqlExecutor.getTableNames(database);
-        for (String table: tables) {
+        for (String table : tables) {
             Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
             String schemaString = schema.toString();
             SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);

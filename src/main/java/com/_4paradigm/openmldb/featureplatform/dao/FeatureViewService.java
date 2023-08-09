@@ -2,19 +2,22 @@ package com._4paradigm.openmldb.featureplatform.dao;
 
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
-import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.featureplatform.utils.TypeUtil;
 import com._4paradigm.openmldb.sdk.Column;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class FeatureViewService {
@@ -91,7 +94,7 @@ public class FeatureViewService {
         // TODO: Use for package with openmldb-0.8
         List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, featureView.getDb(), schemaMaps).getColumnList();
         //List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, schemaMaps).getColumnList();
-        for (Column outputSchemaColumn: outputSchemaColumns) {
+        for (Column outputSchemaColumn : outputSchemaColumns) {
             String name = outputSchemaColumn.getColumnName();
             int intType = outputSchemaColumn.getSqlType();
             String stringType = TypeUtil.javaSqlTypeToString(intType);
@@ -118,7 +121,7 @@ public class FeatureViewService {
         // TODO: Use for package with openmldb-0.8
         List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, featureView.getDb(), schemaMaps).getColumnList();
         //List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, schemaMaps).getColumnList();
-        for (Column outputSchemaColumn: outputSchemaColumns) {
+        for (Column outputSchemaColumn : outputSchemaColumns) {
             String name = outputSchemaColumn.getColumnName();
             int intType = outputSchemaColumn.getSqlType();
             String stringType = TypeUtil.javaSqlTypeToString(intType);
@@ -151,15 +154,15 @@ public class FeatureViewService {
         openmldbStatement.execute(insertSql);
         openmldbStatement.close();
 
-       return newFeatureView;
+        return newFeatureView;
     }
 
     public void deleteFeatureView(String name) throws SQLException {
         // Delete the features
         FeaturesService featuresService = new FeaturesService(openmldbConnection, openmldbSqlExecutor);
         List<Feature> features = featuresService.getFeaturesByFeatureView(name);
-        for (Feature feature: features) {
-             featuresService.deleteFeature(feature);
+        for (Feature feature : features) {
+            featuresService.deleteFeature(feature);
         }
 
         // Delete the feature view
@@ -176,7 +179,7 @@ public class FeatureViewService {
         List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureView.getSql(), featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
 
         List<String> fullNameTables = new ArrayList<>();
-        for (Pair<String, String> tableItem: tables) {
+        for (Pair<String, String> tableItem : tables) {
             fullNameTables.add(tableItem.getKey() + "." + tableItem.getValue());
         }
         return fullNameTables;

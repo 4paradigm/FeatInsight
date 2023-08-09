@@ -1,13 +1,11 @@
 package com._4paradigm.openmldb.featureplatform.client;
 
-import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -16,6 +14,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class FeaturePlatformClient {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private CloseableHttpClient httpClient;
-    private String apiEndpoint;
+    private final CloseableHttpClient httpClient;
+    private final String apiEndpoint;
 
     public FeaturePlatformClient(String host, int port) {
         this.httpClient = HttpClients.custom().setMaxConnPerRoute(10).setMaxConnTotal(10).build();
@@ -54,7 +53,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {
+        });
     }
 
     public SimpleTableInfo getTable(String db, String table) throws IOException {
@@ -74,7 +74,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {
+        });
     }
 
     public List<FeatureService> getTableRelatedFeatureServices(String db, String table) throws IOException {
@@ -84,7 +85,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
+        });
     }
 
     public List<String> getDatabases() throws IOException {
@@ -94,7 +96,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
+        });
     }
 
     public List<SimpleTableInfo> getDatabaseTables(String db) throws IOException {
@@ -104,7 +107,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {
+        });
     }
 
     public List<Entity> getEntities() throws IOException {
@@ -114,7 +118,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Entity>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<Entity>>() {
+        });
     }
 
     public boolean createEntity(String name, String primaryKeys) throws IOException {
@@ -153,7 +158,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {
+        });
     }
 
     public List<String> getFeatureViewDependentTables(String name) throws IOException {
@@ -163,7 +169,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
+        });
     }
 
     public List<Feature> getFeatures() throws IOException {
@@ -173,7 +180,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
+        });
     }
 
     public List<Feature> getFeaturesFromFeatureView(String featureViewName) throws IOException {
@@ -183,7 +191,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
+        });
     }
 
     public List<Feature> getFeaturesFromFeatureService(String featureServiceName) throws IOException {
@@ -193,7 +202,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
+        });
     }
 
     public Feature getFeature(String featureViewName, String featureName) throws IOException {
@@ -243,7 +253,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
+        });
     }
 
     public List<FeatureService> getLatestFeatureServices() throws IOException {
@@ -253,7 +264,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
+        });
     }
 
     public boolean createFeatureService(String name, String featureList) throws IOException {
@@ -325,7 +337,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
+        });
     }
 
     public List<String> getFeatureServiceDependentTables(String name, String version) throws IOException {
@@ -335,7 +348,8 @@ public class FeaturePlatformClient {
 
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
+        });
     }
 
     public boolean deleteFeatureService(String name) throws IOException {

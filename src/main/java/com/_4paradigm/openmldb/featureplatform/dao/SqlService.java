@@ -6,6 +6,7 @@ import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -51,6 +52,7 @@ public class SqlService {
         String sql = sqlString.toLowerCase();
         return sql.startsWith("select") || sql.startsWith("show");
     }
+
     public SQLResultSet executeSql(String sql) throws SQLException {
         openmldbStatement.execute(sql);
         if (isDql(sql)) {

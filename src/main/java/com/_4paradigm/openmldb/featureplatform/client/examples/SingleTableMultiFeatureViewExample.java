@@ -3,6 +3,7 @@ package com._4paradigm.openmldb.featureplatform.client.examples;
 import com._4paradigm.openmldb.featureplatform.client.FeaturePlatformClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+
 import java.io.IOException;
 
 public class SingleTableMultiFeatureViewExample {
@@ -19,7 +20,7 @@ public class SingleTableMultiFeatureViewExample {
             client.createEntity("t1v2_name", "name");
 
             // Create feature view
-            client.createFeatureView("t1v2_v1", "t1v2_name","t1v2", "SELECT name FROM user");
+            client.createFeatureView("t1v2_v1", "t1v2_name", "t1v2", "SELECT name FROM user");
             client.createFeatureView("t1v2_v2", "t1v2_name", "t1v2", "SELECT age + 10 AS new_age FROM user");
 
             // Create feature service
