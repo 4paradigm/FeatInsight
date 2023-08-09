@@ -101,45 +101,28 @@ export default {
       ],
     };
   },
-  methods: {
-
-    async initData() {
-      const request1 = axios.get(`/api/featureservices/${this.name}`);
-      const request2 = axios.get(`/api/featureservices/${this.name}/latestversion`);
-      const request3 = axios.get(`/api/featureservices/${this.name}/versions`);
-
-      const responses = await Promise.all([request1, request2, request3]);
-
-      this.data = responses[0].data;
-      this.latestVersion = responses[1].data;
-      const versions = responses[2].data;
-
-      this.featureServiceVersionList = [];
-      versions.forEach(version => {
-        this.featureServiceVersionList.push({
-          "name": this.name,
-          "version": version,
-          "isLatest": version === this.latestVersion
-        })
-      });
-    },
-        
+  methods: {        
     initData() {
+
       axios
         .get(`/api/featureviews/${this.name}`)
         .then((response) => {
           this.data = response.data;
           this.entities = this.data.entityNames.split(',').map((item) => item.trim());
+        })
+        .catch((error) => {
+          if (error.response != null) {
+            message.error(error.response.data);
+          } else {
+            message.error(error.message);
+          }
+        });
 
-          // Request features from feature view
-          axios
-            .get(`/api/features/${this.data.name}`)
-            .then((response) => {
-              this.features = response.data;
-            })
-            .catch((error) => {
-              message.error(error.message);
-            });
+      // Request features from feature view
+      axios
+        .get(`/api/features/${this.name}`)
+        .then((response) => {
+          this.features = response.data;
         })
         .catch((error) => {
           if (error.response != null) {
@@ -158,8 +141,13 @@ export default {
           });
         })
         .catch((error) => {
-          message.error(error.message);
+          if (error.response != null) {
+            message.error(error.response.data);
+          } else {
+            message.error(error.message);
+          }
         });
+
     },
   },
   mounted() {

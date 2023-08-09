@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class OpenmldbTableUtil {
 
-    public static Map<String, Map<String, Schema>> getSystemSchemaMaps(SqlClusterExecutor openmldbSqlExecutor) {
+    public static Map<String, Map<String, Schema>> getSystemSchemaMaps(SqlClusterExecutor openmldbSqlExecutor) throws SQLException {
         Map<String, Map<String, Schema>> schemaMaps = new HashMap<>();
 
         List<String> databases = openmldbSqlExecutor.showDatabases();
@@ -22,12 +22,8 @@ public class OpenmldbTableUtil {
             Map<String, Schema> dbSchemaMap = new HashMap<>();
 
             for (String table: tables) {
-                try {
-                    Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
-                    dbSchemaMap.put(table, schema);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+                Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
+                dbSchemaMap.put(table, schema);
             }
             schemaMaps.put(database, dbSchemaMap);
         }

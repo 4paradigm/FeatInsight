@@ -4,6 +4,8 @@ import com._4paradigm.openmldb.featureplatform.dao.FeaturesService;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -19,7 +21,7 @@ public class FeatureController {
     }
 
     @GetMapping
-    public List<Feature> getFeatures(@RequestParam(value = "featureServiceName", required = false) String featureServiceName, @RequestParam(value = "featureServiceVersion", required = false) String featureServiceVersion) {
+    public List<Feature> getFeatures(@RequestParam(value = "featureServiceName", required = false) String featureServiceName, @RequestParam(value = "featureServiceVersion", required = false) String featureServiceVersion) throws SQLException {
         if (featureServiceName == null) {
             return featureService.getFeatures();
         } else {
@@ -33,12 +35,12 @@ public class FeatureController {
 
 
     @GetMapping("/{feature_view_name}")
-    public List<Feature> getFeaturesByFeatureView(@PathVariable String feature_view_name) {
+    public List<Feature> getFeaturesByFeatureView(@PathVariable String feature_view_name) throws SQLException {
         return featureService.getFeaturesByFeatureView(feature_view_name);
     }
 
     @GetMapping("/{feature_view_name}/{feature_name}")
-    public Feature getFeatureViewByName(@PathVariable String feature_view_name, @PathVariable String feature_name) {
+    public Feature getFeatureViewByName(@PathVariable String feature_view_name, @PathVariable String feature_name) throws SQLException {
         return featureService.getFeatureByName(feature_view_name, feature_name);
     }
 

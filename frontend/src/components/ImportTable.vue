@@ -255,7 +255,7 @@ export default {
     },
 
     handleLoadHiveData() {
-      const sql = "LOAD DATA INFILE 'hive://" + this.loadHiveDataFormState.hivePath + "' INTO TABLE " + this.loadHiveDataFormState.openmldbTable + " OPTIONS(deep_copy=" + this.loadHiveDataFormState.isDeepCopy + ", mode='append')"
+      let sql = "LOAD DATA INFILE 'hive://" + this.loadHiveDataFormState.hivePath + "' INTO TABLE " + this.loadHiveDataFormState.openmldbTable + " OPTIONS(deep_copy=" + this.loadHiveDataFormState.isDeepCopy + ", mode='append')"
       if (this.loadHiveDataFormState.sql !== "") {
         sql = "LOAD DATA INFILE 'hive://" + this.loadHiveDataFormState.hivePath + "' INTO TABLE " + this.loadHiveDataFormState.openmldbTable + " OPTIONS(deep_copy=" + this.loadHiveDataFormState.isDeepCopy + ", mode='append', sql='" + this.loadHiveDataFormState.sql + "')"
       }

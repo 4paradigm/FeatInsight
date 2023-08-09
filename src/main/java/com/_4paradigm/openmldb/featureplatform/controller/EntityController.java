@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -21,32 +23,23 @@ public class EntityController {
     }
 
     @GetMapping
-    public List<Entity> getEntities() {
+    public List<Entity> getEntities() throws SQLException {
         return entityService.getEntities();
     }
 
     @GetMapping("/{name}")
-    public Entity getEntityByName(@PathVariable String name) {
+    public Entity getEntityByName(@PathVariable String name) throws SQLException {
         return entityService.getEntityByName(name);
     }
 
     @PostMapping
-    public Entity addEntity(@RequestBody Entity entity) {
-        if(entityService.addEntity(entity)) {
-            return entity;
-        } else {
-            return null;
-        }
+    public Entity addEntity(@RequestBody Entity entity) throws SQLException {
+        return entityService.addEntity(entity);
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<String> deleteEntity(@PathVariable String name) {
-        if (entityService.deleteEntity(name)) {
-            return new ResponseEntity<>("Success to delete", HttpStatus.OK);
-        } else {
-            // TODO: Handle for different error code
-            return new ResponseEntity<>("Success to delete", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public void deleteEntity(@PathVariable String name) throws SQLException {
+        entityService.deleteEntity(name);
     }
 
 }

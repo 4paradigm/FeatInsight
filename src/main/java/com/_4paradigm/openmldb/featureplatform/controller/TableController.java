@@ -24,33 +24,23 @@ public class TableController {
     }
 
     @GetMapping
-    public List<SimpleTableInfo> getTables() {
+    public List<SimpleTableInfo> getTables() throws SQLException {
         return tableService.getTables();
     }
 
     @GetMapping("/{db}/{table}")
-    public SimpleTableInfo getTable(@PathVariable String db, @PathVariable String table) {
+    public SimpleTableInfo getTable(@PathVariable String db, @PathVariable String table) throws SQLException {
         return tableService.getTable(db, table);
     }
 
     @GetMapping("/{db}/{table}/featureservices")
-    public List<FeatureService> getRelatedFeatureServices(@PathVariable String db, @PathVariable String table) {
-        try {
-            return tableService.getRelatedFeatureServices(db, table);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public List<FeatureService> getRelatedFeatureServices(@PathVariable String db, @PathVariable String table) throws SQLException {
+        return tableService.getRelatedFeatureServices(db, table);
     }
 
     @GetMapping("/{db}/{table}/featureviews")
-    public List<FeatureView> getRelatedFeatureViews(@PathVariable String db, @PathVariable String table) {
-        try {
-            return tableService.getRelatedFeatureViews(db, table);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public List<FeatureView> getRelatedFeatureViews(@PathVariable String db, @PathVariable String table) throws SQLException {
+        return tableService.getRelatedFeatureViews(db, table);
     }
 
 }

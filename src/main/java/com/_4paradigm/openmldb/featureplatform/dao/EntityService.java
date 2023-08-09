@@ -17,89 +17,64 @@ public class EntityService {
         this.openmldbConnection = openmldbConnection;
     }
 
-    public List<Entity> getEntities() {
+    public List<Entity> getEntities() throws SQLException {
         String sql = "SELECT name, primary_keys FROM SYSTEM_FEATURE_PLATFORM.entities";
 
         ArrayList<Entity> entities = new ArrayList<>();
 
-        try {
-            Statement openmldbStatement = openmldbConnection.createStatement();
-            openmldbStatement.execute(sql);
-            ResultSet result = openmldbStatement.getResultSet();
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute(sql);
+        ResultSet result = openmldbStatement.getResultSet();
 
-            while (result.next()) {
-                Entity entity = new Entity(result.getString(1), result.getString(2));
-                entities.add(entity);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (result.next()) {
+            Entity entity = new Entity(result.getString(1), result.getString(2));
+            entities.add(entity);
         }
 
         return entities;
     }
 
-    public Entity getEntityByName(String name) {
-        try {
-            // TODO: Set database before
-            String sql = "SELECT name, primary_keys FROM SYSTEM_FEATURE_PLATFORM.entities WHERE name=?";
+    public Entity getEntityByName(String name) throws SQLException {
+        String sql = "SELECT name, primary_keys FROM SYSTEM_FEATURE_PLATFORM.entities WHERE name=?";
 
-            PreparedStatement openmldbStatement = openmldbConnection.prepareStatement(sql);
-            openmldbStatement.setString(1, name);
+        PreparedStatement openmldbStatement = openmldbConnection.prepareStatement(sql);
+        openmldbStatement.setString(1, name);
 
-            ResultSet result = openmldbStatement.executeQuery();
+        ResultSet result = openmldbStatement.executeQuery();
 
-            if (result.getFetchSize() == 0) {
-                System.out.print("Can not get entity with the name: " + name);
-                return null;
-            } else if (result.getFetchSize() > 1) {
-                System.out.print("Get more entities with the same name");
-                return null;
-            } else {
-                while (result.next()) {
-                    Entity entity = new Entity(result.getString(1), result.getString(2));
-                    return entity;
-                }
+        if (result.getFetchSize() == 0) {
+            throw new SQLException("Can not get entity with the name: " + name);
+        } else if (result.getFetchSize() > 1) {
+            throw new SQLException("Get more entities with the same name: " + name);
+        } else {
+            while (result.next()) {
+                Entity entity = new Entity(result.getString(1), result.getString(2));
+
+                openmldbStatement.close();
+
+                return entity;
             }
-
-            openmldbStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
-    public boolean addEntity(Entity entity) {
-        try {
-            // TODO: It would be better to use JDBC prepared statement from connection
-            String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.entities values ('%s', '%s')", entity.getName(), entity.getPrimaryKeys());
+    public Entity addEntity(Entity entity) throws SQLException {
+        // TODO: It would be better to use JDBC prepared statement from connection
+        String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.entities values ('%s', '%s')", entity.getName(), entity.getPrimaryKeys());
 
-            Statement openmldbStatement = openmldbConnection.createStatement();
-            openmldbStatement.execute(sql);
-            openmldbStatement.close();
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute(sql);
+        openmldbStatement.close();
 
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        return entity;
     }
 
-    public boolean deleteEntity(String name) {
-        try {
-            // TODO: It would be better to use JDBC prepared statement from connection
-            String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.entities WHERE name='%s'", name);
+    public void deleteEntity(String name) throws SQLException {
+        // TODO: It would be better to use JDBC prepared statement from connection
+        String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.entities WHERE name='%s'", name);
 
-            Statement openmldbStatement = openmldbConnection.createStatement();
-            openmldbStatement.execute(sql);
-            openmldbStatement.close();
-
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute(sql);
+        openmldbStatement.close();
     }
 }

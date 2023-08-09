@@ -31,36 +31,28 @@ public class TableService {
         this.openmldbSqlExecutor = openmldbSqlExecutor;
     }
 
-    public List<SimpleTableInfo> getTables() {
+    public List<SimpleTableInfo> getTables() throws SQLException {
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> databases = openmldbSqlExecutor.showDatabases();
         for (String database: databases) {
             List<String> tables = openmldbSqlExecutor.getTableNames(database);
             for (String table: tables) {
-                try {
-                    Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
-                    String schemaString = schema.toString();
-                    SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);
-                    simpleTableInfos.add(simpleTableInfo);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+                Schema schema = openmldbSqlExecutor.getTableSchema(database, table);
+                String schemaString = schema.toString();
+                SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);
+                simpleTableInfos.add(simpleTableInfo);
             }
         }
 
         return simpleTableInfos;
     }
 
-    public SimpleTableInfo getTable(String db, String table) {
-        try {
-            Schema schema = openmldbSqlExecutor.getTableSchema(db, table);
-            String schemaString = schema.toString();
-            SimpleTableInfo simpleTableInfo = new SimpleTableInfo(db, table, schemaString);
-            return simpleTableInfo;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public SimpleTableInfo getTable(String db, String table) throws SQLException {
+        Schema schema = openmldbSqlExecutor.getTableSchema(db, table);
+        String schemaString = schema.toString();
+        SimpleTableInfo simpleTableInfo = new SimpleTableInfo(db, table, schemaString);
+        return simpleTableInfo;
     }
 
     public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {

@@ -27,22 +27,22 @@ public class FeatureServiceController {
     }
 
     @GetMapping
-    public List<FeatureService> getFeatureServices() {
+    public List<FeatureService> getFeatureServices() throws SQLException {
         return featureServiceService.getFeatureServices();
     }
 
     @GetMapping("/latest")
-    public List<FeatureService> getLatestFeatureServices() {
+    public List<FeatureService> getLatestFeatureServices() throws SQLException {
         return featureServiceService.getLatestFeatureServices();
     }
 
     @GetMapping("/{name}")
-    public FeatureService getFeatureServiceByName(@PathVariable String name) {
+    public FeatureService getFeatureServiceByName(@PathVariable String name) throws SQLException {
         return featureServiceService.getFeatureServiceByName(name);
     }
 
     @PostMapping
-    public FeatureService createFeatureService(@RequestBody FeatureService featureService) {
+    public FeatureService createFeatureService(@RequestBody FeatureService featureService) throws SQLException {
         return featureServiceService.createFeatureService(featureService);
     }
 
@@ -58,7 +58,7 @@ public class FeatureServiceController {
     }
 
     @GetMapping("/{name}/versions")
-    public List<String> getFeatureServiceVersions(@PathVariable String name) {
+    public List<String> getFeatureServiceVersions(@PathVariable String name) throws SQLException {
         return featureServiceService.getFeatureServiceVersions(name);
     }
 
@@ -83,18 +83,18 @@ public class FeatureServiceController {
     }
 
     @GetMapping("/{name}/{version}")
-    public FeatureService getFeatureServiceByName(@PathVariable String name, @PathVariable String version) {
+    public FeatureService getFeatureServiceByName(@PathVariable String name, @PathVariable String version) throws SQLException {
         return featureServiceService.getFeatureServiceByNameAndVersion(name, version);
     }
 
+    @DeleteMapping("/{name}")
+    public void deleteFeatureService(@PathVariable String name) throws SQLException {
+        featureServiceService.deleteFeatureService(name);
+    }
+
     @DeleteMapping("/{name}/{version}")
-    public ResponseEntity<String> deleteFeatureService(@PathVariable String name, @PathVariable String version) {
-        if (featureServiceService.deleteFeatureService(name, version)) {
-            return new ResponseEntity<>("Success to delete", HttpStatus.OK);
-        } else {
-            // TODO: Handle for different error code
-            return new ResponseEntity<>("Success to delete", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public void deleteFeatureService(@PathVariable String name, @PathVariable String version) throws SQLException {
+        featureServiceService.deleteFeatureService(name, version);
     }
 
     @PostMapping(value = "/{name}/{version}/request", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +111,7 @@ public class FeatureServiceController {
     }
 
     @PostMapping(value = "/deployments")
-    public FeatureService createFeatureServiceFromDeployment(@RequestBody FeatureServiceDeploymentRequest request) {
+    public FeatureService createFeatureServiceFromDeployment(@RequestBody FeatureServiceDeploymentRequest request) throws SQLException {
         return featureServiceService.createFeatureServiceFromDeployment(request);
     }
 

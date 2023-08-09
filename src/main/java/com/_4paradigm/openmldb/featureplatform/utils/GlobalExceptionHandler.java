@@ -10,8 +10,15 @@ import java.sql.SQLException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Catch the SQLException and set actual error message in body.
+     *
+     * @param e
+     * @return
+     */
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> handleInternalServerErrorException(SQLException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
+
 }
