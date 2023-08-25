@@ -90,5 +90,6 @@
     "Display Import SQL": "Display Import SQL",
     "Display All Versions": "Display All Versions",
     "Related Feature Views": "Related Feature Views",
-    "Related Feature Services": "Relate Feature Services"
+    "Related Feature Services": "Relate Feature Services",
+    "Notice CLTV Text": "Notice: it supports standard hive import in web page and CLTV data is imported in background."
 }

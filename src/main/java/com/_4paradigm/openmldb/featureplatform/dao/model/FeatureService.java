@@ -16,6 +16,10 @@ public class FeatureService {
 
     }
 
+    public FeatureService(String name, String version, String featureList) {
+        this(name, version, featureList, "");
+    }
+
     public FeatureService(String name, String version, String featureList, String description) {
         this.name = name;
         this.version = version;

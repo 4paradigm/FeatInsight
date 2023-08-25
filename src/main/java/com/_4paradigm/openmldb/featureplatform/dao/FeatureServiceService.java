@@ -403,7 +403,7 @@ public class FeatureServiceService {
     public ResponseEntity<String> requestFeatureService(String name, String requestData) throws IOException, SQLException {
         String apiServerEndpoint = env.getProperty("openmldb.apiserver");
         if (apiServerEndpoint == null || apiServerEndpoint.equals("")) {
-            throw new IOException("Need to config openmldb.apiserver in application.yaml");
+            throw new IOException("Need to config openmldb.apiserver in application.yml");
         }
 
         // TODO: Get the db from feature service
@@ -428,7 +428,7 @@ public class FeatureServiceService {
     public ResponseEntity<String> requestFeatureService(String name, String version, String requestData) throws IOException, SQLException {
         String apiServerEndpoint = env.getProperty("openmldb.apiserver");
         if (apiServerEndpoint == null || apiServerEndpoint.equals("")) {
-            throw new IOException("Need to config openmldb.apiserver in application.yaml");
+            throw new IOException("Need to config openmldb.apiserver in application.yml");
         }
 
         // TODO: Get the db from feature service

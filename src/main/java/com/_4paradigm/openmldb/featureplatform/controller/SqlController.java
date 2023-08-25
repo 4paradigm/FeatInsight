@@ -40,19 +40,13 @@ public class SqlController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<String> validateSql(@RequestBody SqlRequest sqlRequest) {
-        System.out.println("Try to validate sql: " + sqlRequest.getSql());
-        try {
-            List<String> result = sqlService.validateSql(sqlRequest.getSql());
-            if (result.size() == 0) {
-                return new ResponseEntity<>("Success to validate sql", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(result.get(0), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> validateSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
+        List<String> result = sqlService.validateSql(sqlRequest.getSql());
+        if (result.size() == 0) {
+            return new ResponseEntity<>("Success to validate sql", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(String.join(",", result), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
 }

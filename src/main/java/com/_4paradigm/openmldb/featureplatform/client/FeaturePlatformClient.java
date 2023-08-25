@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.client;
 
+import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,382 +51,563 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "tables";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public SimpleTableInfo getTable(String db, String table) throws IOException {
         String endpoint = this.apiEndpoint + "tables/" + db + "/" + table;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, SimpleTableInfo.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, SimpleTableInfo.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<FeatureView> getTableRelatedFeatureViews(String db, String table) throws IOException {
         String endpoint = this.apiEndpoint + "tables/" + db + "/" + table + "/featureviews";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<FeatureService> getTableRelatedFeatureServices(String db, String table) throws IOException {
         String endpoint = this.apiEndpoint + "tables/" + db + "/" + table + "/featureservices";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<String> getDatabases() throws IOException {
         String endpoint = this.apiEndpoint + "databases";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<SimpleTableInfo> getDatabaseTables(String db) throws IOException {
         String endpoint = this.apiEndpoint + "databases/" + db + "/tables";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<SimpleTableInfo>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<Entity> getEntities() throws IOException {
         String endpoint = this.apiEndpoint + "entities";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Entity>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<Entity>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createEntity(String name, String primaryKeys) throws IOException {
+    public Entity createEntity(String name, String primaryKeys) throws IOException {
         String endpoint = this.apiEndpoint + "entities";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"primaryKeys\":\"%s\"}", name, primaryKeys)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        // TODO: Check response status code
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, Entity.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public Entity getEntity(String name) throws IOException {
         String endpoint = this.apiEndpoint + "entities/" + name;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, Entity.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, Entity.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean deleteEntity(String name) throws IOException {
+    public void deleteEntity(String name) throws IOException {
         String endpoint = this.apiEndpoint + "entities/" + name;
         HttpDelete deleteRequest = new HttpDelete(endpoint);
-        HttpResponse deleteResponse = httpClient.execute(deleteRequest);
-        printResponse(deleteResponse);
-        return true;
+        HttpResponse response = httpClient.execute(deleteRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<FeatureView> getFeatureViews() throws IOException {
         String endpoint = this.apiEndpoint + "featureviews";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<FeatureView>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<String> getFeatureViewDependentTables(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureviews/" + name + "/tables";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<Feature> getFeatures() throws IOException {
         String endpoint = this.apiEndpoint + "features";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<Feature> getFeaturesFromFeatureView(String featureViewName) throws IOException {
         String endpoint = this.apiEndpoint + "features/" + featureViewName;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<Feature> getFeaturesFromFeatureService(String featureServiceName) throws IOException {
         String endpoint = this.apiEndpoint + "features?featureServiceName=" + featureServiceName;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<Feature>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public Feature getFeature(String featureViewName, String featureName) throws IOException {
         String endpoint = this.apiEndpoint + "features/" + featureViewName + "/" + featureName;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, Feature.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, Feature.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createFeatureView(String name, String entityNames, String db, String sql) throws IOException {
+    public FeatureView createFeatureView(String name, String entityNames, String db, String sql) throws IOException {
         String escapedSql = StringEscapeUtils.escapeJson(sql);
         String endpoint = this.apiEndpoint + "featureviews";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"entityNames\":\"%s\", \"db\":\"%s\", \"sql\":\"%s\"}", name, entityNames, db, escapedSql)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        // TODO: Check response status code
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureView.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public FeatureView getFeatureView(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureviews/" + name;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, FeatureView.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureView.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean deleteFeatureView(String name) throws IOException {
+    public void deleteFeatureView(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureviews/" + name;
         HttpDelete deleteRequest = new HttpDelete(endpoint);
-        HttpResponse deleteResponse = httpClient.execute(deleteRequest);
-        printResponse(deleteResponse);
-        return true;
+        HttpResponse response = httpClient.execute(deleteRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<FeatureService> getFeatureServices() throws IOException {
         String endpoint = this.apiEndpoint + "featureservices";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<FeatureService> getLatestFeatureServices() throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/latest";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<FeatureService>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createFeatureService(String name, String featureList) throws IOException {
+    public FeatureService createFeatureService(String name, String featureList) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"featureList\":\"%s\"}", name, featureList)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        // TODO: Check response status code
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createFeatureService(String name, String version, String featureList) throws IOException {
+    public FeatureService createFeatureService(String name, String version, String featureList) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\": \"%s\", \"featureList\":\"%s\"}", name, version, featureList)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        // TODO: Check response status code
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createFeatureServiceFromDeployment(String name, String db, String deploymentName) throws IOException {
+    public FeatureService createFeatureServiceFromDeployment(String name, String db, String deploymentName) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/deployments";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, db, deploymentName)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean createFeatureServiceFromDeployment(String name, String version, String db, String deploymentName) throws IOException {
+    public FeatureService createFeatureServiceFromDeployment(String name, String version, String db, String deploymentName) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/deployments";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, version, db, deploymentName)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        printResponse(postResponse);
-        return true;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public FeatureService getFeatureService(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, FeatureService.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public FeatureService getFeatureService(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version;
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, FeatureService.class);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, FeatureService.class);
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<String> getFeatureServiceDependentTables(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/tables";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public List<String> getFeatureServiceDependentTables(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version + "/tables";
         HttpGet request = new HttpGet(endpoint);
         HttpResponse response = httpClient.execute(request);
-
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
-        return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {
-        });
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return objectMapper.readValue(responseBody, new TypeReference<List<String>>() {});
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean deleteFeatureService(String name) throws IOException {
+    public void deleteFeatureService(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name;
         HttpDelete deleteRequest = new HttpDelete(endpoint);
-        HttpResponse deleteResponse = httpClient.execute(deleteRequest);
-        printResponse(deleteResponse);
-        return true;
+        HttpResponse response = httpClient.execute(deleteRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public boolean deleteFeatureService(String name, String version) throws IOException {
+    public void deleteFeatureService(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version;
         HttpDelete deleteRequest = new HttpDelete(endpoint);
-        HttpResponse deleteResponse = httpClient.execute(deleteRequest);
-        printResponse(deleteResponse);
-        return true;
+        HttpResponse response = httpClient.execute(deleteRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceRequestSchema(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/request/schema";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceRequestSchema(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version + "/request/schema";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceOutputSchema(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/output/schema";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceOutputSchema(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version + "/output/schema";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceRequestDemoData(String name) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/request/demo";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public String getFeatureServiceRequestDemoData(String name, String version) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices/" + name + "/" + version + "/request/demo";
         HttpGet getRequest = new HttpGet(endpoint);
-        HttpResponse getResponse = httpClient.execute(getRequest);
-        return EntityUtils.toString(getResponse.getEntity());
+        HttpResponse response = httpClient.execute(getRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public HttpResponse executeSql(String sql) throws IOException {
+    public String executeSql(String sql) throws IOException {
         String endpoint = this.apiEndpoint + "sql/execute";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+        HttpEntity entity = response.getEntity();
+        String responseBody = EntityUtils.toString(entity);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBody;
+        } else {
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
-    public HttpResponse validateSql(String sql) throws IOException {
+    public void validateSql(String sql) throws IOException {
         String endpoint = this.apiEndpoint + "sql/validate";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql)));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public HttpResponse requestFeatureService(String featureService, String requestData) throws IOException {
@@ -433,8 +615,15 @@ public class FeaturePlatformClient {
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(requestData, ContentType.APPLICATION_JSON));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return response;
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public HttpResponse requestFeatureService(String featureService, String version, String requestData) throws IOException {
@@ -442,8 +631,15 @@ public class FeaturePlatformClient {
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(requestData, ContentType.APPLICATION_JSON));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return response;
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public HttpResponse requestApiServer(String apiServerEndpoint, String featureServiceName, String requestData) throws IOException {
@@ -452,8 +648,16 @@ public class FeaturePlatformClient {
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(requestData));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return response;
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public HttpResponse requestApiServer(String apiServerEndpoint, String featureServiceName, String featureServiceVersion, String requestData) throws IOException {
@@ -462,8 +666,15 @@ public class FeaturePlatformClient {
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(requestData));
-        HttpResponse postResponse = httpClient.execute(postRequest);
-        return postResponse;
+        HttpResponse response = httpClient.execute(postRequest);
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return response;
+        } else {
+            HttpEntity entity = response.getEntity();
+            String responseBody = EntityUtils.toString(entity);
+            throw new IOException("Fail to request server and get error: " + responseBody);
+        }
     }
 
     public void close() throws IOException {

@@ -2,7 +2,10 @@
 
 <div>
 
-  <br />
+  <a-typography-text mark>{{ $t('Notice CLTV Text') }}</a-typography-text>
+  
+
+  <br /><br/>
   <div>
     <h1>{{ $t('Create Database') }}</h1>
     <a-form

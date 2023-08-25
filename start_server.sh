@@ -2,6 +2,8 @@
 
 set -ex
 
-cp ./application.yaml ./target/
+cp ./src/main/resources/application.yml ./target/
 
-java -jar ./target/openmldb-feature-platform-0.8-SNAPSHOT.jar
+cd ./target/
+
+java -jar ./openmldb-feature-platform-0.8-SNAPSHOT.jar

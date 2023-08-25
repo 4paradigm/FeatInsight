@@ -14,10 +14,10 @@ public class SingleTableSingleFeatureViewExample {
         try {
             // Create test db and tables
             client.executeSql("CREATE DATABASE IF NOT EXISTS t1v1");
-            client.executeSql("CREATE TABLE IF NOT EXISTS t1v1.user (name string, age int)");
+            client.executeSql("CREATE TABLE IF NOT EXISTS t1v1.user (name string, age int, user_code string)");
 
             // Create feature view
-            client.createFeatureView("t1v1_v1", "", "t1v1", "SELECT name, age + 10 AS new_age FROM user");
+            client.createFeatureView("t1v1_v1", "", "t1v1", "SELECT name, age + 10 AS new_age, user_code FROM user");
 
             // Create feature service
             client.createFeatureService("t1v1_s1", "t1v1_v1");

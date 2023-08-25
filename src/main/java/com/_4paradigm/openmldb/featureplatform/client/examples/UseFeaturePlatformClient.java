@@ -127,42 +127,41 @@ public class UseFeaturePlatformClient {
     public static void validateSql() throws IOException {
         String sql = "SELECT 100";
         // TODO: Fail and need to upgrade the internal validate logic
-        HttpResponse response = client.validateSql(sql);
-        FeaturePlatformClient.printResponse(response);
+        client.validateSql(sql);
 
         String sql2 = "SELECT * from SYSTEM_FEATURE_PLATFORM.entities";
-        HttpResponse response2 = client.validateSql(sql2);
-        FeaturePlatformClient.printResponse(response2);
+        client.validateSql(sql2);
 
         String sql3 = "SELECT col from db1.t100";
-        HttpResponse response3 = client.validateSql(sql3);
-        FeaturePlatformClient.printResponse(response3);
+        client.validateSql(sql3);
     }
 
     public static void accessExecuteSql() throws IOException {
         String sql = "CREATE DATABASE db1";
-        HttpResponse response = client.executeSql(sql);
-        FeaturePlatformClient.printResponse(response);
+        String response = client.executeSql(sql);
+        System.out.println(response);
 
         String sql2 = "SELECT 'abc', 100";
-        HttpResponse response2 = client.executeSql(sql2);
-        FeaturePlatformClient.printResponse(response2);
+        String response2 = client.executeSql(sql2);
+        System.out.println(response2);
     }
 
     public static void accessTables() throws IOException {
         /*
         List<SimpleTableInfo> tables = client.getTables();
         System.out.println(tables);
-
-        SimpleTableInfo table = client.getTable("db1", "t1");
+*/
+        SimpleTableInfo table = client.getTable("t1v1", "user2");
         System.out.println(table);
-        */
+/*
 
         List<FeatureView> featureViews = client.getTableRelatedFeatureViews("t1v1", "user");
         System.out.println(featureViews);
 
         List<FeatureService> featureServices = client.getTableRelatedFeatureServices("t1v1", "user");
         System.out.println(featureServices);
+
+ */
     }
 
     public static void accessDatabases() throws IOException {
