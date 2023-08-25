@@ -149,7 +149,7 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "entities";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"primaryKeys\":\"%s\"}", name, primaryKeys)));
+        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"primaryKeys\":\"%s\"}", name, primaryKeys), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -274,11 +274,15 @@ public class FeaturePlatformClient {
     }
 
     public FeatureView createFeatureView(String name, String entityNames, String db, String sql) throws IOException {
+        return this.createFeatureView(name, entityNames, db, sql, "");
+    }
+
+    public FeatureView createFeatureView(String name, String entityNames, String db, String sql, String description) throws IOException {
         String escapedSql = StringEscapeUtils.escapeJson(sql);
         String endpoint = this.apiEndpoint + "featureviews";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"entityNames\":\"%s\", \"db\":\"%s\", \"sql\":\"%s\"}", name, entityNames, db, escapedSql)));
+        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"entityNames\":\"%s\", \"db\":\"%s\", \"sql\":\"%s\", \"description\":\"%s\"}", name, entityNames, db, escapedSql, description), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -347,26 +351,14 @@ public class FeaturePlatformClient {
     }
 
     public FeatureService createFeatureService(String name, String featureList) throws IOException {
-        String endpoint = this.apiEndpoint + "featureservices";
-        HttpPost postRequest = new HttpPost(endpoint);
-        postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"featureList\":\"%s\"}", name, featureList)));
-        HttpResponse response = httpClient.execute(postRequest);
-        HttpEntity entity = response.getEntity();
-        String responseBody = EntityUtils.toString(entity);
-
-        if (response.getStatusLine().getStatusCode() == 200) {
-            return objectMapper.readValue(responseBody, FeatureService.class);
-        } else {
-            throw new IOException("Fail to request server and get error: " + responseBody);
-        }
+        return this.createFeatureService(name, "v1", featureList);
     }
 
     public FeatureService createFeatureService(String name, String version, String featureList) throws IOException {
         String endpoint = this.apiEndpoint + "featureservices";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\": \"%s\", \"featureList\":\"%s\"}", name, version, featureList)));
+        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\": \"%s\", \"featureList\":\"%s\"}", name, version, featureList), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -382,7 +374,7 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "featureservices/deployments";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, db, deploymentName)));
+        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, db, deploymentName), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -398,7 +390,7 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "featureservices/deployments";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, version, db, deploymentName)));
+        postRequest.setEntity(new StringEntity(String.format("{\"name\":\"%s\", \"version\":\"%s\", \"db\":\"%s\", \"deploymentName\":\"%s\"}", name, version, db, deploymentName), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -582,7 +574,7 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "sql/execute";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql)));
+        postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);
@@ -598,7 +590,7 @@ public class FeaturePlatformClient {
         String endpoint = this.apiEndpoint + "sql/validate";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql)));
+        postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql), "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
 
         if (response.getStatusLine().getStatusCode() == 200) {
@@ -647,7 +639,7 @@ public class FeaturePlatformClient {
         String endpoint = String.format("%s/dbs/%s/deployments/%s", apiServerEndpoint, featureService.getDb(), featureService.getDeployment());
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(requestData));
+        postRequest.setEntity(new StringEntity(requestData, "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
 
 
@@ -665,7 +657,7 @@ public class FeaturePlatformClient {
         String endpoint = String.format("%s/dbs/%s/deployments/%s", apiServerEndpoint, featureService.getDb(), featureService.getDeployment());
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
-        postRequest.setEntity(new StringEntity(requestData));
+        postRequest.setEntity(new StringEntity(requestData, "UTF-8"));
         HttpResponse response = httpClient.execute(postRequest);
 
         if (response.getStatusLine().getStatusCode() == 200) {

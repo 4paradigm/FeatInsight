@@ -118,9 +118,7 @@ public class FeatureViewService {
 
         StringBuilder featureNamesBuilder = new StringBuilder();
 
-        // TODO: Use for package with openmldb-0.8
         List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, featureView.getDb(), schemaMaps).getColumnList();
-        //List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, schemaMaps).getColumnList();
         for (Column outputSchemaColumn : outputSchemaColumns) {
             String name = outputSchemaColumn.getColumnName();
             int intType = outputSchemaColumn.getSqlType();
@@ -129,8 +127,10 @@ public class FeatureViewService {
             FeaturesService featuresService = new FeaturesService(openmldbConnection, openmldbSqlExecutor);
 
             String featureDescription = "";
-            if (featureView.getFeatureDescriptionMap().containsKey(name)) {
-                featureDescription = featureView.getFeatureDescriptionMap().get(name);
+            if (featureView.getFeatureDescriptionMap() != null && !featureView.getFeatureDescriptionMap().isEmpty()) {
+                if (featureView.getFeatureDescriptionMap().containsKey(name)) {
+                    featureDescription = featureView.getFeatureDescriptionMap().get(name);
+                }
             }
 
             Feature feature = new Feature(featureView.getName(), name, stringType, featureDescription);
