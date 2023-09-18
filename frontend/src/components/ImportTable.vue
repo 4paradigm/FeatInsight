@@ -2,7 +2,9 @@
 
 <div>
 
+  <!--
   <a-typography-text mark>{{ $t('Notice CLTV Text') }}</a-typography-text>
+  -->
   
 
   <br /><br/>
