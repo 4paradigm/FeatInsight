@@ -91,5 +91,6 @@
     "Display All Versions": "Display All Versions",
     "Related Feature Views": "Related Feature Views",
     "Related Feature Services": "Relate Feature Services",
-    "Notice CLTV Text": "Notice: it supports standard hive import in web page and CLTV data is imported in background."
+    "Notice CLTV Text": "Notice: it supports standard hive import in web page and CLTV data is imported in background.",
+    "Dag": "Dag"
 }

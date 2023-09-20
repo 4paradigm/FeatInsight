@@ -20,6 +20,7 @@ import FeatureServiceVersionDetail from '../components/FeatureServiceVersionDeta
 import CreateFeature from '../components/CreateFeature.vue'
 import DeployFeatureService from '../components/DeployFeatureService.vue'
 import TestFeatureService from '../components/TestFeatureService.vue'
+import DagPage from '../components/DagPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -43,6 +44,7 @@ const router = createRouter({
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/sql', component: SqlPage},
+    { path: '/dag', component: DagPage},
     { path: '/tutorial', component: TutorialPage},
     { path: '/404', redirect: "/" },
     { path: '/:pathMatch(.*)*', redirect: "/404" }

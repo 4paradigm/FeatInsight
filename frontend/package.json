@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@antv/x6": "^2.15.1",
     "ant-design-vue": "^3.2.20",
     "echarts": "^5.4.2",
     "vue": "^3.3.2",
