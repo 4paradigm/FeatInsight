@@ -6,7 +6,7 @@
   <div class="app-content" ref="container">
   </div>
 </div>
-  <a-button type="primary" @click="getData">保存数据</a-button>
+  <a-button type="primary" @click="getData">保存DAG</a-button>
   <a-button type="success" @click="runGraph">运行任务</a-button>
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
@@ -27,6 +27,8 @@ import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
 import RightDrawer from './DAG/RightDrawer.vue'
+import TaskNode from './DAG/TaskNode.vue'
+import '@antv/x6-vue-shape'
 
 export default {
   components: {
@@ -74,7 +76,6 @@ export default {
   },
 
   mounted() {
-    //this.preWork();
     this.initData();
   },
 
@@ -144,8 +145,8 @@ export default {
       graph
         .use(
           new Transform({
-            resizing: true,
-            rotating: true,
+            resizing: false,
+            rotating: false,
           }),
         )
         .use(
@@ -185,6 +186,20 @@ export default {
 
       this.$refs.stencilContainer.appendChild(stencil.container);
       // #endregion
+
+
+      // 注册 vue 组件
+      //Graph.registerVueComponent('task-node-component', {
+      //  template: `<task-node :node-data="nodeData"></task-node>`,
+      //  data() {
+      //    return {
+      //      nodeData: self.nodeData
+      //    }
+      //  },
+      //  components: {
+      //    TaskNode
+      //  }
+      //}, true)
 
       // #region 快捷键与事件
       graph.bindKey(['meta+c', 'ctrl+c'], () => {
@@ -254,22 +269,6 @@ export default {
           graph.zoom(-0.1)
         }
       });
-
-      //graph.on('node:mouseenter', () => {
-      //  const container = this.$refs.container;
-      //  const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-      //  for (let i = 0, len = ports.length; i < len; i += 1) {
-      //    ports[i].style.visibility = 'visible';
-      //  }
-      //})
-
-      //graph.on('node:mouseleave', () => {
-      //  const container = this.$refs.container; 
-      //  const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-      //  for (let i = 0, len = ports.length; i < len; i += 1) {
-      //    ports[i].style.visibility = 'hidden';
-      //  }
-      //})
 
       // #endregion
 
@@ -356,6 +355,42 @@ export default {
       );
 
 
+      Graph.registerNode(
+        'vue-rect',
+        {
+          inherit: 'rect',
+          width: 66,
+          height: 36,
+          attrs: {
+            body: {
+              strokeWidth: 1,
+              stroke: '#5F95FF',
+              fill: '#EFF4FF',
+              rx: 6,
+              ry: 6,
+            },
+            text: {
+              fontSize: 12,
+              fill: '#262626',
+            },
+          },
+          ports: {
+            ...ports,
+            items: [
+              {
+                group: 'top',
+              },
+              {
+                group: 'bottom',
+              },
+            ],
+          },
+          component: { TaskNode }
+        },
+        true,
+      );
+
+
       const r1 = graph.createNode({
         shape: 'custom-rect',
         attrs: {
@@ -364,21 +399,28 @@ export default {
             ry: 6,
           },
         },
-          tools: [
-          {
-            name: 'node-editor',
-            args: {
-              attrs: {
-                backgroundColor: '#EFF4FF',
-              },
-            },
-          },
-        ],
+//          tools: [
+//          {
+//            name: 'node-editor',
+//            args: {
+//              attrs: {
+//                backgroundColor: '#EFF4FF',
+//              },
+//            },
+//          },
+//        ],
         label: 'Node',
-
       });
 
-      stencil.load([r1], 'group1');
+      const r2 = graph.createNode({
+        shape: 'vue-rect',
+        data: {
+              name: '任务节点',
+              desc: '节点内容'
+            }
+      });
+
+      stencil.load([r1, r2], 'group1');
 
       //graph.fromJSON(this.data);
       //graph.centerContent()
@@ -388,6 +430,7 @@ export default {
         this.nodeId = ''
         this.showRight = false
       })
+
       // 节点点击
       this.graph.on('node:click', ({ node }) => {
         const data = node.store.data
@@ -397,6 +440,30 @@ export default {
         this.showRight = true
 
       })
+
+      // cell 节点时才触发
+      this.graph.on('node:added', ({ node }) => {
+        const data = node.store.data
+        const obj = {
+            id: data.id,
+            name: '任务节点',
+            desc: '节点内容'
+        }
+        this.nodeData.push(obj)
+
+      })
+      this.graph.on('node:removed', ({ node }) => {
+        const data = node.store.data
+        const posIndex = this.nodeData.findIndex((item) => item.id === data.id)
+        this.nodeData.splice(posIndex, 1)
+      })
+      this.graph.on('selection:changed', (args) => {
+        args.added.forEach(cell => {
+          console.log(cell)
+          this.selectCell = cell
+        })
+      })
+
 
     },
 

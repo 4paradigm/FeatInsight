@@ -10,7 +10,7 @@
           <a-input v-model="nodeData.name" placeholder="请输入节点名称" @blur="inputBlur"></a-input>
         </a-form-item>
         <a-form-item label="节点SQL">
-          <a-input type="textarea" v-model="nodeData.desc" placeholder="请输入节点SQL代码" @blur="inputBlur2"></a-input>
+          <a-textarea rows="5" v-model="nodeData.desc" placeholder="请输入节点SQL代码" @blur="inputBlur2"></a-textarea>
         </a-form-item>
       </a-form>
     </div>
