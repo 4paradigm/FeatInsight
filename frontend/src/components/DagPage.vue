@@ -6,7 +6,14 @@
   <div class="app-content" ref="container">
   </div>
 </div>
+  <a-button type="primary" @click="getData">保存数据</a-button>
+  <a-button type="success" @click="runGraph">运行任务</a-button>
+<div>
+  <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
+</div>
 </template>
+
+
   
 <script>
 import axios from 'axios'
@@ -19,9 +26,13 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
-
+import RightDrawer from './DAG/RightDrawer.vue'
 
 export default {
+  components: {
+    RightDrawer,
+  },
+
   data() {
     return {
       searchText: "",
@@ -53,7 +64,12 @@ export default {
             target: 'node2', // String，必须，目标节点 id
           },
         ],
-      }
+      },
+      showRight: false,
+      graph: null,
+      nodeData:[],
+      nodeId: '',
+      templateLists: []
     };
   },
 
@@ -147,14 +163,14 @@ export default {
 
       // #region 初始化 stencil
       const stencil = new Stencil({
-        title: '节点',
+        title: '任务节点',
         target: graph,
         stencilGraphWidth: 200,
         stencilGraphHeight: 180,
         collapsable: true,
         groups: [
           {
-            title: '节点',
+            title: '任务节点',
             name: 'group1',
             collapsable: false,
           },
@@ -367,7 +383,54 @@ export default {
       //graph.fromJSON(this.data);
       //graph.centerContent()
 
+      this.graph=graph
+      this.graph.on('blank:click', () => {
+        this.nodeId = ''
+        this.showRight = false
+      })
+      // 节点点击
+      this.graph.on('node:click', ({ node }) => {
+        const data = node.store.data
+        const { type, id } = data
+        
+        this.nodeId = id
+        this.showRight = true
+
+      })
+
     },
+
+    getData() {
+      console.log(this.nodeData)
+      console.log(this.graph)
+      console.log(this.graph.toJSON())
+    },
+
+    updateVisableFn(val) {
+      this.nodeData.taskId = ''
+      this.showRight = val
+    },
+    filterFn(data) {
+      const nodeId = this.nodeId
+      let result = {}
+      
+      if (nodeId && data.length > 0) {
+        const posIndex = data.findIndex(item => item.id === nodeId)
+        if (posIndex >= 0) {
+          result = data[posIndex]
+        }
+      }
+
+      return result
+    },
+    saveFn() {
+      const data = this.graph.toJSON()
+      const len = this.templateLists.length
+      this.templateLists.push({
+        name: `模板${len + 1}`,
+        data
+      })
+    }
   },
 };
 </script>
