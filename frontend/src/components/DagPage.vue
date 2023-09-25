@@ -1,13 +1,10 @@
 <template>
 
-<div>
-  <br/>
-  <h1>
-    {{ $t('Dag') }}
-  </h1>
-
-  <div id="container"></div>
-
+<div class="content">
+  <div class="app-stencil" ref="stencilContainer">
+  </div>
+  <div class="app-content" ref="container">
+  </div>
 </div>
 </template>
   
@@ -61,14 +58,14 @@ export default {
   },
 
   mounted() {
-    this.preWork();
+    //this.preWork();
     this.initData();
   },
 
   methods: {
     initData() {
       const graph = new Graph({
-        container: document.getElementById('graph-container'),
+        container: this.$refs.container,
         width: 800,
         height: 600,
         grid: true,
@@ -150,7 +147,7 @@ export default {
 
       // #region 初始化 stencil
       const stencil = new Stencil({
-        title: 'SQL转换',
+        title: '节点',
         target: graph,
         stencilGraphWidth: 200,
         stencilGraphHeight: 180,
@@ -159,6 +156,7 @@ export default {
           {
             title: '节点',
             name: 'group1',
+            collapsable: false,
           },
         ],
         layoutOptions: 
@@ -169,7 +167,7 @@ export default {
           },
       });
 
-      document.getElementById('stencil').appendChild(stencil.container);
+      this.$refs.stencilContainer.appendChild(stencil.container);
       // #endregion
 
       // #region 快捷键与事件
@@ -232,44 +230,31 @@ export default {
         if (zoom < 1.5) {
           graph.zoom(0.1)
         }
-      })
+      });
+
       graph.bindKey(['ctrl+2', 'meta+2'], () => {
-        const zoom = graph.zoom();
+        const zoom = graph.zoom()
         if (zoom > 0.5) {
-          graph.zoom(-0.1);
+          graph.zoom(-0.1)
         }
-      })
+      });
 
-      // 控制连接桩显示/隐藏
-      //const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
+      //graph.on('node:mouseenter', () => {
+      //  const container = this.$refs.container;
+      //  const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
       //  for (let i = 0, len = ports.length; i < len; i += 1) {
-      //    ports[i].style.visibility = show ? 'visible' : 'hidden'
+      //    ports[i].style.visibility = 'visible';
       //  }
-      //}
-      graph.on('node:mouseenter', () => {
-        const container = document.getElementById('graph-container');
-        const ports = container.querySelectorAll(
-          '.x6-port-body',
-        ); // as NodeListOf<SVGElement>;
+      //})
 
-        //showPorts(ports, true)
+      //graph.on('node:mouseleave', () => {
+      //  const container = this.$refs.container; 
+      //  const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
+      //  for (let i = 0, len = ports.length; i < len; i += 1) {
+      //    ports[i].style.visibility = 'hidden';
+      //  }
+      //})
 
-        for (let i = 0, len = ports.length; i < len; i += 1) {
-          ports[i].style.visibility = 'visible';
-        }
-      })
-      graph.on('node:mouseleave', () => {
-        const container = document.getElementById('graph-container');
-        const ports = container.querySelectorAll(
-          '.x6-port-body',
-        ); // as NodeListOf<SVGElement>;
-
-        //showPorts(ports, false)
-
-        for (let i = 0, len = ports.length; i < len; i += 1) {
-          ports[i].style.visibility = 'hidden';
-        }
-      })
       // #endregion
 
       // #region 初始化图形
@@ -300,7 +285,7 @@ export default {
                 strokeWidth: 1,
                 fill: '#fff',
                 style: {
-                  visibility: 'hidden',
+                  visibility: 'visible',
                 },
               },
             },
@@ -346,9 +331,6 @@ export default {
                 group: 'top',
               },
               {
-                group: 'top',
-              },
-              {
                 group: 'bottom',
               },
             ],
@@ -377,73 +359,94 @@ export default {
           },
         ],
         label: 'Node',
+
       });
 
       stencil.load([r1], 'group1');
 
+      //graph.fromJSON(this.data);
+      //graph.centerContent()
 
-      graph.fromJSON(this.data);
-
-    },
-    preWork() {
-      // 这里协助演示的代码，在实际项目中根据实际情况进行调整
-      const container = document.getElementById('container');
-      const stencilContainer = document.createElement('div');
-      stencilContainer.id = 'stencil';
-      const graphContainer = document.createElement('div');
-      graphContainer.id = 'graph-container';
-      container.appendChild(stencilContainer);
-      container.appendChild(graphContainer);
-
-      insertCss(`
-        #container {
-          display: flex;
-          border: 1px solid #dfe3e8;
-        }
-        #stencil {
-          width: 180px;
-          height: 100%;
-          position: relative;
-          border-right: 1px solid #dfe3e8;
-        }
-        #graph-container {
-          width: calc(100% - 180px);
-          height: 100%;
-        }
-        .x6-widget-stencil  {
-          background-color: #fff;
-        }
-        .x6-widget-stencil-title {
-          background-color: #fff;
-        }
-        .x6-widget-stencil-group-title {
-          background-color: #fff !important;
-        }
-        .x6-widget-transform {
-          margin: -1px 0 0 -1px;
-          padding: 0px;
-          border: 1px solid #239edd;
-        }
-        .x6-widget-transform > div {
-          border: 1px solid #239edd;
-        }
-        .x6-widget-transform > div:hover {
-          background-color: #3dafe4;
-        }
-        .x6-widget-transform-active-handle {
-          background-color: #3dafe4;
-        }
-        .x6-widget-transform-resize {
-          border-radius: 0;
-        }
-        .x6-widget-selection-inner {
-          border: 1px solid #239edd;
-        }
-        .x6-widget-selection-box {
-          opacity: 0;
-        }
-      `);
     },
   },
 };
 </script>
+
+
+
+<style scoped>
+ 
+.content {
+  font-family: sans-serif;
+  display: flex;
+  border: 1px solid #dfe3e8;
+}
+ 
+.app-stencil {
+  width: 100px;
+  border: 1px solid #dfe3e8;
+  position: relative;
+}
+ 
+.app-content {
+  flex: 1;
+  height: 520px;
+  margin-left: 8px;
+  margin-right: 8px;
+  box-shadow: 0 0 10px 1px #e9e9e9;
+}
+ 
+.x6-graph-scroller {
+  border: 1px solid #f0f0f0;
+  margin-left: -1px;
+}
+
+#container {
+  display: flex;
+  border: 1px solid #dfe3e8;
+}
+#stencil {
+  width: 180px;
+  height: 100%;
+  position: relative;
+  border-right: 1px solid #dfe3e8;
+}
+#graph-container {
+  width: calc(100% - 180px);
+  height: 100%;
+}
+.x6-widget-stencil  {
+  background-color: #fff;
+}
+.x6-widget-stencil-title {
+  background-color: #fff;
+}
+.x6-widget-stencil-group-title {
+  background-color: #fff !important;
+}
+.x6-widget-transform {
+  margin: -1px 0 0 -1px;
+  padding: 0px;
+  border: 1px solid #239edd;
+}
+.x6-widget-transform > div {
+  border: 1px solid #239edd;
+}
+.x6-widget-transform > div:hover {
+  background-color: #3dafe4;
+}
+.x6-widget-transform-active-handle {
+  background-color: #3dafe4;
+}
+.x6-widget-transform-resize {
+  border-radius: 0;
+}
+.x6-widget-selection-inner {
+  border: 1px solid #239edd;
+}
+.x6-widget-selection-box {
+  opacity: 0;
+}
+
+
+</style>
