@@ -478,7 +478,7 @@ export default {
       })
       this.graph.on('selection:changed', (args) => {
         args.added.forEach(cell => {
-          console.log(cell)
+          //console.log(cell)
           this.selectCell = cell
         })
       })
