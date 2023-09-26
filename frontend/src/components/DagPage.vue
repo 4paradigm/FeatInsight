@@ -6,8 +6,8 @@
   <div class="app-content" ref="container">
   </div>
 </div>
-  <a-button type="primary" @click="getData">保存DAG</a-button>
-  <a-button type="success" @click="runGraph">运行任务</a-button>
+  <a-button type="primary" @click="getData()">保存DAG</a-button>
+  <a-button type="success" @click="runGraph()">运行任务</a-button>
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
@@ -17,7 +17,7 @@
   
 <script>
 import axios from 'axios'
-import { Graph, Shape } from '@antv/x6'
+import { Graph, Shape, FunctionExt } from '@antv/x6'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -300,7 +300,7 @@ export default {
                 strokeWidth: 1,
                 fill: '#fff',
                 style: {
-                  visibility: 'visible',
+                  visibility: 'hidden',
                 },
               },
             },
@@ -415,12 +415,13 @@ export default {
       const r2 = graph.createNode({
         shape: 'vue-rect',
         data: {
-              name: '任务节点',
-              desc: '节点内容'
-            }
+              name: '',
+              desc: ''
+            },
+        label: 'Node',
       });
 
-      stencil.load([r1, r2], 'group1');
+      stencil.load([r2], 'group1');
 
       //graph.fromJSON(this.data);
       //graph.centerContent()
@@ -431,11 +432,28 @@ export default {
         this.showRight = false
       })
 
+      // 连接线鼠标移入
+      this.graph.on('edge:mouseenter', ({ edge }) => {
+        edge.addTools([
+          'source-arrowhead',
+          'target-arrowhead',
+          {
+            name: 'button-remove',
+            args: {
+              distance: -30,
+            }
+          }
+        ])
+      })
+      // 连接线鼠标移出
+      this.graph.on('edge:mouseleave', ({ edge }) => {
+        edge.removeTools()
+      })
+
       // 节点点击
       this.graph.on('node:click', ({ node }) => {
         const data = node.store.data
-        const { type, id } = data
-        
+        const { id } = data
         this.nodeId = id
         this.showRight = true
 
@@ -446,12 +464,13 @@ export default {
         const data = node.store.data
         const obj = {
             id: data.id,
-            name: '任务节点',
-            desc: '节点内容'
+            name: '',
+            desc: ''
         }
         this.nodeData.push(obj)
 
       })
+
       this.graph.on('node:removed', ({ node }) => {
         const data = node.store.data
         const posIndex = this.nodeData.findIndex((item) => item.id === data.id)
@@ -464,7 +483,46 @@ export default {
         })
       })
 
+      const containerRef = this.$refs.container
+      // 节点鼠标移入
+      this.graph.on('node:mouseenter', FunctionExt.debounce(({ node }) => {
+          // 添加连接点
+          const ports = containerRef.querySelectorAll('.x6-port-body')
+          this.showPorts(ports, true)
 
+          // 添加删除
+          const type = node.store.data.type
+          const x = type === 'taskNode' ? 300 : 60
+          node.addTools({
+            name: 'button-remove',
+            args: {
+              x: 0,
+              y: 0,
+              offset: { x: x, y: 10 },
+            },
+          })
+        }),
+        500
+      )
+      // 节点鼠标移出
+      this.graph.on('node:mouseleave', ({ node }) => {
+        // 添加连接点
+        const ports = containerRef.querySelectorAll('.x6-port-body')
+        this.showPorts(ports, false)
+
+        // 移除删除
+        node.removeTools()
+      })
+
+
+
+    },
+
+    // 显示连线节点
+    showPorts (ports, show) {
+      for (let i = 0, len = ports.length; i < len; i = i + 1) {
+        ports[i].style.visibility = show ? 'visible' : 'hidden'
+      }
     },
 
     getData() {
@@ -477,6 +535,7 @@ export default {
       this.nodeData.taskId = ''
       this.showRight = val
     },
+
     filterFn(data) {
       const nodeId = this.nodeId
       let result = {}
@@ -497,6 +556,10 @@ export default {
         name: `模板${len + 1}`,
         data
       })
+    },
+
+    runGraph() {
+      console.log(this.graph.toJSON())
     }
   },
 };

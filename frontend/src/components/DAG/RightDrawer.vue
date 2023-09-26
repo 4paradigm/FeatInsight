@@ -7,10 +7,10 @@
     <div class="wrap">
       <a-form label-width="80px">
         <a-form-item label="节点名称">
-          <a-input v-model="nodeData.name" placeholder="请输入节点名称" @blur="inputBlur"></a-input>
+          <a-input v-model:value="nodeData.name" placeholder="请输入节点名称" @blur="inputBlur"></a-input>
         </a-form-item>
         <a-form-item label="节点SQL">
-          <a-textarea rows="5" v-model="nodeData.desc" placeholder="请输入节点SQL代码" @blur="inputBlur2"></a-textarea>
+          <a-textarea rows=5 v-model:value="nodeData.desc" placeholder="请输入节点SQL代码" @blur="inputBlur2"></a-textarea>
         </a-form-item>
       </a-form>
     </div>
@@ -34,6 +34,7 @@ export default {
     },
     inputBlur() {
       this.selectCell.data.name = this.nodeData.name
+      this.selectCell.attr('label/text', this.selectCell.data.name)
     },
     inputBlur2() {
       this.selectCell.data.desc = this.nodeData.desc
