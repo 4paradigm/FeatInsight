@@ -27,6 +27,7 @@ import insertCss from 'insert-css'
 import RightDrawer from './DAG/RightDrawer.vue'
 import TaskNode from './DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
+import { message } from 'ant-design-vue';
 
 export default {
   components: {
@@ -200,19 +201,6 @@ export default {
       // #endregion
 
 
-      // 注册 vue 组件
-      //Graph.registerVueComponent('task-node-component', {
-      //  template: `<task-node :node-data="nodeData"></task-node>`,
-      //  data() {
-      //    return {
-      //      nodeData: self.nodeData
-      //    }
-      //  },
-      //  components: {
-      //    TaskNode
-      //  }
-      //}, true)
-
       // #region 快捷键与事件
       graph.bindKey(['meta+c', 'ctrl+c'], () => {
         const cells = graph.getSelectedCells()
@@ -323,49 +311,10 @@ export default {
             group: 'top',
           },
           {
-            group: 'right',
-          },
-          {
             group: 'bottom',
-          },
-          {
-            group: 'left',
           },
         ],
       };
-
-      Graph.registerNode(
-        'custom-rect',
-        {
-          inherit: 'rect',
-          width: 66,
-          height: 36,
-          attrs: {
-            body: {
-              strokeWidth: 1,
-              stroke: '#5F95FF',
-              fill: '#EFF4FF',
-            },
-            text: {
-              fontSize: 12,
-              fill: '#262626',
-            },
-          },
-          ports: {
-            ...ports,
-            items: [
-              {
-                group: 'top',
-              },
-              {
-                group: 'bottom',
-              },
-            ],
-          },
-        },
-        true,
-      );
-
 
       Graph.registerNode(
         'vue-rect',
@@ -404,27 +353,6 @@ export default {
 
 
       const r1 = graph.createNode({
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: 6,
-            ry: 6,
-          },
-        },
-//          tools: [
-//          {
-//            name: 'node-editor',
-//            args: {
-//              attrs: {
-//                backgroundColor: '#EFF4FF',
-//              },
-//            },
-//          },
-//        ],
-        label: 'Node',
-      });
-
-      const r2 = graph.createNode({
         shape: 'vue-rect',
         data: {
               name: '',
@@ -433,7 +361,7 @@ export default {
         label: 'Node',
       });
 
-      stencil.load([r2], 'group1');
+      stencil.load([r1], 'group1');
 
       //graph.fromJSON(this.data);
       //graph.centerContent()
@@ -575,7 +503,8 @@ export default {
       console.log(this.graph.toJSON()['cells']);
       axios.post(`http://127.0.0.1:5000/sql`, this.graph.toJSON()['cells'])
       .then(response => {
-        message.success(`Success to validate SQL: ${response}`);
+        console.log(response.data)
+        message.success(`Success SQL: ${response.data}`);
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
