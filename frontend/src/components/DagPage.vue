@@ -13,8 +13,6 @@
 </div>
 </template>
 
-
-  
 <script>
 import axios from 'axios'
 import { Graph, Shape, FunctionExt } from '@antv/x6'
@@ -124,8 +122,22 @@ export default {
             })
           },
           validateConnection({ targetMagnet }) {
-            return !!targetMagnet
+            if (targetMagnet) {
+              const group = targetMagnet.getAttribute("port-group");
+              if (group) {
+                return group === "top";
+              }
+            }
+
+            return !!targetMagnet;
           },
+          validateMagnet({ magnet }) {
+            const group = magnet.getAttribute("port-group");
+            if (group) {
+              return group === "bottom";
+            }
+            return true;
+          }
         },
         highlighting: {
           magnetAdsorbed: {
@@ -558,8 +570,20 @@ export default {
       })
     },
 
+
     runGraph() {
-      console.log(this.graph.toJSON())
+      console.log(this.graph.toJSON()['cells']);
+      axios.post(`http://127.0.0.1:5000/sql`, this.graph.toJSON()['cells'])
+      .then(response => {
+        message.success(`Success to validate SQL: ${response}`);
+      })
+      .catch(error => {
+        if ("response" in error && "data" in error.response) {
+          message.error(error.response.data);
+        } else {
+          message.error(error.message);
+        }
+      });
     }
   },
 };

@@ -7,10 +7,10 @@
     <div class="wrap">
       <a-form label-width="80px">
         <a-form-item label="节点名称">
-          <a-input v-model:value="nodeData.name" placeholder="请输入节点名称" @blur="inputBlur"></a-input>
+          <a-input id="node-name" v-model:value="nodeData.name" placeholder="请输入节点名称" @blur="inputBlur"></a-input>
         </a-form-item>
         <a-form-item label="节点SQL">
-          <a-textarea v-model:value="nodeData.desc" placeholder="请输入节点SQL代码" @blur="inputBlur2"></a-textarea>
+          <a-textarea id="node-code" v-model:value="nodeData.desc" placeholder="请输入节点SQL代码" rows='10' @blur="inputBlur2"></a-textarea>
         </a-form-item>
       </a-form>
     </div>
