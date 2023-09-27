@@ -109,11 +109,17 @@ def visualization():
     # Save the graph visualization as a PNG file
     dot.render('dag_visualization', view=True)
 
+def cleanup():
+    task_sql.clear()
+    dependency.clear()
+    converted_sql.clear()
+    edge_list.clear()
 
 @app.route('/sql', methods = ['POST'])
 def post_route():
     if request.method == 'POST':
         data = request.get_json()
+        cleanup()
         #print(data)
         read_dag(data)
         #print(dependency)

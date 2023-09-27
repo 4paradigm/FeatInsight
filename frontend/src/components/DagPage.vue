@@ -11,6 +11,9 @@
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
+<div>
+  <right-drawer-res v-if="showRes" :out_SQL="out_SQL"></right-drawer-res>
+</div>
 </template>
 
 <script>
@@ -25,6 +28,7 @@ import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
 import RightDrawer from './DAG/RightDrawer.vue'
+import RightDrawerRes from './DAG/RightDrawerRes.vue'
 import TaskNode from './DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
 import { message } from 'ant-design-vue';
@@ -32,6 +36,7 @@ import { message } from 'ant-design-vue';
 export default {
   components: {
     RightDrawer,
+    RightDrawerRes,
   },
 
   data() {
@@ -70,7 +75,9 @@ export default {
       graph: null,
       nodeData:[],
       nodeId: '',
-      templateLists: []
+      templateLists: [],
+      out_SQL: '',
+      showRes: false
     };
   },
 
@@ -370,6 +377,7 @@ export default {
       this.graph.on('blank:click', () => {
         this.nodeId = ''
         this.showRight = false
+        this.showRes = false
       })
 
       // 连接线鼠标移入
@@ -503,8 +511,10 @@ export default {
       console.log(this.graph.toJSON()['cells']);
       axios.post(`http://127.0.0.1:5000/sql`, this.graph.toJSON()['cells'])
       .then(response => {
-        console.log(response.data)
-        message.success(`Success SQL: ${response.data}`);
+        console.log(response.data);
+        message.success(`Conversion Success`);
+        this.out_SQL=response.data;
+        this.showRes=true;
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
