@@ -92,5 +92,14 @@
     "Related Feature Views": "关联特征组",
     "Related Feature Services": "关联特征服务",
     "Notice CLTV Text": "注意：网页版支持标准Hive数据引入，CLTV数据需要通过后台引入。",
-    "Dag": "Dag"
+    "Dag": "Dag",
+    "Data Import": "数据导入",
+    "Create New Database": "创建新数据库",
+        "Return to Choose Database": "返回选择",
+    "Execution Mode": "运行模式",
+    "Online": "在线",
+    "Offline": "离线",
+    "Load Offline Data": "加载离线数据",
+        "Path": "路径 "
+
 }

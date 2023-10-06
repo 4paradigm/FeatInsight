@@ -9,21 +9,48 @@
 
   <br /><br/>
   <div>
-    <h1>{{ $t('Create Database') }}</h1>
+    <h1>{{ $t('Data Import') }}</h1>
     <a-form
       :model="createDatabaseFormState"
       name="basic"
       :label-col="{ span: 8 }"
       :wrapper-col="{ span: 16 }"
       @submit="handleSubmitCreateDatabase">
-      <a-form-item
+      <a-form-item v-if="showSelect"
         :label="$t('Database')"
         :rules="[{ required: true, message: 'Please input database!' }]">
-        <a-input v-model:value="createDatabaseFormState.database" />
+        <a-select v-model:value="formState.db">
+          <option v-for="database in databases" :value="database">{{ database }}</option>
+        </a-select>
       </a-form-item>
 
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+      <a-form-item v-if="showSelect" :wrapper-col="{ offset: 8, span: 16 }">
+        <a-button type="primary" @click="toggleShowField">{{ $t('Create New Database') }}</a-button>
+      </a-form-item>
+
+      <a-form-item v-if="showInput"
+        :label="$t('Database')"
+        :rules="[{ required: true, message: 'Please input database!' }]">
+        <a-input placeholder="Enter database name" v-model:value="createDatabaseFormState.database" /> 
+      </a-form-item>
+
+      <a-form-item v-if="showInput" :wrapper-col="{ offset: 8, span: 16 }">
         <a-button type="primary" html-type="submit">{{ $t('Create') }}</a-button>
+        &nbsp;&nbsp;
+        <a-button type="primary" @click="toggleShowField">{{ $t("Return to Choose Database") }}</a-button>
+      </a-form-item>
+
+      <a-form-item 
+        :label="$t('Execution Mode')"
+        :rules="[{ required: true, message: 'Please choose execution mode!' }]">
+        <a-select v-model:value="executionMode">
+          <option value="online">{{ $t("online") }} </option>
+          <option value="offline">{{ $t("offline") }} </option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item v-if="executionMode=='online'" :wrapper-col="{ offset: 8, span: 16 }">
+        <a-button type="primary"> Test </a-button>
       </a-form-item>
 
     </a-form>
@@ -31,8 +58,45 @@
 
   <br />
   <div>
-    <h1>{{ $t('Map Hive Table') }}</h1>
-    <a-form
+    <h1 v-if="executionMode=='offline'">{{ $t('Load Offline Data') }}</h1>
+    <a-form v-if="executionMode=='offline'"
+      :model="importOfflineTableFromState"
+      name="basic"
+      :label-col="{ span: 8 }"
+      :wrapper-col="{ span: 16 }"
+      @submit="handleLoadHiveData">
+      <a-form-item
+        :label="$t('Table Name')"
+        :rules="[{ required: true, message: 'Please input hive table!' }]">
+        <a-input v-model:value="importOfflineTableFromState.tableName" />
+      </a-form-item>
+
+      <a-form-item
+        :label="$t('Path')"
+        :rules="[{ required: true, message: 'Please input data path!' }]">
+        <a-input v-model:value="importOfflineTableFromState.path" />
+      </a-form-item>
+
+        <!-- Only display when click the button -->
+        <div v-if="isDisplayMoreOptions">
+          <a-form-item
+            label="SQL"
+            :rules="[{ required: false, message: 'Please input import SQL!' }]">
+            <a-input v-model:value="importOfflineTableFromState.sql" />
+          </a-form-item>
+        </div>
+
+      <a-form-item  :wrapper-col="{ offset: 8, span: 16 }">
+        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
+        &nbsp;&nbsp;<a-button type="primary" @click="clickDisplayMoreOptions()">{{ $t('Display More Options') }}</a-button>
+      </a-form-item>
+    </a-form>
+  </div>
+
+  <br />
+  <div>
+    <h1 v-if="executionMode=='online'">{{ $t('Map Hive Table') }}</h1>
+    <a-form v-if="executionMode=='online'"
       :model="importHiveTableFormState"
       name="basic"
       :label-col="{ span: 8 }"
@@ -58,8 +122,8 @@
 
   <br />
   <div>
-    <h1>{{ $t('Load Hive Data') }}</h1>
-    <a-form
+    <h1 v-if="executionMode=='online'">{{ $t('Load Hive Data') }}</h1>
+    <a-form v-if="executionMode=='online'"
       :model="loadHiveDataFormState"
       name="basic"
       :label-col="{ span: 8 }"
@@ -97,14 +161,14 @@
           </a-form-item>
         </div>
 
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+      <a-form-item  :wrapper-col="{ offset: 8, span: 16 }">
         <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
         &nbsp;&nbsp;<a-button type="primary" @click="clickDisplayMoreOptions()">{{ $t('Display More Options') }}</a-button>
       </a-form-item>
     </a-form>
   </div>
 
-  <div v-if="isDisplayImportSql">
+  <div v-if="isDisplayImportSql && executionMode=='online'">
   <br />
   <div>
     <h1>{{ $t('Import Table') }}</h1>
@@ -137,9 +201,13 @@
   </div>
   </div>
 
+  <div v-if="executionMode=='online'">
   <a-button type="primary" @click="clickDisplayImportSql()">{{ $t('Display Import SQL') }}</a-button>
-
-  &nbsp;&nbsp;<a-button type="primary" @click="clickDisplayTables()">{{ $t('Display Tables') }}</a-button>
+  </div>
+  <br />
+  <div>
+  <a-button type="primary" @click="clickDisplayTables()">{{ $t('Display Tables') }}</a-button>
+  </div>
 
   <div v-if="isDisplayTable">
     <TablesPage></TablesPage>
@@ -169,6 +237,16 @@ export default {
 
       tables: [],
 
+      databases: [],
+
+      showInput: false,
+
+      showSelect: true,
+
+      test: 'online',
+
+      executionMode: '',
+
       createDatabaseFormState: {
         database: '',
       },
@@ -180,6 +258,12 @@ export default {
       importHiveTableFormState: {
         hivePath: '',
         openmldbTable: ''
+      },
+
+      importOfflineTableFromState: {
+        Table: '',
+        path: '',
+        sql:'',
       },
 
       loadHiveDataFormState: {
@@ -205,6 +289,14 @@ export default {
           message.error(error.message);
         })
         .finally(() => {});
+      axios.get(`/api/databases`)
+        .then(response => {
+          this.databases = response.data;
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {});
     },
 
     handleSubmitCreateDatabase() {
@@ -222,6 +314,12 @@ export default {
             message.error(error.message);
           }
       });
+    },
+
+    toggleShowField(){
+      this.showInput = !this.showInput;
+      this.showSelect = !this.showSelect;
+
     },
 
     handleSubmit() {

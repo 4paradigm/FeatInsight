@@ -6,7 +6,7 @@
     </div>
     <div class="wrap">
       <a-form label-width="80px">
-          <a-textarea v-model:value=this.out_SQL></a-textarea>
+          <a-textarea readonly v-model:value=this.out_SQL></a-textarea>
       </a-form>
     </div>
   </div>
