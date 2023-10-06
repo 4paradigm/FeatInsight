@@ -12,23 +12,20 @@
       </a-menu-item>
 
       <a-sub-menu key="whole_process_wizard">
-        <template #title>{{ $t('Whole Process Wizard') }}</template>
+        <template #title>{{ $t('Development Process') }}</template>
 
         <a-menu-item key="2">
-          <router-link to='/tables/import'>{{ $t('Step') }}1: {{ $t('Import Table') }}</router-link>
+          <router-link to='/tables/import'>{{ $t('Data Import')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="3">
-          <router-link to='/features/create'>{{ $t('Step') }}2: {{ $t('Develop Feature') }}</router-link>
+          <router-link to='/featureprocess/offline'>{{ $t('Offline')}}{{$t('Development')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="4">
-          <router-link to='/featureservices/deploy'>{{ $t('Step') }}3: {{ $t('Create Service') }}</router-link>
+          <router-link to='/featureprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
         </a-menu-item>
 
-        <a-menu-item key="5">
-          <router-link to='/featureservices/test'>{{ $t('Step') }}4: {{ $t('Test Service') }}</router-link>
-        </a-menu-item>
       </a-sub-menu>
 
       <a-sub-menu key="advanced_management">

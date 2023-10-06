@@ -21,6 +21,8 @@ import CreateFeature from '../components/CreateFeature.vue'
 import DeployFeatureService from '../components/DeployFeatureService.vue'
 import TestFeatureService from '../components/TestFeatureService.vue'
 import DagPage from '../components/DagPage.vue'
+import OnlineFeatureService from '../components/OnlineFeatureService.vue'
+import OfflineFeatureDevelopment from '../components/OfflineFeatureDevelopment.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -43,6 +45,8 @@ const router = createRouter({
     { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
+    { path: '/featureprocess/online', component: OnlineFeatureService, props: true },
+    { path: '/featureprocess/offline', component: OfflineFeatureDevelopment, props: true },
     { path: '/sql', component: SqlPage},
     { path: '/dag', component: DagPage},
     { path: '/tutorial', component: TutorialPage},

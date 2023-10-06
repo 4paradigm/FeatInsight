@@ -1,6 +1,7 @@
 {
     "Overview": "概况",
     "Data Tables": "数据表",
+    "Data Table": "数据表",
     "Tables": "表",
     "Table": "表",
     "Table Name": "表名",
@@ -47,6 +48,7 @@
     "Service Management": "服务管理",
     "Others": "其他",
     "Create Feature": "创建特征",
+    "Create New Feature": "创建新特征",
     "Create Service": "创建服务",
     "Create Entity": "创建特征实体",
     "Test Service": "测试服务",
@@ -100,6 +102,11 @@
     "Online": "在线",
     "Offline": "离线",
     "Load Offline Data": "加载离线数据",
-        "Path": "路径 "
-
+        "Path": "路径 ",
+    "Development Process": "开发流程",
+    "Development": "开发",
+    "Information": "信息",
+    "Settings": "设定",
+        "Offline Trainset Generation": "离线样本生成",
+    "Key": "字段"
 }

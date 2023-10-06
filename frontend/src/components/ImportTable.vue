@@ -64,7 +64,7 @@
       name="basic"
       :label-col="{ span: 8 }"
       :wrapper-col="{ span: 16 }"
-      @submit="handleLoadHiveData">
+      @submit="handleLoadOfflineTable">
       <a-form-item
         :label="$t('Table Name')"
         :rules="[{ required: true, message: 'Please input hive table!' }]">
@@ -253,6 +253,7 @@ export default {
 
       formState: {
         sql: '',
+        db: ''
       },
 
       importHiveTableFormState: {
@@ -356,6 +357,12 @@ export default {
           }
       });
     },
+
+    
+    handleLoadOfflineTable(){
+
+    },
+
 
     handleLoadHiveData() {
       let sql = "LOAD DATA INFILE 'hive://" + this.loadHiveDataFormState.hivePath + "' INTO TABLE " + this.loadHiveDataFormState.openmldbTable + " OPTIONS(deep_copy=" + this.loadHiveDataFormState.isDeepCopy + ", mode='append')"

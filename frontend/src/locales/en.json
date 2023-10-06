@@ -1,6 +1,7 @@
 {
     "Overview": "Overview",
     "Data Tables": "Data Tables",
+    "Data Table": "Data Table",
     "Tables": "Tables",
     "Table": "Table",
     "Table Name": "Table Name",
@@ -47,6 +48,7 @@
     "Service Management": "Service Management",
     "Others": "Others",
     "Create Feature": "Create Feature",
+    "Create New Feature": "Create New Feature",
     "Create Service": "Create Service",
     "Create Entity": "Create Entity",
     "Test Service": "Test Service",
@@ -100,5 +102,11 @@
     "Online": "Online",
     "Offline": "Offline",
     "Load Offline Data": "Load Offline Data",
-        "Path": "Path"
+        "Path": "Path",
+    "Development Process": "Development Process",
+        "Development": "Development",
+    "Information": "Information",
+    "Settings": "Settings",
+        "Offline Trainset Generation": "Offline Trainset Generation",
+        "Key": "Key"
 }
