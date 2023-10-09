@@ -4,7 +4,7 @@
 
   <br />
   <div>
-    <h1>{{ $t('Offline Trainset Generation') }}</h1>
+    <h1>{{ $t('Offline Train Set Generation') }}</h1>
     <!-- Create form -->
     <a-form
       :model="formState"
@@ -42,12 +42,6 @@
       :label-col="{ span: 8 }"
       :wrapper-col="{ span: 16 }"
       @submit="handleSubmit">
-
-      <a-form-item
-        :label="$t('Data Table')"
-        :rules="[{ required: true, message: 'Please input name!' }]">
-        <a-input v-model:value="formState.table" />
-      </a-form-item>
 
       <a-form-item
         :label="$t('Data Table')"
@@ -130,7 +124,7 @@ export default {
     loadDataTables(){
         axios.get(`/api/databases/${this.formState.db}/tables`)
         .then((response) => {
-          this.tables = response.data;
+          this.tables_list = response.data;
         })
         .catch((error) => {
           message.error(error.message);
@@ -138,7 +132,7 @@ export default {
         .finally(() => {
           // You can perform any additional logic here after the request completes.
         });
-        console.log(this.tables)
+        console.log(this.tables_list)
     },
 
     handleSubmit() {

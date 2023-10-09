@@ -49,10 +49,6 @@
         </a-select>
       </a-form-item>
 
-      <a-form-item v-if="executionMode=='online'" :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary"> Test </a-button>
-      </a-form-item>
-
     </a-form>
   </div>
 
@@ -67,7 +63,7 @@
       @submit="handleLoadOfflineTable">
       <a-form-item
         :label="$t('Table Name')"
-        :rules="[{ required: true, message: 'Please input hive table!' }]">
+        :rules="[{ required: true, message: 'Please input table name!' }]">
         <a-input v-model:value="importOfflineTableFromState.tableName" />
       </a-form-item>
 

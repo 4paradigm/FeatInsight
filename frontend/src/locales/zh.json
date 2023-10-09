@@ -107,6 +107,12 @@
     "Development": "开发",
     "Information": "信息",
     "Settings": "设定",
-        "Offline Trainset Generation": "离线样本生成",
-    "Key": "字段"
+        "Offline Train Set Generation": "离线样本生成",
+    "Offline Train Sets": "离线样本",
+    "Key": "字段",
+    "Management": "管理",
+    "Task": "任务",
+    "Center": "中心",
+    "Tasks": "任务",
+    "Offline Jobs": "离线任务"
 }
