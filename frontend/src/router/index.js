@@ -50,7 +50,7 @@ const router = createRouter({
     { path: '/featureprocess/online', component: OnlineFeatureService, props: true },
     { path: '/featureprocess/offline', component: OfflineFeatureDevelopment, props: true },
     { path: '/sql', component: SqlPage},
-    { path: '/dag', component: DagPage},
+    { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinetrainsets', component: OfflineTrainSetsPage},

@@ -45,9 +45,7 @@
 
         <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
           <a-button type="primary"> 
-          <router-link :to="{ name: 'DagPage', state: { insql } }">
-          {{ $t('SQL tool') }}
-          </router-link>
+          <router-link to='/dag'> {{ $t('SQL tool') }}</router-link>
           </a-button>
         </a-form-item>
         
@@ -88,17 +86,21 @@
   <script>
   import axios from 'axios'
   import { message } from 'ant-design-vue';
-  
+  import { SQLStore} from '../pinia/store';
+  import { computed } from 'vue';
+
   export default {
     data() {
       return {
         entities: [],
         databases: [],
-        insql: '',
   
         validatedFeatureNames: [],
 
         isDisplayAddFeatureDescription: false,
+
+        sharedSQL: '',
+        SQLStore: '',
   
         formState: {
           name: '',
@@ -134,7 +136,11 @@
           .catch(error => {
             message.error(error.message);
           })
-          .finally(() => {});        
+          .finally(() => {});
+
+        this.SQLStore = SQLStore();
+        this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
+        this.formState.sql = this.sharedSQL;
       },
   
       validateForm() {
@@ -187,8 +193,7 @@
       },
 
       updateInputSQL(){
-        this.insql= this.formState.sql;
-        console.log(this.insql);
+        this.SQLStore.setSharedVariable(this.formState.sql);
       },
   
     },
