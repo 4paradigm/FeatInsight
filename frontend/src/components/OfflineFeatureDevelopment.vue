@@ -27,42 +27,13 @@
         <a-select mode="multiple" v-model:value="formState.featureList">
             <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
         </a-select>
-        <br /><br/>
+        <br/><br/>
         <a-button type="primary"><router-link to='/features/create'>{{ $t('Create New Feature') }}</router-link></a-button>
+
       </a-form-item>
     </a-form>
   </div>
 
-<div>
-    <h1> Label {{ $t('Settings') }}</h1>
-    <!-- Create form -->
-<a-form
-      :model="formState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
-      @submit="handleSubmit">
-
-      <a-form-item
-        :label="$t('Data Table')"
-        :rules="[{ required: true, message: 'Please input table name!' }]">
-        <a-select v-model:value="tables">
-          <option v-for="table in tables" :value="table">{{ table }}</option>
-        </a-select>
-      </a-form-item>
-
-
-      <a-form-item
-        :label="$t('Key')"
-        :rules="[{ required: true, message: 'Please input version!' }]">
-        <a-input v-model:value="formState.key" />
-      </a-form-item>
-
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
-    </a-form>
-  </div>
 
   <TestFeatureService></TestFeatureService>
 

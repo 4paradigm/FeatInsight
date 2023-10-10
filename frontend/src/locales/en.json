@@ -114,5 +114,13 @@
     "Task": "Task ",
     "Center": "Center",
         "Tasks": "Tasks",
-    "Offline Jobs": "Offline Jobs"
+    "Offline Jobs": "Offline Jobs",
+    "Generate SQL": "Generate SQL",
+    "Return": "Return",
+    "Generated SQL": "Generated SQL",
+    "Node Settings": "Node Settings",
+    "Node Name": "Node Name",
+    "Node SQL": "Node SQL",
+    "Please input": "Please input ",
+        "SQL tool": "SQL tool"
 }

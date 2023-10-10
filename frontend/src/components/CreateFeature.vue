@@ -40,7 +40,15 @@
         <a-form-item
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
-          <a-textarea v-model:value="formState.sql" rows="5"></a-textarea>
+          <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"></a-textarea>
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <a-button type="primary"> 
+          <router-link :to="{ name: 'DagPage', state: { insql } }">
+          {{ $t('SQL tool') }}
+          </router-link>
+          </a-button>
         </a-form-item>
         
         <div v-if="validatedFeatureNames.length > 0">
@@ -86,6 +94,7 @@
       return {
         entities: [],
         databases: [],
+        insql: '',
   
         validatedFeatureNames: [],
 
@@ -175,7 +184,12 @@
 
       displayAddFeatureDescription() {
         this.isDisplayAddFeatureDescription = true;
-      }
+      },
+
+      updateInputSQL(){
+        this.insql= this.formState.sql;
+        console.log(this.insql);
+      },
   
     },
   };

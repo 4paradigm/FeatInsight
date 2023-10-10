@@ -1,7 +1,7 @@
 <template>
   <div class="right-drawer-res">
     <div class="tt">
-      <span>SQL转换代码结果</span>
+      <span>{{ $t('Generated SQL')}}</span>
       <i class="el-icon-circle-close" title="关闭" @click="closeFn"></i>
     </div>
     <div class="wrap">

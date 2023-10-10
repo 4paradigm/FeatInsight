@@ -6,8 +6,12 @@
   <div class="app-content" ref="container">
   </div>
 </div>
-  <a-button type="primary" @click="getData()">保存DAG</a-button>
-  <a-button type="success" @click="runGraph()">运行任务</a-button>
+<br />
+<div>
+  <a-button type="primary" @click="runGraph()">{{$t('Generate SQL')}}</a-button>
+  &nbsp;&nbsp;
+  <a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button>
+</div>
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
@@ -15,6 +19,8 @@
   <right-drawer-res v-if="showRes" :out_SQL="out_SQL"></right-drawer-res>
 </div>
 </template>
+
+
 
 <script>
 import axios from 'axios'
@@ -77,6 +83,7 @@ export default {
       nodeId: '',
       templateLists: [],
       out_SQL: '',
+      insql: '',
       showRes: false
     };
   },
@@ -184,14 +191,14 @@ export default {
 
       // #region 初始化 stencil
       const stencil = new Stencil({
-        title: '任务节点',
+        title: 'SQL Node',
         target: graph,
         stencilGraphWidth: 200,
         stencilGraphHeight: 180,
         collapsable: true,
         groups: [
           {
-            title: '任务节点',
+            title: 'SQL Node',
             name: 'group1',
             collapsable: false,
           },
@@ -461,8 +468,6 @@ export default {
         // 移除删除
         node.removeTools()
       })
-
-
 
     },
 
