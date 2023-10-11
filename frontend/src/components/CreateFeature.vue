@@ -40,7 +40,13 @@
         <a-form-item
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
-          <a-textarea v-model:value="formState.sql" rows="5"></a-textarea>
+          <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"></a-textarea>
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <a-button type="primary"> 
+          <router-link to='/dag'> {{ $t('SQL tool') }}</router-link>
+          </a-button>
         </a-form-item>
         
         <div v-if="validatedFeatureNames.length > 0">
@@ -80,7 +86,9 @@
   <script>
   import axios from 'axios'
   import { message } from 'ant-design-vue';
-  
+  import { SQLStore} from '../pinia/store';
+  import { computed } from 'vue';
+
   export default {
     data() {
       return {
@@ -90,6 +98,9 @@
         validatedFeatureNames: [],
 
         isDisplayAddFeatureDescription: false,
+
+        sharedSQL: '',
+        SQLStore: '',
   
         formState: {
           name: '',
@@ -125,7 +136,11 @@
           .catch(error => {
             message.error(error.message);
           })
-          .finally(() => {});        
+          .finally(() => {});
+
+        this.SQLStore = SQLStore();
+        this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
+        this.formState.sql = this.sharedSQL;
       },
   
       validateForm() {
@@ -175,7 +190,11 @@
 
       displayAddFeatureDescription() {
         this.isDisplayAddFeatureDescription = true;
-      }
+      },
+
+      updateInputSQL(){
+        this.SQLStore.setSharedVariable(this.formState.sql);
+      },
   
     },
   };
