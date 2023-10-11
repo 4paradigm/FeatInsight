@@ -23,6 +23,10 @@ import TestFeatureService from '../components/TestFeatureService.vue'
 import DagPage from '../components/DagPage.vue'
 import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineJobDetail from '../components/OfflineJobDetail.vue'
+import OnlineFeatureService from '../components/OnlineFeatureService.vue'
+import OfflineFeatureDevelopment from '../components/OfflineFeatureDevelopment.vue'
+import OfflineJobsPage from '../components/OfflineJobsPage.vue'
+import OfflineTrainSetsPage from '../components/OfflineTrainSetsPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -47,9 +51,13 @@ const router = createRouter({
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
+    { path: '/featureprocess/online', component: OnlineFeatureService, props: true },
+    { path: '/featureprocess/offline', component: OfflineFeatureDevelopment, props: true },
     { path: '/sql', component: SqlPage},
-    { path: '/dag', component: DagPage},
+    { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},
+    { path: '/offlinejobs', component: OfflineJobsPage},
+    { path: '/offlinetrainsets', component: OfflineTrainSetsPage},
     { path: '/404', redirect: "/" },
     { path: '/:pathMatch(.*)*', redirect: "/404" }
   ]

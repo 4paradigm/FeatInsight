@@ -12,46 +12,54 @@
       </a-menu-item>
 
       <a-sub-menu key="whole_process_wizard">
-        <template #title>{{ $t('Whole Process Wizard') }}</template>
+        <template #title>{{ $t('Development Process') }}</template>
 
         <a-menu-item key="2">
-          <router-link to='/tables/import'>{{ $t('Step') }}1: {{ $t('Import Table') }}</router-link>
+          <router-link to='/tables/import'>{{ $t('Data Import')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="3">
-          <router-link to='/features/create'>{{ $t('Step') }}2: {{ $t('Develop Feature') }}</router-link>
+          <router-link to='/featureprocess/offline'>{{ $t('Offline')}}{{$t('Development')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="4">
-          <router-link to='/featureservices/deploy'>{{ $t('Step') }}3: {{ $t('Create Service') }}</router-link>
+          <router-link to='/featureprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
         </a-menu-item>
 
-        <a-menu-item key="5">
-          <router-link to='/featureservices/test'>{{ $t('Step') }}4: {{ $t('Test Service') }}</router-link>
-        </a-menu-item>
       </a-sub-menu>
 
       <a-sub-menu key="advanced_management">
-        <template #title>{{ $t('Advanced Management') }}</template>
-        <a-menu-item key="6">
+        <template #title>{{ $t('Management') }}{{ $t('Center') }}</template>
+        <a-menu-item key="5">
           <router-link to='/tables'>{{ $t('Data Tables') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="7">
+        <a-menu-item key="6">
           <router-link to='/entities'>{{ $t('Entities') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="8">
+        <a-menu-item key="7">
           <router-link to='/features'>{{ $t('Feature List') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="9">
+        <a-menu-item key="8">
           <router-link to='/featureviews'>{{ $t('Feature View List') }}</router-link>
         </a-menu-item>
+        <a-menu-item key="9">
+          <router-link to='/offlinetrainsets'>{{ $t('Offline Train Sets') }}</router-link>
+        </a-menu-item>
+      </a-sub-menu>
+
+      <a-sub-menu key="task_center">
+        <template #title>{{ $t('Task') }}{{ $t('Center') }}</template>
         <a-menu-item key="10">
-          <router-link to='/featureservices'>{{ $t('Feature Services') }}</router-link>
+          <router-link to='/featureservices'>{{ $t('Online')}}{{ $t('Feature Services') }}</router-link>
+        </a-menu-item>
+        <a-menu-item key="11">
+          <router-link to='/offlinejobs'>{{ $t('Offline') }}{{ $t('Tasks')}}</router-link>
         </a-menu-item>
         <a-menu-item key="11">
           <router-link to='/offlinejobs'>{{ $t('Offline Jobs') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
+
 
       <!--
       <a-sub-menu key="others">
