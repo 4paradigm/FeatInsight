@@ -8,7 +8,7 @@
 </div>
 <br />
 <div>
-  <a-button type="primary" @click="runGraph()">{{$t('Generate SQL')}}</a-button>
+  <a-button type="primary" @click="runGraph">{{$t('Generate SQL')}}</a-button>
   &nbsp;&nbsp;
   <a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button>
 </div>
@@ -18,6 +18,13 @@
 <div>
   <right-drawer-res v-if="showRes" :out_SQL="out_SQL"></right-drawer-res>
 </div>
+<br />
+<!-- div>
+  <a-button type="primary" @click="exportjson"> export json </a-button>
+  <a-button type="primary" @click="loadGraphFromJson"> load json</a-button>
+  <a-button type="primary" @click="loadSampleGraphFromJson"> load sample json</a-button>
+</div-->
+
 </template>
 
 
@@ -37,9 +44,10 @@ import RightDrawer from './DAG/RightDrawer.vue'
 import RightDrawerRes from './DAG/RightDrawerRes.vue'
 import TaskNode from './DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
-import { message } from 'ant-design-vue';
-import { SQLStore} from '../pinia/store';
-import { computed } from 'vue';
+import { message } from 'ant-design-vue'
+import { SQLStore} from '../pinia/store'
+import { computed } from 'vue'
+import { DagreLayout } from '@antv/layout'
 
 export default {
   components: {
@@ -52,13 +60,18 @@ export default {
       searchText: "",
       showRight: false,
       graph: null,
+      dagreLayout : null,
       nodeData:[],
+      savedNodeData:[],
       nodeId: '',
       templateLists: [],
       out_SQL: '',
       sharedSQL: '',
       SQLStore: '',
-      showRes: false
+      showRes: false,
+      savedJson: '',
+      sampleJson:'{"cells":[{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge1","zIndex":0,"source":{"cell":"nodeA","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge2","zIndex":0,"source":{"cell":"nodeC","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"position":{"x":220,"y":200},"attrs":{"text":{"text":"Node"},"label":{"text":"A"}},"visible":true,"shape":"vue-rect","id":"nodeA","data":{"name":"A","desc":"123"},"zIndex":1,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":300,"y":370},"attrs":{"text":{"text":"Node"},"label":{"text":"B"}},"visible":true,"shape":"vue-rect","id":"nodeB","data":{"name":"B","desc":"456"},"zIndex":2,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":340,"y":236},"attrs":{"text":{"text":"Node"},"label":{"text":"C"}},"visible":true,"shape":"vue-rect","id":"nodeC","data":{"name":"C","desc":"789"},"zIndex":3,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}}]}',
+      sampleNodeData: [{"id":"nodeA","name":"A","desc":"123"},{"id":"nodeB","name":"B","desc":"456"},{"id":"nodeC","name":"C","desc":"789"}]
     };
   },
 
@@ -68,11 +81,19 @@ export default {
 
   methods: {
     initData() {
-
+      const dagreLayout = new DagreLayout({
+        type: 'grid',
+        width: 600,
+        height: 400,
+        center: [300, 200],
+        rows: 4,
+        cols: 4,
+      })
+      this.dagreLayout = dagreLayout;
       this.SQLStore=SQLStore();
       this.sharedSQL = computed(() => this.SQLStore.sharedSQL);
       console.log(this.sharedSQL);
-      
+
       const graph = new Graph({
         container: this.$refs.container,
         width: 800,
@@ -270,6 +291,7 @@ export default {
         groups: {
           top: {
             position: 'top',
+            id: 'port_top',
             attrs: {
               circle: {
                 r: 4,
@@ -285,6 +307,7 @@ export default {
           },
           bottom: {
             position: 'bottom',
+            id: 'port_bottom',
             attrs: {
               circle: {
                 r: 4,
@@ -457,12 +480,6 @@ export default {
       }
     },
 
-    getData() {
-      console.log(this.nodeData)
-      console.log(this.graph)
-      console.log(this.graph.toJSON())
-    },
-
     updateVisableFn(val) {
       this.nodeData.taskId = ''
       this.showRight = val
@@ -481,15 +498,25 @@ export default {
 
       return result
     },
-    saveFn() {
-      const data = this.graph.toJSON()
-      const len = this.templateLists.length
-      this.templateLists.push({
-        name: `模板${len + 1}`,
-        data
-      })
+
+    exportjson() {
+      this.savedJson=this.graph.toJSON();
+      console.log(JSON.stringify(this.savedJson));
+      console.log(JSON.stringify(this.nodeData));
+      this.savedNodeData = JSON.parse(JSON.stringify(this.nodeData));
     },
 
+    loadGraphFromJson() {
+      this.graph.fromJSON(this.savedJson);
+      this.nodeData=JSON.parse(JSON.stringify(this.savedNodeData));
+    },
+
+    loadSampleGraphFromJson() {     
+      //const newModel = this.dagreLayout.layout(model);
+      //this.graph.fromJSON(newModel);
+      this.graph.fromJSON(JSON.parse(this.sampleJson));
+      this.nodeData=JSON.parse(JSON.stringify(this.sampleNodeData));
+    },
 
     runGraph() {
       console.log(this.graph.toJSON()['cells']);
