@@ -10,27 +10,43 @@
       :model="formState"
       name="basic"
       :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
+      :wrapper-col="{ span: 10 }"
       @submit="handleSubmit">
-      <a-form-item 
-        :label="$t('Database')"
-        :rules="[{ required: true, message: 'Please input database!' }]">
-        <a-select v-model:value="formState.db" @blur="loadDataTables">
-          <option v-for="database in databases" :value="database">{{ database }}</option>
-        </a-select>
-      </a-form-item>
-
       <a-form-item
-        :label="$t('Feature View List')"
+        :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
         <a-select mode="multiple" v-model:value="formState.featureList">
             <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
         </a-select>
-        <br/><br/>
         <a-button type="primary"><router-link to='/features/create'>{{ $t('Create New Feature') }}</router-link></a-button>
+        </a-form-item>
 
+      <a-form-item
+          :label="$t('File Format')"
+          :rules="[{ required: true, message: 'Please choose file format!' }]">
+          <a-select v-model:value="formState.fileformat">
+            <option v-for="format in fileFormats" :key="format.id" :value="format.name">{{ format.name}}</option>
+          </a-select>
       </a-form-item>
+
+      <a-form-item 
+          :label="$t('Export Path')" 
+          :rules="[{ required: true, message: 'Please input export path!' }]">
+          <a-input id="exportPath" v-model:value="formState.exportPath" :placeholder="$t('path')"></a-input>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Export Options')">
+          <a-input id="exportOptions" v-model:value="formState.exportOptions"></a-input>
+      </a-form-item>
+
+      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
+      </a-form-item>
+
+
+
     </a-form>
   </div>
 
@@ -48,16 +64,16 @@ export default {
   data() {
     return {
       featureViews: [],
-      databases:[],
+      fileFormats:[{id: 'csv', name: 'CSV'}, {id: 'parquet', name: 'Parquet'}],
       tables: [],
 
       formState: {
-        name: '',
-        version: '',
         featureList: [],
         key: '',
         table: '',
-        db: '',
+        fileFormat: '',
+        exportPath: '',
+        exportOptions: '',
       },
 
     };
@@ -77,14 +93,6 @@ export default {
           message.error(error.message);
         })
         .finally(() => {});
-      axios.get(`/api/databases`)
-        .then(response => {
-          this.databases = response.data;
-        })
-        .catch(error => {
-          message.error(error.message);
-        })
-        .finally(() => {});
 
       if (this.$route.query.featureview != null) {
         this.formState.featureList = [this.$route.query.featureview];
@@ -92,40 +100,9 @@ export default {
 
     },
 
-    loadDataTables(){
-        axios.get(`/api/databases/${this.formState.db}/tables`)
-        .then((response) => {
-          this.tables_list = response.data;
-        })
-        .catch((error) => {
-          message.error(error.message);
-        })
-        .finally(() => {
-          // You can perform any additional logic here after the request completes.
-        });
-        console.log(this.tables_list)
-    },
 
     handleSubmit() {
-      axios.post(`/api/featureservices`, {
-        "name": this.formState.name,
-        "version": this.formState.version,
-        "featureList": this.formState.featureList.join(','),
-        "description": this.formState.description,
-      })
-      .then(response => {
-        message.success(`Success to add feature service ${this.formState.name} and version ${this.formState.version}`);
 
-        // Redirect to FeatureView detail page
-        this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}`);
-      })
-      .catch(error => {
-          if (error.response.data) {
-            message.error(error.response.data);
-          } else {
-            message.error(error.message);
-          }
-      });
     },
 
   },

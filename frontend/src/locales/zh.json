@@ -107,7 +107,7 @@
     "Development": "开发",
     "Information": "信息",
     "Settings": "设定",
-        "Offline Train Set Generation": "离线样本生成",
+        "Offline Train Set Generation": "导出离线样本",
     "Offline Train Sets": "离线样本",
     "Key": "字段",
     "Management": "管理",
@@ -122,5 +122,10 @@
     "Node Name": "节点名称",
     "Node SQL": "节点SQL",
     "Please input": "请输入",
-    "SQL tool": "SQL转换工具"
+    "SQL tool": "SQL转换工具",
+        "Choose Features": "选择特征",
+    "File Format": "文件格式",
+        "Export Path": "导出路径",
+    "Export Options" : "导出Options",
+    "path": "file:///data/path or hdfs:///user/path"
 }

@@ -122,5 +122,10 @@
     "Node Name": "Node Name",
     "Node SQL": "Node SQL",
     "Please input": "Please input ",
-        "SQL tool": "SQL tool"
+        "SQL tool": "SQL tool",
+    "Choose Features": "Choose Features",
+    "File Format": "File Format",
+    "Export Path": "Export Path",
+    "Export Options": "Export Options",
+    "path": "file:///data/path or hdfs:///user/path"
 }
