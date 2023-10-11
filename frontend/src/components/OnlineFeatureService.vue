@@ -4,59 +4,45 @@
 
   <br />
   <div>
-    <h1>{{ $t('Create') }}{{ $t('Online')}}{{ $t('Feature Service') }}</h1>
+    <h1>{{ $t('Deploy Feature Service') }}</h1>
     <!-- Create form -->
     <a-form
       :model="formState"
       name="basic"
       :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
+      :wrapper-col="{ span: 10 }"
       @submit="handleSubmit">
+
+
       <a-form-item
-        :label="$t('Database')"
-        :rules="[{ required: true, message: 'Please input database!' }]">
-        <a-select v-model:value="formState.db">
-          <option v-for="database in databases" :value="database">{{ database }}</option>
+        :label='$t("Feature Service Name")'
+        :rules="[{ required: true, message: 'Please input feature service name!' }]">
+        <a-select id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
+          <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
         </a-select>
       </a-form-item>
 
       <a-form-item
-        :label="$t('Feature View List')"
+        :label='$t("Feature Service Version")'
+        :rules="[{ required: true, message: 'Please input feature service version!' }]">
+        <a-select id="itemSelect" v-model:value="testFormState.version" @change="updateSelectedService">
+          <option v-for="version in featureServiceVersions" :value="version">{{ version }}</option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item
+        :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
         <a-select mode="multiple" v-model:value="formState.featureList">
             <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
         </a-select>
-        <br /><br/>
-        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create New Feature') }}</router-link></a-button>
-      </a-form-item>
-    </a-form>
-  </div>
-
-<div>
-    <h1>{{ $t('Online')}}{{ $t('Feature Service') }}{{ $t('Information')}}</h1>
-    <!-- Create form -->
-<a-form
-      :model="formState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
-      @submit="handleSubmit">
-
-      <a-form-item
-        :label="$t('Feature Service Name')"
-        :rules="[{ required: true, message: 'Please input name!' }]">
-        <a-input v-model:value="formState.name" />
+        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create') }}</router-link></a-button>
       </a-form-item>
 
-      <a-form-item
-        :label="$t('Feature Service Version')"
-        :rules="[{ required: true, message: 'Please input version!' }]">
-        <a-input v-model:value="formState.version" />
-      </a-form-item>
 
       <a-form-item
-          :label="$t('Description')">
+          :label="$t('Feature Service Description')">
           <a-input v-model:value="formState.description" />
         </a-form-item>
 
@@ -66,7 +52,6 @@
     </a-form>
   </div>
 
-  <TestFeatureService></TestFeatureService>
 
 </div>
 </template>
@@ -92,6 +77,13 @@ export default {
         description: '',
         db: '',
       },
+
+      testFormState: {
+        name: "",
+        version: "",
+        testData: "",
+      },
+
 
     };
   },

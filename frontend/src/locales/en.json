@@ -127,5 +127,6 @@
     "File Format": "File Format",
     "Export Path": "Export Path",
     "Export Options": "Export Options",
-    "path": "file:///data/path or hdfs:///user/path"
+    "path": "file:///data/path or hdfs:///user/path",
+        "Deploy Feature Service": "Deploy Feature Service"
 }

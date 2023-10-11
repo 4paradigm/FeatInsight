@@ -32,7 +32,7 @@
     "Update": "更新",
     "Submit": "提交",
     "Delete": "删除",
-    "Create": "创建",
+    "Create": "新建",
     "Dependent": "依赖",
     "Request": "请求",
     "Schema": "Schema",
@@ -54,7 +54,7 @@
     "Test Service": "测试服务",
     "Develop Feature": "特征开发",
     "Delete Service": "删除服务",
-    "Feature Service Name": "特征服务名称",
+    "Feature Service Name": "服务名称",
     "Feature Big Screen": "特征大屏",
     "Advanced Management": "高级管理",
     "Step": "步骤",
@@ -78,7 +78,7 @@
     "Actions": "操作",
     "Limit": "限制",
     "Rows": "行",
-    "Feature Service Version": "特征服务版本",
+    "Feature Service Version": "服务版本",
     "Version": "版本",
     "Search": "搜索",
     "Latest Version": "最新版本",
@@ -127,5 +127,7 @@
     "File Format": "文件格式",
         "Export Path": "导出路径",
     "Export Options" : "导出Options",
-    "path": "file:///data/path or hdfs:///user/path"
+    "path": "file:///data/path or hdfs:///user/path",
+    "Feature Service Description": "服务描述",
+    "Deploy Feature Service": "特征服务上线"
 }

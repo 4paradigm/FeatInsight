@@ -19,7 +19,7 @@
         <a-select mode="multiple" v-model:value="formState.featureList">
             <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
         </a-select>
-        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create New Feature') }}</router-link></a-button>
+        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create') }}</router-link></a-button>
         </a-form-item>
 
       <a-form-item
@@ -49,9 +49,6 @@
 
     </a-form>
   </div>
-
-
-  <TestFeatureService></TestFeatureService>
 
 </div>
 </template>
