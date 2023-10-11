@@ -144,7 +144,6 @@ export default {
           .then(response => {
             this.tables = response.data;
             this.tableCount = this.tables.length;
-
           })
           .catch(error => {
             console.log(error.message);

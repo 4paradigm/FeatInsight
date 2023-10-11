@@ -92,5 +92,7 @@
     "Related Feature Views": "Related Feature Views",
     "Related Feature Services": "Relate Feature Services",
     "Notice CLTV Text": "Notice: it supports standard hive import in web page and CLTV data is imported in background.",
-    "Dag": "Dag"
+    "Dag": "Dag",
+    "Offline Jobs": "Offline Jobs",
+    "Feature Collection": "Feature Collection"
 }

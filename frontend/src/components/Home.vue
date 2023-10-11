@@ -48,6 +48,9 @@
         <a-menu-item key="10">
           <router-link to='/featureservices'>{{ $t('Feature Services') }}</router-link>
         </a-menu-item>
+        <a-menu-item key="11">
+          <router-link to='/offlinejobs'>{{ $t('Offline Jobs') }}</router-link>
+        </a-menu-item>
       </a-sub-menu>
 
       <!--

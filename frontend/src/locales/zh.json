@@ -92,5 +92,7 @@
     "Related Feature Views": "关联特征组",
     "Related Feature Services": "关联特征服务",
     "Notice CLTV Text": "注意：网页版支持标准Hive数据引入，CLTV数据需要通过后台引入。",
-    "Dag": "Dag"
+    "Dag": "Dag",
+    "Offline Jobs": "离线任务",
+    "Feature Collection": "特征集合"
 }

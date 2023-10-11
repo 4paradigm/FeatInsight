@@ -152,11 +152,10 @@ public class FeatureServiceService {
         if (sqlList.size() == 1) {
             return sqlList.get(0);
         } else {
-            System.out.println("Try to merge SQLs: " + sqlList);
+            //System.out.println("Try to merge SQLs: " + sqlList);
             String mergeSql = SqlClusterExecutor.mergeSQL(sqlList, db, joinKeys, tableSchema);
-            // TODO: Use for package with openmldb-0.8
-            //String mergeSql = sqlList.get(0);
-            System.out.println("Try to merge SQLs and get merged SQL: " + mergeSql);
+
+            //System.out.println("Try to merge SQLs and get merged SQL: " + mergeSql);
             return mergeSql;
         }
     }
