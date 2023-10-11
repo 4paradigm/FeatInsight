@@ -25,11 +25,11 @@
       </a-form-item>
 
       <a-form-item
-        :label="$t('Feature View List')"
+        :label="$t('Feature Collection')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
-        <a-select mode="multiple" v-model:value="formState.featureList">
-            <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
+        <a-select mode="multiple" v-model:value="formState.featureCollection">
+            <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
       </a-form-item>
 
@@ -54,12 +54,12 @@ import { message } from 'ant-design-vue';
 export default {
   data() {
     return {
-      featureViews: [],
+      featureOptions: [],
 
       formState: {
         name: '',
         version: '',
-        featureList: [],
+        featureCollection: [],
         description: '',
       },
 
@@ -74,7 +74,24 @@ export default {
     initData() {
       axios.get(`/api/featureviews`)
         .then(response => {
-          this.featureViews = response.data;
+          response.data.forEach(featureView => {
+            // Append feature view name
+            this.featureOptions.push(featureView.name)
+          });
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {});
+
+      axios.get(`/api/features`)
+        .then(response => {
+          response.data.forEach(feature => {
+            console.log(feature);
+            // Append complete feature name
+            const completeFeatureName = feature.featureViewName + ":" + feature.featureName;
+            this.featureOptions.push(completeFeatureName);
+          });
         })
         .catch(error => {
           message.error(error.message);
@@ -82,7 +99,7 @@ export default {
         .finally(() => {});
 
       if (this.$route.query.featureview != null) {
-        this.formState.featureList = [this.$route.query.featureview];
+        this.formState.featureCollection = [this.$route.query.featureview];
       }
 
     },
@@ -91,7 +108,7 @@ export default {
       axios.post(`/api/featureservices`, {
         "name": this.formState.name,
         "version": this.formState.version,
-        "featureList": this.formState.featureList.join(','),
+        "featureList": this.formState.featureCollection.join(','),
         "description": this.formState.description,
       })
       .then(response => {
