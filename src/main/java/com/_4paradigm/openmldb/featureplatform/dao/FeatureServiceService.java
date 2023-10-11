@@ -173,22 +173,66 @@ public class FeatureServiceService {
         // Merge SQL from FeatureViews
         List<String> sqlList = new ArrayList<>();
         String[] featureList = featureService.getFeatureList().split(",");
+
         FeatureViewService featureViewService = new FeatureViewService(openmldbConnection, openmldbSqlExecutor);
         FeatureView latestFeatureView = null;
+
+        boolean isChooseSingleFeature = false;
+        List<String> choosedFeatureNames = new ArrayList<>();
+        List<String> choosedFeautreViewNames = new ArrayList<>();
+
         for (String splitFeatureList : featureList) {
             String featureListItem = splitFeatureList.trim();
             if (!featureListItem.equals("")) {
-                // TODO: Support get item by feature name instead of all features from feature view
-                FeatureView featureView = featureViewService.getFeatureViewByName(featureListItem);
-                if (featureView == null) {
-                    System.out.println("Can not get feature view by name: " + featureListItem);
-                    return null;
+
+                String featureViewName = featureListItem;
+                if (featureListItem.contains(":")) {
+                    // Handle as single feature
+                    isChooseSingleFeature = true;
+
+                    // Update feature view name
+                    featureViewName = featureListItem.split(":")[0];
+
+                    // Add feature to output list
+                    String featureName = featureListItem.split(":")[1];
+                    if (!choosedFeatureNames.contains(featureName)) {
+                        choosedFeatureNames.add(featureName);
+                    }
+
+                } else {
+                    // Handle as feature view
+                    FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
+                    if (featureView == null) {
+                       throw new SQLException("Can not get feature view by name: " + featureViewName);
+                    }
+
+                    String[] featureNameLists = featureView.getFeatureNames().split(",");
+                    for (String featureName: featureNameLists) {
+                        if (!choosedFeatureNames.contains(featureName)) {
+                            choosedFeatureNames.add(featureName);
+                        }
+                    }
+
                 }
-                sqlList.add(featureView.getSql());
-                // TODO: Maks sure all the features use the same db
-                latestFeatureView = featureView;
+
+                if (!choosedFeautreViewNames.contains(featureViewName)) {
+                    choosedFeautreViewNames.add(featureViewName);
+                }
             }
         }
+
+
+        for (String featureViewName: choosedFeautreViewNames) {
+            FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
+            if (featureView == null) {
+                System.out.println("Can not get feature view by name: " + featureViewName);
+                return null;
+            }
+            sqlList.add(featureView.getSql());
+            // TODO: Maks sure all the features use the same db
+            latestFeatureView = featureView;
+        }
+
 
         String db = latestFeatureView.getDb();
         newFeatureService.setDb(db);
@@ -213,6 +257,19 @@ public class FeatureServiceService {
         }
 
         String mergedSql = mergeSqlList(openmldbSqlExecutor, sqlList, db, joinKeys, OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
+        if (mergedSql.endsWith(";")) {
+            mergedSql = mergedSql.substring(0, mergedSql.length()-1);
+        }
+        //System.out.println("Generate merged SQL: " + mergedSql);
+
+        String generatedSql = mergedSql;
+
+        if (isChooseSingleFeature) {
+            generatedSql = String.format("SELECT %s FROM (%s)", String.join(",", choosedFeatureNames), mergedSql);
+            //System.out.println("Generate SQL: " + generatedSql);
+        }
+
+
         String deploymentName = String.format("FEATURE_PLATFORM_%s_%s", featureService.getName(), featureService.getVersion());
 
         // If deployment is provided
@@ -225,18 +282,18 @@ public class FeatureServiceService {
 
             // Deploy with SQL
             // TODO: Skip index check for compatibility of old OpenMLDB cluster
-            String deploymentSql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, mergedSql);
+            String deploymentSql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, generatedSql);
             System.out.println("Try to create deployment with SQL: " + deploymentSql);
             openmldbStatement.execute(deploymentSql);
         }
 
-        newFeatureService.setSql(mergedSql);
+        newFeatureService.setSql(generatedSql);
         newFeatureService.setDeployment(deploymentName);
 
         // TODO: Check if name and version is existed or not
 
         // TODO: It would be better to use JDBC prepared statement from connection
-        String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_services (name, version, feature_list, db, sql, deployment, description) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')", featureService.getName(), featureService.getVersion(), featureService.getFeatureList(), db, mergedSql, deploymentName, featureService.getDescription());
+        String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_services (name, version, feature_list, db, sql, deployment, description) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')", featureService.getName(), featureService.getVersion(), featureService.getFeatureList(), db, generatedSql, deploymentName, featureService.getDescription());
         openmldbStatement.execute(sql);
 
         // Add to latest feature service

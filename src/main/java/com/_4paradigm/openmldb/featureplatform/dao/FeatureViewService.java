@@ -62,7 +62,7 @@ public class FeatureViewService {
         } else {
             while (result.next()) {
                 FeatureView featureView = new FeatureView(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6));
-                System.out.print("Get feature view: " + featureView);
+                //System.out.print("Get feature view: " + featureView);
                 openmldbStatement.close();
                 return featureView;
             }
