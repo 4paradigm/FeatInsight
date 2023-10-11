@@ -15,7 +15,10 @@
       <a-form-item
         :label="$t('Feature Service Name')"
         :rules="[{ required: true, message: 'Please input name!' }]">
-        <a-input v-model:value="formState.name" />
+
+        <a-select v-model:value="formState.name">
+            <option v-for="featureService in items" :value="featureService">{{ featureService }}</option>
+        </a-select>
       </a-form-item>
 
       <a-form-item
@@ -31,6 +34,7 @@
         <a-select mode="multiple" v-model:value="formState.featureCollection">
             <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
+
       </a-form-item>
 
       <a-form-item
@@ -54,7 +58,11 @@ import { message } from 'ant-design-vue';
 export default {
   data() {
     return {
+
       featureOptions: [],
+
+      featureServices: [],
+      featureServiceVersions: [],
 
       formState: {
         name: '',
@@ -72,6 +80,15 @@ export default {
 
   methods: {
     initData() {
+      axios.get(`/api/featureservices/latest`)
+        .then(response => {
+          this.featureServices = response.data;
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {});
+
       axios.get(`/api/featureviews`)
         .then(response => {
           response.data.forEach(featureView => {
@@ -87,7 +104,6 @@ export default {
       axios.get(`/api/features`)
         .then(response => {
           response.data.forEach(feature => {
-            console.log(feature);
             // Append complete feature name
             const completeFeatureName = feature.featureViewName + ":" + feature.featureName;
             this.featureOptions.push(completeFeatureName);
