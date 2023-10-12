@@ -120,7 +120,6 @@ export default {
             .catch(error => {
               message.error(error.message);
             });
-
         })
         .catch(error => {
           message.error(error.message);

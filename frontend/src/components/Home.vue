@@ -25,7 +25,6 @@
         <a-menu-item key="4">
           <router-link to='/featureprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
         </a-menu-item>
-
       </a-sub-menu>
 
       <a-sub-menu key="advanced_management">
