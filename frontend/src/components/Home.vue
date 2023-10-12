@@ -25,7 +25,6 @@
         <a-menu-item key="4">
           <router-link to='/featureprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
         </a-menu-item>
-
       </a-sub-menu>
 
       <a-sub-menu key="advanced_management">
@@ -54,9 +53,6 @@
         </a-menu-item>
         <a-menu-item key="11">
           <router-link to='/offlinejobs'>{{ $t('Offline') }}{{ $t('Tasks')}}</router-link>
-        </a-menu-item>
-        <a-menu-item key="11">
-          <router-link to='/offlinejobs'>{{ $t('Offline Jobs') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
 

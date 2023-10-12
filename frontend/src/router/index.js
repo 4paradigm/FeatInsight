@@ -25,7 +25,6 @@ import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineJobDetail from '../components/OfflineJobDetail.vue'
 import OnlineFeatureService from '../components/OnlineFeatureService.vue'
 import OfflineFeatureDevelopment from '../components/OfflineFeatureDevelopment.vue'
-import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineTrainSetsPage from '../components/OfflineTrainSetsPage.vue'
 
 const router = createRouter({
