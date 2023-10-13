@@ -12,12 +12,10 @@
       :label-col="{ span: 8 }"
       :wrapper-col="{ span: 10 }"
       @submit="handleSubmit">
-
-
       <a-form-item
         :label='$t("Feature Service Name")'
         :rules="[{ required: true, message: 'Please input feature service name!' }]">
-        <a-select id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
+        <a-select show-search @search="updateServiceName" id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
           <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
         </a-select>
       </a-form-item>
@@ -51,8 +49,6 @@
       </a-form-item>
     </a-form>
   </div>
-
-
 </div>
 </template>
   
@@ -69,6 +65,8 @@ export default {
     return {
       featureViews: [],
       databases:[],
+      featureServices: [],
+      featureServiceVersions: [],
 
       formState: {
         name: '',
@@ -83,8 +81,6 @@ export default {
         version: "",
         testData: "",
       },
-
-
     };
   },
 
@@ -115,6 +111,57 @@ export default {
         this.formState.featureList = [this.$route.query.featureview];
       }
 
+      if (this.$route.query.featureservice != null) {
+        // Url provides feature service name
+        this.testFormState.name = this.$route.query.featureservice;
+        if (this.$route.query.version != null) {
+          this.testFormState.version = this.$route.query.version;
+        }
+        this.updateSelectedService();
+      }
+
+      axios.get(`/api/featureservices`)
+        .then(response => {
+          this.featureServices = response.data;
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {}); 
+
+    },
+
+    updateSelectedService() {
+      if (this.testFormState.name != "") {
+
+        axios.get(`/api/featureservices/${this.testFormState.name}/versions`)
+          .then(response => {
+            this.featureServiceVersions = response.data;
+            this.featureServiceVersions.push("");
+          })
+          .catch(error => {
+            message.error(error.message);
+          });
+
+        axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/schema`)
+          .then(response => {
+            this.requestSchema = response.data;
+
+          })
+          .catch(error => {
+            message.error(error.message);
+          });
+
+        axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/demo`)
+          .then(response => {
+            this.requestDemoData = response.data;
+          })
+          .catch(error => {
+            message.error(error.message);
+          });   
+
+          
+      }
     },
 
     handleSubmit() {
@@ -138,6 +185,12 @@ export default {
           }
       });
     },
+
+    updateServiceName(value){
+      if (value){
+       this.testFormState.name=value
+      }
+    }
 
   },
 };
