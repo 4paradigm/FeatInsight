@@ -25,7 +25,8 @@ import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineJobDetail from '../components/OfflineJobDetail.vue'
 import OnlineFeatureService from '../components/OnlineFeatureService.vue'
 import OfflineFeatureDevelopment from '../components/OfflineFeatureDevelopment.vue'
-import OfflineTrainSetsPage from '../components/OfflineTrainSetsPage.vue'
+import TrainingSetsPage from '../components/TrainingSetsPage.vue'
+import TrainingSetDetail from '../components/TrainingSetDetail.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -55,8 +56,8 @@ const router = createRouter({
     { path: '/sql', component: SqlPage},
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},
-    { path: '/offlinejobs', component: OfflineJobsPage},
-    { path: '/offlinetrainsets', component: OfflineTrainSetsPage},
+    { path: '/trainingsets', component: TrainingSetsPage},
+    { path: '/trainingsets/:id', component: TrainingSetDetail, props: true },
     { path: '/404', redirect: "/" },
     { path: '/:pathMatch(.*)*', redirect: "/404" }
   ]
