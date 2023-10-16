@@ -4,7 +4,7 @@
 
   <br />
   <div>
-    <h1>{{ $t('Create') }} {{ $t('Feature Service') }}</h1>
+    <h1>{{ $t('Deploy Feature Service') }}</h1>
     <!-- Create form -->
     <a-form
       :model="formState"
@@ -38,7 +38,7 @@
       </a-form-item>
 
       <a-form-item
-          :label="$t('Description')">
+          :label="$t('Feature Service Description')">
           <a-input v-model:value="formState.description" />
         </a-form-item>
 

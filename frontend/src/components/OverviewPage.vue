@@ -9,8 +9,7 @@
       {{ $t('Feature Platform') }}
     </h1>
 
-    <br/><br/>
-
+    <br/><br/> 
 
     <a-row :gutter="16">
 
@@ -22,18 +21,19 @@
         </router-link>
       </a-col>
 
-      <a-col :span="6">
-        <router-link to='/featureviews'>
-          <a-card :title="$t('Feature Views')" :bordered="false">
-            <h1>{{ featureViewCount }}</h1>
-          </a-card>
-        </router-link>
-      </a-col>
 
       <a-col :span="6">
         <router-link to='/features'>
           <a-card :title="$t('Features')" :bordered="false">
             <h1>{{ featureCount }}</h1>
+          </a-card>
+        </router-link>
+      </a-col>
+
+      <a-col :span="6">
+        <router-link to='/featureviews'>
+          <a-card :title="$t('Training Set')" :bordered="false">
+            <h1>{{ featureViewCount }}</h1>
           </a-card>
         </router-link>
       </a-col>

@@ -130,5 +130,6 @@
     "Export Options" : "导出Options",
     "path": "file:///data/path or hdfs:///user/path",
     "Feature Service Description": "服务描述",
-    "Deploy Feature Service": "特征服务上线"
+   " Deploy Feature Service": "特征服务上线",
+   "Document of options": "Options文档"
 }

@@ -46,6 +46,9 @@ public class SqlService {
 
         sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.latest_feature_services (name string, version string, db string, deployment string, INDEX(KEY=(name, version)))";
         openmldbStatement.execute(sql);
+
+        sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.training_sets (job_id int, feature_list string, format string, path string, options string)";
+        openmldbStatement.execute(sql);
     }
 
     private boolean isDql(String sqlString) {

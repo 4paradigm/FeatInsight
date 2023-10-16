@@ -42,7 +42,7 @@
           <router-link to='/featureviews'>{{ $t('Feature View List') }}</router-link>
         </a-menu-item>
         <a-menu-item key="9">
-          <router-link to='/offlinetrainsets'>{{ $t('Offline Train Sets') }}</router-link>
+          <router-link to='/trainingsets'>{{ $t('Offline Train Sets') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
 
