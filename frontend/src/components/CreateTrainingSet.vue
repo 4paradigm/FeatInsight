@@ -2,15 +2,17 @@
 
 <div>
 
-  <br />
-  <div>
-    
-    <h1>{{ $t('Offline Train Set Generation') }}</h1>
+    <a-typpography>
+      <a-typography-paragraph>
+        <pre>{{ $t("Text of introduce create training set") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+      </a-typography-paragraph>
+    </a-typpography>
     <br/>
 
     <!-- Create form -->
     <a-form
       :model="formState"
+      layout="vertical"
       name="basic"
       @submit="handleSubmit">
 
@@ -18,12 +20,14 @@
         :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
-        <a-space>
-        <a-select mode="multiple" style="width: 680px" v-model:value="formState.featureList">
+
+        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create Feature') }}</router-link></a-button>
+        <br/><br/>
+        <a-select mode="multiple" v-model:value="formState.featureList">
           <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
-        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create') }}</router-link></a-button>
-      </a-space>
+
+ 
       </a-form-item>
 
       <a-form-item
@@ -38,14 +42,14 @@
           :label="$t('Export Path')" 
           :rules="[{ required: true, message: 'Please input export path!' }]">
 
-          <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('path')"></a-input>
+          <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
       </a-form-item>
 
       <a-form-item 
           :label="$t('Export Options')">
 
           <a-tooltip>
-            <template #title><a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('Document of options')}}</a></template>
+            <template #title><a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('Reference document of options')}}</a></template>
             <a-input id="exportOptions" v-model:value="formState.options"></a-input>
           </a-tooltip>
       </a-form-item>
@@ -56,7 +60,7 @@
 
 
     </a-form>
-  </div>
+
 
 </div>
 </template>
@@ -129,12 +133,13 @@ export default {
         "options": this.formState.options,
       })
       .then(response => {
-        message.success(`Success to export training set for feature list ${this.formState.featureList}`);
+        //message.success(`Success to export training set for feature list ${this.formState.featureList}`);
 
         console.log(response.data)
+        const jobId = response.data.jobId;
 
-        // Redirect to FeatureView detail page
-        //this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}`);
+        // Redirect to result page
+        this.$router.push(`/trainingsets/${jobId}/result`);
       })
       .catch(error => {
           if (error.response.data) {

@@ -31,9 +31,9 @@
       </a-col>
 
       <a-col :span="6">
-        <router-link to='/featureviews'>
+        <router-link to='/trainingsets'>
           <a-card :title="$t('Training Set')" :bordered="false">
-            <h1>{{ featureViewCount }}</h1>
+            <h1>{{ trainingSetCount }}</h1>
           </a-card>
         </router-link>
       </a-col>
@@ -66,12 +66,12 @@ export default {
       return {
         tables: [],
         features: [],
-        featureviews: [],
+        trainingSets: [],
         featureservices: [],
         
         tableCount: 0,
         featureCount: 0,
-        featureViewCount: 0,
+        trainingSetCount: 0,
         featureServiceCount: 0,
 
         chartContainer: null,
@@ -158,10 +158,10 @@ export default {
             console.log(error.message);
           });
 
-          await axios.get(`/api/featureviews`)
+          await axios.get(`/api/trainingsets`)
           .then(response => {
-            this.featureviews = response.data;
-            this.featureViewCount = this.featureviews.length;
+            this.trainingSets = response.data;
+            this.trainingSetCount = this.trainingSets.length;
           })
           .catch(error => {
             console.log(error.message);
@@ -179,7 +179,7 @@ export default {
 
         this.chartData = [
           { name: this.$t('Data Tables'), value: this.tableCount },
-          { name: this.$t('Feature Views'), value: this.featureViewCount },
+          { name: this.$t('Training Sets'), value: this.trainingSetCount },
           { name: this.$t('Features'), value: this.featureCount },
           { name: this.$t('Feature Services'), value: this.featureServiceCount },
         ];

@@ -4,7 +4,7 @@
   <br/>
   <h1>{{ $t('Offline Job') }}: {{ data.id }} </h1>
   <a-descriptions bordered>
-    <a-descriptions-item :span="24" :label="$t('ID')"> {{ data.id }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.id }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Job Type')">{{ data.jobType }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('State')"> {{ data.state }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Start Time')"> {{ data.startTime }}</a-descriptions-item>
@@ -26,8 +26,7 @@ import { ref, onMounted } from 'vue';
 export default {
   props: {
     id: {
-      // TODO: Change to int type
-      type: String,
+      type: Number,
       required: true,
     },
   },
