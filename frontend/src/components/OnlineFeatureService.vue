@@ -12,28 +12,22 @@
       :label-col="{ span: 8 }"
       :wrapper-col="{ span: 10 }"
       @submit="handleSubmit">
-
-
       <a-form-item
         :label='$t("Feature Service Name")'
         :rules="[{ required: true, message: 'Please input feature service name!' }]">
-        <a-select id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
+        <a-select show-search @search="updateServiceName" id="itemSelect" v-model:value="formState.name" @change="updateSelectedService">
           <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
         </a-select>
       </a-form-item>
 
       <a-form-item
-        :label='$t("Feature Service Version")'
-        :rules="[{ required: true, message: 'Please input feature service version!' }]">
-        <a-select id="itemSelect" v-model:value="testFormState.version" @change="updateSelectedService">
-          <option v-for="version in featureServiceVersions" :value="version">{{ version }}</option>
-        </a-select>
+        :label="$t('Feature Service Version')">
+        <a-input v-model:value="formState.version" @blur="checkServiceVersion"/>
       </a-form-item>
 
       <a-form-item
         :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
-
         <a-select mode="multiple" v-model:value="formState.featureList">
             <option v-for="featureview in featureViews" :value="featureview.name">{{ featureview.name }}</option>
         </a-select>
@@ -51,8 +45,6 @@
       </a-form-item>
     </a-form>
   </div>
-
-
 </div>
 </template>
   
@@ -69,22 +61,15 @@ export default {
     return {
       featureViews: [],
       databases:[],
+      featureServices: [],
+      featureServiceVersions: [],
 
       formState: {
         name: '',
         version: '',
         featureList: [],
         description: '',
-        db: '',
       },
-
-      testFormState: {
-        name: "",
-        version: "",
-        testData: "",
-      },
-
-
     };
   },
 
@@ -115,6 +100,37 @@ export default {
         this.formState.featureList = [this.$route.query.featureview];
       }
 
+      if (this.$route.query.featureservice != null) {
+        // Url provides feature service name
+        this.formState.name = this.$route.query.featureservice;
+        if (this.$route.query.version != null) {
+          this.formState.version = this.$route.query.version;
+        }
+        this.updateSelectedService();
+      }
+
+      axios.get(`/api/featureservices`)
+        .then(response => {
+          this.featureServices = response.data;
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {}); 
+
+    },
+
+    updateSelectedService() {
+      if (this.formState.name != "") {
+        axios.get(`/api/featureservices/${this.formState.name}/versions`)
+          .then(response => {
+            this.featureServiceVersions = response.data;
+            this.featureServiceVersions.push("");
+          })
+          .catch(error => {
+            message.error(error.message);
+          });  
+      }
     },
 
     handleSubmit() {
@@ -138,6 +154,20 @@ export default {
           }
       });
     },
+
+    updateServiceName(value){
+      if (value){
+       this.formState.name=value
+      }
+    },
+
+    checkServiceVersion(){
+      if (this.test.includes(this.formState.version)){
+         message.error("Service version already exists, please rename.");
+         this.formState.version = ''
+      }
+      
+    }
 
   },
 };
