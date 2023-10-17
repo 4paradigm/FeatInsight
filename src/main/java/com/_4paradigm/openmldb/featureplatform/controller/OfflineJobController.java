@@ -39,6 +39,11 @@ public class OfflineJobController {
         return offlineJobService.getOfflineJobInfo(id);
     }
 
+    @GetMapping("/{id}/log")
+    public String getOfflineJobLog(@PathVariable int id) throws SQLException {
+        return offlineJobService.getOfflineJobLog(id);
+    }
+
 
 
 }

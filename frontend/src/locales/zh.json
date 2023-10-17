@@ -1,6 +1,7 @@
 {
     "Overview": "概况",
     "Data Tables": "数据表",
+    "Online Data Tables": "在线数据表",
     "Data Table": "数据表",
     "Tables": "表",
     "Table": "表",
@@ -36,7 +37,9 @@
     "Dependent": "依赖",
     "Request": "请求",
     "Schema": "Schema",
+    "Request Schema": "请求Schema",
     "Demo Data": "演示数据",
+    "Request Demo Data": "请求演示数据",
     "From": "从",
     "Deployment": "Deployment",
     "Deploy": "部署",
@@ -154,5 +157,9 @@
     "Text of creating training set": "离线导出样本任务需要1到10分钟，请等待。",
     "More details": "查看详情",
     "Create more": "继续创建",
-    "Success to deploy feature service": "成功部署特征服务"
+    "Success to deploy feature service": "成功部署特征服务",
+    "Display log": "显示日志",
+    "Hide log": "隐藏日志",
+    "Test Feature Service": "测试特征视图",
+    "Text of introduce test feature service": "用户可以通过输入测试数据，测试特征服务的功能和性能，测试数据格式请参考"
 }

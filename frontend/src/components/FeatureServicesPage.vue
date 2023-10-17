@@ -7,12 +7,10 @@
     &nbsp;&nbsp;<a-button type="primary" @click="showFormModal">{{ $t('Create Feature Service') }}</a-button>
   </h1>
 
-  <!-- Form modal -->
+  <!-- Create form modal -->
   <div>
     <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Deploy Feature Service')" @ok="handleOk">
-
-      <DeployFeatureService></DeployFeatureService>
-
+      <CreateFeatureService></CreateFeatureService>
     </a-modal>
   </div>
 
@@ -25,7 +23,6 @@
     <a-checkbox v-model:checked="isDisplayAllVersion" @change="initData">{{ $t('Display All Versions')}}</a-checkbox>
   </div>
 
-
   <a-table :columns="columns" :data-source="searchFilteredFeatureServices" :loading="loading">
     <template #name="{ text, record }">
       <router-link :to="`/featureservices/${record.name}`">{{ text }}</router-link>
@@ -37,9 +34,15 @@
       <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
     </template>
     <template v-slot:action="scope">
-      <a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${scope.record.name}`">{{ $t('Test Service') }}</router-link></a-button>
+      <a-button type="default" @click="showTestFormModal">{{ $t('Test Service') }}</a-button>
     </template>
   </a-table>
+
+  <div>
+    <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" @ok="handleOk">
+      <TestFeatureService></TestFeatureService>
+    </a-modal>
+  </div>
 
   <!-- Support create from deployment in other page
   <br />
@@ -82,12 +85,13 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import DeployFeatureService from './DeployFeatureService.vue';
-
+import CreateFeatureService from './CreateFeatureService.vue';
+import TestFeatureService from './TestFeatureService.vue';
 
 export default {
   components: { 
-    DeployFeatureService
+    CreateFeatureService,
+    TestFeatureService
   },
 
   data() {
@@ -100,6 +104,8 @@ export default {
       featureServices: [],
 
       isOpenFormModal: false,
+
+      isOpenTestFormModal: false,
 
       loading: false,
       
@@ -121,7 +127,7 @@ export default {
         key: 'featureList',
       },
       {
-        title: 'Description',
+        title: this.$t('Description'),
         dataIndex: 'description',
         key: 'description',
       },
@@ -205,7 +211,12 @@ export default {
 
     handleOk() {
       this.isOpenFormModal = false;
-    }
+      this.isOpenTestFormModal = false;
+    },
+
+    showTestFormModal() {
+      this.isOpenTestFormModal = true;
+    },
 
   },
 };

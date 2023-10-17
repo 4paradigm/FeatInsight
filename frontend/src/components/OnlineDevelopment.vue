@@ -2,19 +2,22 @@
 
 <div>
 
+  <br/>
+  <OnlineTablesPage></OnlineTablesPage>
+
   <FeatureServicesPage></FeatureServicesPage>
  
 </div>
 </template>
   
 <script>
-import axios from 'axios'
-import { message } from 'ant-design-vue';
 import FeatureServicesPage from './FeatureServicesPage.vue';
+import OnlineTablesPage from './OnlineTablesPage.vue';
 
 export default {
   components: {
-    FeatureServicesPage
+    FeatureServicesPage,
+    OnlineTablesPage
   },
 
   data() {
@@ -23,12 +26,9 @@ export default {
   },
 
   mounted() {
-    this.initData();
   },
 
   methods: {
-    initData() {
-    },
   },
 };
 </script>

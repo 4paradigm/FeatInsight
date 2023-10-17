@@ -39,7 +39,7 @@
           <router-link to='/features'>{{ $t('Feature List') }}</router-link>
         </a-menu-item>
         <a-menu-item key="8">
-          <router-link to='/featureviews'>{{ $t('Feature View List') }}</router-link>
+          <router-link to='/featureviews'>{{ $t('Feature Views') }}</router-link>
         </a-menu-item>
         <a-menu-item key="9">
           <router-link to='/trainingsets'>{{ $t('Offline Train Sets') }}</router-link>

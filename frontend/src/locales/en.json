@@ -1,6 +1,7 @@
 {
     "Overview": "Overview",
     "Data Tables": "Data Tables",
+    "Online Data Tables": "Online Data Tables",
     "Data Table": "Data Table",
     "Tables": "Tables",
     "Table": "Table",
@@ -36,7 +37,9 @@
     "Dependent": "Dependent",
     "Request": "Request",
     "Schema": "Schema",
+    "Request Schema": "Request Schema",
     "Demo Data": "Demo Data",
+    "Request Demo Data": "Request Demo Data",
     "From": "From",
     "Deployment": "Deployment",
     "Deploy": "Deploy",
@@ -153,5 +156,9 @@
     "Text of creating training set": "The offline sample export task may take 1 to 10 minutes, please wait.",
     "More details": "More details",
     "Create more": "Create more",
-    "Success to deploy feature service": "Success to deploy feature service"
+    "Success to deploy feature service": "Success to deploy feature service",
+    "Display log": "Display log",
+    "Hide log": "Hide log",
+    "Test Feature Service": "Test Feature Service",
+    "Text of introduce test feature service": "Users can test the functionality and performance of the feature service by inputting test data. Please refer to the test data format in"
 }

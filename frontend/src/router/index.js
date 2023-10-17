@@ -18,7 +18,7 @@ import FeatureViewDetail from '../components/FeatureViewDetail.vue'
 import FeatureServiceDetail from '../components/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '../components/FeatureServiceVersionDetail.vue'
 import CreateFeature from '../components/CreateFeature.vue'
-import DeployFeatureService from '../components/DeployFeatureService.vue'
+import CreateFeatureService from '../components/CreateFeatureService.vue'
 import TestFeatureService from '../components/TestFeatureService.vue'
 import DagPage from '../components/DagPage.vue'
 import OfflineJobsPage from '../components/OfflineJobsPage.vue'
@@ -28,7 +28,7 @@ import OfflineDevelopment from '../components/OfflineDevelopment.vue'
 import TrainingSetsPage from '../components/TrainingSetsPage.vue'
 import TrainingSetDetail from '../components/TrainingSetDetail.vue'
 import CreateTrainingSetResult from '../components/CreateTrainingSetResult.vue'
-import DeployFeatureServiceResult from '../components/DeployFeatureServiceResult.vue'
+import CreateFeatureServiceResult from '../components/CreateFeatureServiceResult.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -47,11 +47,11 @@ const router = createRouter({
     { path: '/featureviews', component: FeatureViewsPage},
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
-    { path: '/featureservices/deploy', component: DeployFeatureService},
+    { path: '/featureservices/create', component: CreateFeatureService},
     { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
-    { path: '/featureservices/:name/:version/result', component: DeployFeatureServiceResult, props: true },
+    { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/featureprocess/online', component: OnlineDevelopment, props: true },

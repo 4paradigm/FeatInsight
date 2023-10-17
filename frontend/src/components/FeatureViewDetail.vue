@@ -4,7 +4,7 @@
     <br/>
     <h1>
       {{ $t('Feature View') }}: {{ data.name }} 
-      &nbsp;&nbsp;<a-button type="primary"><router-link :to='`/featureservices/deploy?featureview=${data.name}`'>{{ $t('Create Service') }}</router-link></a-button>
+      &nbsp;&nbsp;<a-button type="primary"><router-link :to='`/featureservices/create?featureview=${data.name}`'>{{ $t('Create Service') }}</router-link></a-button>
     </h1>
     <a-descriptions bordered>
       <a-descriptions-item :span="24" :label='$t("Name")'> {{ data.name }} </a-descriptions-item>

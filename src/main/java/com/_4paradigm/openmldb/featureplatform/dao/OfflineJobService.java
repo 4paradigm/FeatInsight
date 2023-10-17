@@ -59,4 +59,18 @@ public class OfflineJobService {
         return null;
     }
 
+    public String getOfflineJobLog(int id) throws SQLException {
+        String sql = "SHOW JOBLOG " + id;
+
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute(sql);
+        ResultSet result = openmldbStatement.getResultSet();
+
+        if (result.next()) {
+          return result.getString(1);
+        }
+
+        throw new SQLException("Fail to to get job log for job " + id);
+    }
+
 }

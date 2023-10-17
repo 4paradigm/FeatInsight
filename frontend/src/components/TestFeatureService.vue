@@ -1,19 +1,22 @@
 <template>
 
 <div>
-  
-  <br />
+
   <div>
-    <h1>{{ $t('Test Service') }}</h1>
+    <a-typpography>
+      <a-typography-paragraph>
+        <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
+      </a-typography-paragraph>
+    </a-typpography>
+    <br/>
+    
     <!-- Test form -->
     <a-form
       :model="testFormState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
+      layout="vertical"
       @submit="handleTestFormSubmit">
       <a-form-item
-        :label='$t("Feature Service")'
+        :label='$t("Feature Service Name")'
         :rules="[{ required: true, message: 'Please input feature service name!' }]">
         <a-select id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
           <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
@@ -28,15 +31,23 @@
         </a-select>
       </a-form-item>
 
-      <div v-if="testFormState.name != ''">
-        <br/>
-        <h1>{{ $t('Request') }} {{ $t('Schema') }}</h1>
-        <p>{{ requestSchema }}</p>
+      <a-form-item
+        :label='$t("Request Schema")'>
+        <a-typography>
+          <a-typography-paragraph>
+            <pre>{{ requestSchema }}</pre>
+          </a-typography-paragraph>
+        </a-typography>
+      </a-form-item>
 
-        <h1>{{ $t('Request') }} {{ $t('Demo Data') }}</h1>
-        <p>{{ requestDemoData }}</p>
-        <br/>
-      </div>
+      <a-form-item
+        :label='$t("Request Demo Data")'>
+        <a-typography>
+          <a-typography-paragraph>
+            <pre>{{ requestDemoData }}</pre>
+          </a-typography-paragraph>
+        </a-typography>
+      </a-form-item>
 
       <a-form-item
         :label='$t("Test Data")'
@@ -44,7 +55,7 @@
         <a-textarea v-model:value="testFormState.testData" rows="5"></a-textarea>
       </a-form-item>
       
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+      <a-form-item>
         <a-button type="primary" html-type="submit">{{ $t('Test') }}</a-button>
       </a-form-item>
     </a-form>
