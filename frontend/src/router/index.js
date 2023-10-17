@@ -23,10 +23,12 @@ import TestFeatureService from '../components/TestFeatureService.vue'
 import DagPage from '../components/DagPage.vue'
 import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineJobDetail from '../components/OfflineJobDetail.vue'
-import OnlineFeatureService from '../components/OnlineFeatureService.vue'
+import OnlineDevelopment from '../components/OnlineDevelopment.vue'
+import OfflineDevelopment from '../components/OfflineDevelopment.vue'
 import TrainingSetsPage from '../components/TrainingSetsPage.vue'
 import TrainingSetDetail from '../components/TrainingSetDetail.vue'
 import CreateTrainingSetResult from '../components/CreateTrainingSetResult.vue'
+import DeployFeatureServiceResult from '../components/DeployFeatureServiceResult.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -49,10 +51,11 @@ const router = createRouter({
     { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
+    { path: '/featureservices/:name/:version/result', component: DeployFeatureServiceResult, props: true },
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
-    { path: '/featureprocess/online', component: OnlineFeatureService, props: true },
-    { path: '/featureprocess/offline', component: TrainingSetsPage, props: true },
+    { path: '/featureprocess/online', component: OnlineDevelopment, props: true },
+    { path: '/featureprocess/offline', component: OfflineDevelopment, props: true },
     { path: '/sql', component: SqlPage},
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},

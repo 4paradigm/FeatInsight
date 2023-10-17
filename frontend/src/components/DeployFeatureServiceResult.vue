@@ -6,8 +6,8 @@
   <!-- :sub-title="$('Text of creating training set')" -->
   <a-result
     status="success"
-    :title="$t('Success to create training set')"
-    sub-title="离线导出样本任务需要1到10分钟，请等待。"
+    :title="$t('Success to deploy feature service')"
+    sub-title="部署特征服务成功，可通过浏览器或API访问在线特征。"
   >
     <template #extra>
       <a-button type="primary" @click="redirectToDetail">{{ $t('More details') }}</a-button>
@@ -22,11 +22,15 @@
 
 export default {
   props: {
-        id: {
-            type: Number,
-            required: true,
-        },
+    name: {
+      type: String,
+      required: true
     },
+    version: {
+      type: String,
+      required: true
+    }
+  },
 
   data() {
     return {
@@ -38,11 +42,11 @@ export default {
 
   methods: {
     redirectToDetail() {
-      this.$router.push(`/trainingsets/${this.id}`);
+      this.$router.push(`/featureservices/${this.name}/${this.version}`);
     },
 
     redirectToCreateMore() {
-      this.$router.push(`/trainingsets`);
+      this.$router.push(`/featureservices`);
     }
   },
 };

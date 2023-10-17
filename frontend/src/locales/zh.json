@@ -130,7 +130,7 @@
     "Export Options" : "导出Options",
     "Path Hint": "file:///data/path or hdfs:///data/path",
     "Feature Service Description": "服务描述",
-    "Deploy Feature Service": "特征服务上线",
+    "Deploy Feature Service": "部署特征服务",
     "Reference document of options": "参考Options文档",
     "Training Set": "训练样本",
     "Create Training Set": "创建训练样本",
@@ -147,5 +147,12 @@
     "Parameter": "参数",
     "Cluster": "集群",
     "Application ID": "应用ID",
-    "Error": "错误信息"
+    "Error": "错误信息",
+    "Create Feature Service": "创建特征服务",
+    "Text of introduce deploy feature service": "用户通过选择特征来部署特征服务，相同服务名称可支持多个服务版本，更多部署参数可参考",
+    "Success to create training set": "成功创建训练样本",
+    "Text of creating training set": "离线导出样本任务需要1到10分钟，请等待。",
+    "More details": "查看详情",
+    "Create more": "继续创建",
+    "Success to deploy feature service": "成功部署特征服务"
 }

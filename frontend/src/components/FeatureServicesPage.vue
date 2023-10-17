@@ -4,8 +4,17 @@
   <br/>
   <h1>
     {{ $t('Feature Services') }}
-    &nbsp;&nbsp;<a-button type="primary"><router-link to='/featureservices/deploy'>{{ $t('Create Service') }}</router-link></a-button>
+    &nbsp;&nbsp;<a-button type="primary" @click="showFormModal">{{ $t('Create Feature Service') }}</a-button>
   </h1>
+
+  <!-- Form modal -->
+  <div>
+    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Deploy Feature Service')" @ok="handleOk">
+
+      <DeployFeatureService></DeployFeatureService>
+
+    </a-modal>
+  </div>
 
   <br/>
   <!-- Data table -->
@@ -73,8 +82,14 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import DeployFeatureService from './DeployFeatureService.vue';
+
 
 export default {
+  components: { 
+    DeployFeatureService
+  },
+
   data() {
     return {
       isDisplayAllVersion: false,
@@ -83,6 +98,8 @@ export default {
       searchFilteredFeatureServices: [],
 
       featureServices: [],
+
+      isOpenFormModal: false,
 
       loading: false,
       
@@ -180,6 +197,14 @@ export default {
       } else {
         this.searchFilteredFeatureServices = this.featureServices.filter((item) => this.matchSearch(item));
       }
+    },
+
+    showFormModal() {
+      this.isOpenFormModal = true;
+    },
+
+    handleOk() {
+      this.isOpenFormModal = false;
     }
 
   },

@@ -146,5 +146,12 @@
     "Parameter": "Parameter",
     "Cluster": "Cluster",
     "Application ID": "Application ID",
-    "Error": "Error"
+    "Error": "Error",
+    "Create Feature Service": "Create Feature Service",
+    "Text of introduce deploy feature service": "Users can deploy feature services by selecting features. The same service name can support multiple service versions. For more deployment parameters, please refer to",
+    "Success to create training set": "Success to create training set",
+    "Text of creating training set": "The offline sample export task may take 1 to 10 minutes, please wait.",
+    "More details": "More details",
+    "Create more": "Create more",
+    "Success to deploy feature service": "Success to deploy feature service"
 }

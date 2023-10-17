@@ -2,28 +2,32 @@
 
 <div>
 
-  <br />
   <div>
-    <h1>{{ $t('Deploy Feature Service') }}</h1>
+    <a-typpography>
+      <a-typography-paragraph>
+        <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+      </a-typography-paragraph>
+    </a-typpography>
+    <br/>
+
     <!-- Create form -->
     <a-form
       :model="formState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
+      layout="vertical"
       @submit="handleSubmit">
       <a-form-item
         :label="$t('Feature Service Name')"
         :rules="[{ required: true, message: 'Please input name!' }]">
 
-        <a-select v-model:value="formState.name">
-            <option v-for="featureService in items" :value="featureService">{{ featureService }}</option>
+        <a-select show-search @search="updateServiceName" id="itemSelect" v-model:value="formState.name" @change="updateSelectedService">
+            <option v-for="featureService in featureServices" :value="featureService.name">{{ featureService.name }}</option>
         </a-select>
       </a-form-item>
 
       <a-form-item
         :label="$t('Feature Service Version')"
-        :rules="[{ required: true, message: 'Please input version!' }]">
+        :rules="[{ required: true, message: 'Please input version!' }]"
+        @blur="checkServiceVersion">
         <a-input v-model:value="formState.version" />
       </a-form-item>
 
@@ -42,7 +46,7 @@
           <a-input v-model:value="formState.description" />
         </a-form-item>
 
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+      <a-form-item>
         <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
       </a-form-item>
     </a-form>
@@ -118,6 +122,16 @@ export default {
         this.formState.featureCollection = [this.$route.query.featureview];
       }
 
+
+      if (this.$route.query.featureservice != null) {
+        // Url provides feature service name
+        this.formState.name = this.$route.query.featureservice;
+        if (this.$route.query.version != null) {
+          this.formState.version = this.$route.query.version;
+        }
+        this.updateSelectedService();
+      }
+
     },
 
     handleSubmit() {
@@ -131,7 +145,7 @@ export default {
         message.success(`Success to add feature service ${this.formState.name} and version ${this.formState.version}`);
 
         // Redirect to FeatureView detail page
-        this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}`);
+        this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}/result`);
       })
       .catch(error => {
           if (error.response.data) {
@@ -142,6 +156,32 @@ export default {
       });
     },
 
+    updateSelectedService() {
+      if (this.formState.name != "") {
+        axios.get(`/api/featureservices/${this.formState.name}/versions`)
+          .then(response => {
+            this.featureServiceVersions = response.data;
+            this.featureServiceVersions.push("");
+          })
+          .catch(error => {
+            message.error(error.message);
+          });  
+      }
+    },
+
+    updateServiceName(value){
+      if (value){
+       this.formState.name=value
+      }
+    },
+
+    checkServiceVersion(){
+      if (this.test.includes(this.formState.version)){
+         message.error("Service version already exists, please rename.");
+         this.formState.version = ''
+      }
+      
+    }
   },
 };
 </script>
