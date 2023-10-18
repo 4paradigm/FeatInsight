@@ -299,7 +299,8 @@ export default {
     handleSubmitCreateDatabase() {
       const sql = "CREATE DATABASE IF NOT EXISTS " + this.createDatabaseFormState.database;
       axios.post(`/api/sql/execute`, {
-        "sql": sql
+        "sql": sql,
+        isOnline: true
       })
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
@@ -322,6 +323,7 @@ export default {
     handleSubmit() {
       axios.post(`/api/sql/execute`, {
         "sql": this.formState.sql,
+        isOnline: true
       })
       .then(response => {
         message.success(`Success to execute SQL: ${this.formState.sql}`);
@@ -339,7 +341,8 @@ export default {
     handleImportHiveTable() {
       const sql = "CREATE TABLE " + this.importHiveTableFormState.openmldbTable + " LIKE HIVE 'hive://" + this.importHiveTableFormState.hivePath + "'"
       axios.post(`/api/sql/execute`, {
-        "sql": sql
+        "sql": sql,
+        isOnline: true
       })
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
@@ -367,7 +370,8 @@ export default {
       }
       
       axios.post(`/api/sql/execute`, {
-        "sql": sql
+        "sql": sql,
+        isOnline: true
       })
       .then(response => {
         message.success(`Success to submit SQL: ${sql}`);

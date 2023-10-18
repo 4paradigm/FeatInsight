@@ -169,6 +169,7 @@ export default {
       axios
         .post(`/api/sql/execute`, {
           sql: sql,
+          isOnline: true
         })
         .then((response) => {
           message.success(`Success to execute SQL: ${sql}`);

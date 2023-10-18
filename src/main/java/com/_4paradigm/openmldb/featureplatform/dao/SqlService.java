@@ -56,13 +56,31 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show");
     }
 
-    public SQLResultSet executeSql(String sql) throws SQLException {
+    public SQLResultSet executeSql3(String sql, boolean isOnline) throws SQLException {
         openmldbStatement.execute(sql);
         if (isDql(sql)) {
             return (SQLResultSet) openmldbStatement.getResultSet();
         } else {
             return null;
         }
+    }
+
+    public SQLResultSet executeSql(String sql, boolean isOnline) throws SQLException {
+
+        if (isOnline) {
+            openmldbStatement.execute("SET @@execute_mode='online'");
+        } else {
+            openmldbStatement.execute("SET @@execute_mode='offline'");
+        }
+
+        openmldbStatement.execute(sql);
+
+        if (isDql(sql)) {
+            return (SQLResultSet) openmldbStatement.getResultSet();
+        } else {
+            return null;
+        }
+
     }
 
     public List<String> validateSql(String sql) throws SQLException {

@@ -45,6 +45,12 @@ public class FeatureServiceService {
         this.openmldbSqlExecutor = openmldbSqlExecutor;
     }
 
+    public void initOnlineMode() throws SQLException {
+        // TODO(tobe): Remove this and create connection for each request
+        Statement openmldbStatement = openmldbConnection.createStatement();
+        openmldbStatement.execute("SET @@execute_mode='online'");
+    }
+
 
     public List<FeatureService> getFeatureServices() throws SQLException {
         String sql = "SELECT name, version, feature_list, db, sql, deployment, description FROM SYSTEM_FEATURE_PLATFORM.feature_services";

@@ -5,7 +5,7 @@
 
 <a-layout class="layout">
   <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }">
-    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_management']">
+    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_management', 'task_center']">
 
       <a-menu-item key="1">
         <router-link to='/'>{{ $t('Feature Big Screen') }}</router-link>
@@ -15,15 +15,15 @@
         <template #title>{{ $t('Development Process') }}</template>
 
         <a-menu-item key="2">
-          <router-link to='/tables/import'>{{ $t('Data Import')}}</router-link>
+          <router-link to='/developprocess/import/databases'>{{ $t('Data Import')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="3">
-          <router-link to='/featureprocess/offline'>{{ $t('Offline')}}{{$t('Development')}}</router-link>
+          <router-link to='/developprocess/offline'>{{ $t('Offline')}}{{$t('Development')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="4">
-          <router-link to='/featureprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
+          <router-link to='/developprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
 

@@ -2,7 +2,6 @@
 
 <div>
   <!-- Tables table -->
-  <br/>
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
@@ -13,9 +12,6 @@
     <template #table="{ text, record }">
       <router-link :to="`/tables/${record.db}/${record.table}`">{{ text }}</router-link>
     </template>
-    <template #action="{ text, record }">
-      <a-button type="default" @click="previewTableData(record.db, record.table)">{{ $t('Preview Data') }}</a-button>
-    </template>
   </a-table>
 
   <div>
@@ -24,6 +20,8 @@
       <p v-html="previewTableContent"></p>
     </a-modal>
   </div>
+
+
 </div>
 </template>
   
@@ -31,7 +29,13 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 
+import ExecuteSql from '@/components/ExecuteSql.vue'
+
 export default {
+  components: { 
+    ExecuteSql
+  },
+
   data() {
     return {
       searchText: "",
@@ -41,7 +45,7 @@ export default {
 
       isOpenPreviewTableModal: false,
       previewTableContent: "",
-      
+
       columns: [{
         title: this.$t('Database'),
         dataIndex: 'db',
@@ -58,10 +62,6 @@ export default {
         title: this.$t('Schema'),
         dataIndex: 'schema',
         key: 'schema',
-      }, {
-        title: this.$t('Actions'),
-        key: 'actions',
-        slots: { customRender: 'action' },
       }]
     };
   },

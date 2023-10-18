@@ -29,6 +29,12 @@ import TrainingSetsPage from '../components/TrainingSetsPage.vue'
 import TrainingSetDetail from '../components/TrainingSetDetail.vue'
 import CreateTrainingSetResult from '../components/CreateTrainingSetResult.vue'
 import CreateFeatureServiceResult from '../components/CreateFeatureServiceResult.vue'
+import ImportDataMenu from '../components/importdata/ImportDataMenu.vue'
+import ImportDataDatabases from '../components/importdata/ImportDataDatabases.vue'
+import ImportDataTables from '../components/importdata/ImportDataTables.vue'
+import ImportDataOnline from '../components/importdata/ImportDataOnline.vue'
+import ImportDataOffline from '../components/importdata/ImportDataOffline.vue'
+
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -54,8 +60,16 @@ const router = createRouter({
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
-    { path: '/featureprocess/online', component: OnlineDevelopment, props: true },
-    { path: '/featureprocess/offline', component: OfflineDevelopment, props: true },
+    { path: '/developprocess/import', component: ImportDataMenu, props: true,
+      children: [
+        { path: 'databases', component: ImportDataDatabases, props: true },
+        { path: 'tables', component: ImportDataTables, props: true },
+        { path: 'online', component: ImportDataOnline, props: true },
+        { path: 'offline', component: ImportDataOffline, props: true }
+      ]
+    },
+    { path: '/developprocess/online', component: OnlineDevelopment, props: true },
+    { path: '/developprocess/offline', component: OfflineDevelopment, props: true },
     { path: '/sql', component: SqlPage},
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},
@@ -63,7 +77,7 @@ const router = createRouter({
     { path: '/trainingsets/:id', component: TrainingSetDetail, props: true },
     { path: '/trainingsets/:id/result', component: CreateTrainingSetResult, props: true },
     { path: '/404', redirect: "/" },
-    { path: '/:pathMatch(.*)*', redirect: "/404" }
+    //{ path: '/:pathMatch(.*)*', redirect: "/404" }
   ]
 })
 

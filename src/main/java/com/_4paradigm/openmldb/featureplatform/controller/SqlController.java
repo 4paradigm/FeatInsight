@@ -27,7 +27,7 @@ public class SqlController {
     @PostMapping("/execute")
     public ResponseEntity<String> execute(@RequestBody SqlRequest sqlRequest) {
         try {
-            SQLResultSet resultSet = sqlService.executeSql(sqlRequest.getSql());
+            SQLResultSet resultSet = sqlService.executeSql(sqlRequest.getSql(), sqlRequest.isOnline());
             String responseMessage = "Success to execute sql: " + sqlRequest.getSql();
             if (resultSet != null) {
                 responseMessage = ResultSetUtil.resultSetToString(resultSet);
