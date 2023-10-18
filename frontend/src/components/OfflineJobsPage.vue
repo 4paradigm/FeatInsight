@@ -11,7 +11,6 @@
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
-
   <a-table :columns="columns" :data-source="searchFilteredOfflineJobInfos" :loading="loading">
     <template #id="{ text, record }">
       <router-link :to="`/offlinejobs/${record.id}`">{{ text }}</router-link>

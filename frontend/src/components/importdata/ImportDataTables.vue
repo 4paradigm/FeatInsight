@@ -22,18 +22,18 @@
     </a-modal>
   </div>
 
-  <OnlineTablesPage></OnlineTablesPage>
+  <OnlineTables></OnlineTables>
 
 </div>
 </template>
   
 <script>
-import OnlineTablesPage from '../OnlineTablesPage.vue';
+import OnlineTables from '../tablecontent/OnlineTables.vue';
 import CreateTableFromSqlForm from '@/components/form/CreateTableFromSqlForm.vue'
 
 export default {
   components: {
-    OnlineTablesPage,
+    OnlineTables,
     CreateTableFromSqlForm
   },
 

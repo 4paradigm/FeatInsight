@@ -12,18 +12,18 @@
     </div>
   
     <br/>
-    <OfflineTablesPage></OfflineTablesPage>
+    <OfflineTables></OfflineTables>
   
   </div>
   </template>
     
 <script>
-  import OfflineTablesPage from '../OfflineTablesPage.vue';
+  import OfflineTables from '../tablecontent/OfflineTables.vue';
   import LoadDataForm from '@/components/form/LoadDataForm.vue';
 
   export default {
     components: {
-      OfflineTablesPage,
+      OfflineTables,
       LoadDataForm
     },
   

@@ -29,11 +29,8 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 
-import ExecuteSql from '@/components/ExecuteSql.vue'
-
 export default {
   components: { 
-    ExecuteSql
   },
 
   data() {

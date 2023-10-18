@@ -10,11 +10,11 @@
 
   <div>
     <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Online SQL')" @ok="handleOk">
-      <ExecuteSql></ExecuteSql>
+      <ExecuteSqlForm></ExecuteSqlForm>
     </a-modal>
   </div>
 
-  <OnlineTablesPage></OnlineTablesPage>
+  <OnlineTables></OnlineTables>
 
   <FeatureServicesPage></FeatureServicesPage>
  
@@ -23,14 +23,14 @@
   
 <script>
 import FeatureServicesPage from './FeatureServicesPage.vue';
-import OnlineTablesPage from './OnlineTablesPage.vue';
-import ExecuteSql from '@/components/ExecuteSql.vue'
+import OnlineTables from './tablecontent/OnlineTables.vue';
+import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 
 export default {
   components: {
     FeatureServicesPage,
-    OnlineTablesPage,
-    ExecuteSql
+    OnlineTables,
+    ExecuteSqlForm
   },
 
   data() {

@@ -10,7 +10,7 @@
   <!-- Create form modal -->
   <div>
     <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Deploy Feature Service')" @ok="handleOk">
-      <CreateFeatureService></CreateFeatureService>
+      <CreateFeatureServiceForm></CreateFeatureServiceForm>
     </a-modal>
   </div>
 
@@ -85,12 +85,12 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import CreateFeatureService from './CreateFeatureService.vue';
+import CreateFeatureServiceForm from './form/CreateFeatureServiceForm.vue';
 import TestFeatureService from './TestFeatureService.vue';
 
 export default {
   components: { 
-    CreateFeatureService,
+    CreateFeatureServiceForm,
     TestFeatureService
   },
 

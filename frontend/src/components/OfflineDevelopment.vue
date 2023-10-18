@@ -2,6 +2,7 @@
 
 <div>
 
+  <br/>
   <h1>
     {{ $t('Offline Data Tables') }}
     &nbsp;&nbsp;<a-button type="primary" @click="showExcuteSqlFormModal">{{ $t('Execute Offline SQL') }}</a-button>
@@ -10,12 +11,12 @@
   
   <div>
     <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="handleOk">
-      <ExecuteSql></ExecuteSql>
+      <ExecuteSqlForm></ExecuteSqlForm>
     </a-modal>
   </div>
 
   <br/>
-  <OfflineTablesPage></OfflineTablesPage>
+  <OfflineTables></OfflineTables>
 
   <TrainingSetsPage></TrainingSetsPage>
  
@@ -24,14 +25,14 @@
   
 <script>
 import TrainingSetsPage from './TrainingSetsPage.vue';
-import OfflineTablesPage from './OfflineTablesPage.vue';
-import ExecuteSql from '@/components/ExecuteSql.vue'
+import OfflineTables from './tablecontent/OfflineTables.vue';
+import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 
 export default {
   components: {
     TrainingSetsPage,
-    OfflineTablesPage,
-    ExecuteSql
+    OfflineTables,
+    ExecuteSqlForm
   },
 
   data() {

@@ -5,7 +5,7 @@
   <div>
     <a-typpography>
       <a-typography-paragraph>
-        <pre>{{ $t("Text of introduce load data") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
+        <pre>{{ $t("Text of introduce load data") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
       </a-typography-paragraph>
     </a-typpography>
     <br/>
@@ -26,7 +26,7 @@
         :rules="[{ required: true, message: 'Please input sql!' }]">
         <a-input
           v-model:value="formState.sql"
-          placeholder="Please input SQL" />
+          placeholder="LOAD DATA INFILE 'data.csv' INTO TABLE t1" />
       </a-form-item>
 
       <a-form-item>

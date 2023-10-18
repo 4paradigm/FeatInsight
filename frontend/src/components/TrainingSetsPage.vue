@@ -11,7 +11,7 @@
   <div>
     <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Offline Train Set Generation')" @ok="handleOk">
 
-      <CreateTrainingSet></CreateTrainingSet>
+      <CreateTrainingSetForm></CreateTrainingSetForm>
 
     </a-modal>
   </div>
@@ -34,11 +34,11 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 
-import CreateTrainingSet from './CreateTrainingSet.vue';
+import CreateTrainingSetForm from './form/CreateTrainingSetForm.vue';
 
 export default {
   components: { 
-    CreateTrainingSet
+    CreateTrainingSetForm
   },
   data() {
     return {

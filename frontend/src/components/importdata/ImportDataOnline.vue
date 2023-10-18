@@ -11,18 +11,18 @@
       </a-modal>
     </div>
   
-    <OnlineTablesPage></OnlineTablesPage>
+    <OnlineTables></OnlineTables>
   
   </div>
   </template>
     
 <script>
-  import OnlineTablesPage from '../OnlineTablesPage.vue';
+  import OnlineTables from '../tablecontent/OnlineTables.vue';
   import LoadDataForm from '@/components/form/LoadDataForm.vue';
 
   export default {
     components: {
-      OnlineTablesPage,
+      OnlineTables,
       LoadDataForm
     },
   
