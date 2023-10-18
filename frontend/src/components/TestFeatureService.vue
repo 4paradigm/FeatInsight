@@ -3,11 +3,9 @@
 <div>
 
   <div>
-    <a-typpography>
-      <a-typography-paragraph>
-        <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
-      </a-typography-paragraph>
-    </a-typpography>
+    <a-typography-paragraph>
+      <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
+    </a-typography-paragraph>
     <br/>
     
     <!-- Test form -->

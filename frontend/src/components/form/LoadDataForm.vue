@@ -3,11 +3,9 @@
 <div>
 
   <div>
-    <a-typpography>
-      <a-typography-paragraph>
-        <pre>{{ $t("Text of introduce load data") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
-      </a-typography-paragraph>
-    </a-typpography>
+    <a-typography-paragraph>
+      <pre>{{ $t("Text of introduce load data") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+    </a-typography-paragraph>
     <br/>
 
     <!-- Create form -->

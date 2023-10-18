@@ -127,7 +127,6 @@
     "Node Name": "节点名称",
     "Node SQL": "节点SQL",
     "Please input": "请输入",
-    "SQL tool": "SQL转换工具",
     "Choose Features": "选择特征",
     "File Format": "文件格式",
     "Export Path": "导出路径",
@@ -180,5 +179,12 @@
     "Other Create Methods": "其他创建方法",
     "Create From Parquet": "使用Parquet创建",
     "Create From Hive": "使用Hive创建",
-    "Text of introduce load data": "用户可以进行在线和离线的数据导入，请参考"
+    "Text of introduce load data": "用户可以进行在线和离线的数据导入，请参考",
+    "Import From SQL": "使用SQL导入",
+    "Import From Parquet": "使用Parquet导入",
+    "Import From Hive": "使用Hive导入",
+    "Create Feature View": "创建特征视图",
+    "Text of introduce create feature view": "用户可以使用SQL语句来创建特征视图（单个SQL定义的一组特征）和特征，请参考",
+    "Visual SQL Tool": "可视化SQL工具",
+    "Add Feature Description": "添加特征描述"
 }

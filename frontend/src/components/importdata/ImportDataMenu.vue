@@ -1,7 +1,5 @@
 <template>
 
-<a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" />
-
 <a-menu mode="horizontal">
 
   <a-menu-item key="1">

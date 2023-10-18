@@ -1,12 +1,16 @@
 <template>
 
 <div>
+    <!-- Create Feature Form Modal -->
+    <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" @ok="handleOk">
+      <CreateFeatureViewForm></CreateFeatureViewForm>
+    </a-modal>
 
-    <a-typpography>
-      <a-typography-paragraph>
-        <pre>{{ $t("Text of introduce create training set") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
-      </a-typography-paragraph>
-    </a-typpography>
+
+    <a-typography-paragraph>
+      <pre>{{ $t("Text of introduce create training set") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+    </a-typography-paragraph>
+
     <br/>
 
     <!-- Create form -->
@@ -20,8 +24,8 @@
         :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
-
-        <a-button type="primary"><router-link to='/features/create'>{{ $t('Create Feature') }}</router-link></a-button>
+        <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
+        
         <br/><br/>
         <a-select mode="multiple" v-model:value="formState.featureList">
           <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
@@ -62,14 +66,21 @@
     </a-form>
 
 
+
+
 </div>
 </template>
   
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import CreateFeatureViewForm from '@/components/form/CreateFeatureViewForm.vue'
 
 export default {
+  components: {
+    CreateFeatureViewForm
+  },
+
   data() {
     return {
       featureOptions: [],
@@ -80,6 +91,8 @@ export default {
       ],
 
       tables: [],
+
+      isShowCreateFeatureModal: false,
 
       formState: {
         featureList: [],
@@ -148,6 +161,14 @@ export default {
             message.error(error.message);
           }
       });
+    },
+
+    clickCreateFeature() {
+      this.isShowCreateFeatureModal = true;
+    },
+
+    handleOk() {
+      this.isShowCreateFeatureModal = false;
     },
 
   },

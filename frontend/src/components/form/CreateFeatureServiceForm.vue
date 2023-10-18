@@ -3,11 +3,9 @@
 <div>
 
   <div>
-    <a-typpography>
-      <a-typography-paragraph>
-        <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
-      </a-typography-paragraph>
-    </a-typpography>
+    <a-typography-paragraph>
+      <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+    </a-typography-paragraph>
     <br/>
 
     <!-- Create form -->

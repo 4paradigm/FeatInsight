@@ -127,7 +127,6 @@
     "Node Name": "Node Name",
     "Node SQL": "Node SQL",
     "Please input": "Please input ",
-    "SQL tool": "SQL tool",
     "Choose Features": "Choose Features",
     "File Format": "File Format",
     "Export Path": "Export Path",
@@ -176,5 +175,12 @@
     "Other Create Methods": "Other Create Methods",
     "Create From Parquet": "Create From Parquet",
     "Create From Hive": "Create From Hive",
-    "Text of introduce load data": "Users can perform online and offline data imports. Please refer to"
+    "Text of introduce load data": "Users can perform online and offline data imports. Please refer to",
+    "Import From SQL": "Import From SQL",
+    "Import From Parquet": "Import From Parquet",
+    "Import From Hive": "Import From Hive",
+    "Create Feature View": "Create Feature View",
+    "Text of introduce create feature view": "Users can use SQL statements to create feature views (a set of features defined by a single SQL statement). Please refer to",
+    "Visual SQL Tool": "Visual SQL Tool",
+    "Add Feature Description": "Add Feature Description"
 }
