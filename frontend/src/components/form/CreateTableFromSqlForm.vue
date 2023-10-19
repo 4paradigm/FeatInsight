@@ -18,7 +18,7 @@
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
           <a-input v-model:value="formState.sql" 
-            placeholder="CREATE TABLE t1 (name string, age int)"/>
+            placeholder="CREATE TABLE db1.t1 (name string, age int)"/>
         </a-form-item>
 
       <a-form-item>
@@ -49,20 +49,19 @@ export default {
   methods: {
     handleSubmit() {
       axios.post(`/api/sql/execute`, {
-        "sql": this.formState.sql,
-        isOnline: true
+        "sql": this.formState.sql
       })
       .then(response => {
-        message.success(`Success to execute SQL: ${sql}`);
+        message.success(`Success to execute SQL: ${this.formState.sql}`);
 
         this.$emit('close');
       })
       .catch(error => {
         if (error.response.data) {
             message.error(error.response.data);
-          } else {
+        } else {
             message.error(error.message);
-          }
+        }
       });
     },
   },

@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class SqlRequest {
+
     private String sql;
     private boolean isOnline;
 
@@ -11,13 +12,13 @@ public class SqlRequest {
 
     }
 
-    public SqlRequest(String sql) {
-        this.sql = sql;
-        this.isOnline = true;
-    }
-
     public SqlRequest(String sql, boolean isOnline) {
         this.sql = sql;
         this.isOnline = isOnline;
     }
+
+    public SqlRequest(String sql) {
+        this(sql, true);
+    }
+
 }

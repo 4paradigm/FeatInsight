@@ -3,15 +3,12 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import OverviewPage from '../components/OverviewPage.vue'
 import TablesPage from '../components/TablesPage.vue'
 import ImportTable from '../components/ImportTable.vue'
-import EntitiesPage from '../components/EntitiesPage.vue'
-import CreateEntity from '../components/CreateEntity.vue'
 import FeaturesPage from '../components/FeaturesPage.vue'
 import FeatureViewsPage from '../components/FeatureViewsPage.vue'
 import FeatureServicesPage from '../components/FeatureServicesPage.vue'
 import TutorialPage from '../components/TutorialPage.vue'
 import TableDetail from '../components/TableDetail.vue'
 import DatabaseDetail from '../components/DatabaseDetail.vue'
-import EntityDetail from '../components/EntityDetail.vue'
 import FeatureDetail from '../components/FeatureDetail.vue'
 import FeatureViewDetail from '../components/FeatureViewDetail.vue'
 import FeatureServiceDetail from '../components/FeatureServiceDetail.vue'
@@ -42,9 +39,6 @@ const router = createRouter({
     { path: '/tables/import', component: ImportTable },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
-    { path: '/entities', component: EntitiesPage},
-    { path: '/entities/create', component: CreateEntity},
-    { path: '/entities/:name', component: EntityDetail, props: true },
     { path: '/features', component: FeaturesPage},
     { path: '/features/create', component: CreateFeature},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },

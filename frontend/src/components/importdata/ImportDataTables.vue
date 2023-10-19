@@ -22,7 +22,7 @@
     </a-modal>
   </div>
 
-  <OnlineTables></OnlineTables>
+  <OnlineTables :key="refreshKey"></OnlineTables>
 
 </div>
 </template>
@@ -40,6 +40,8 @@ export default {
   data() {
     return {
       isOpenFormModal: false,
+
+      refreshKey: 0
     };
   },
 
@@ -48,13 +50,15 @@ export default {
 
   methods: {
 
-
     clickCreateFromSql() {
       this.isOpenFormModal = true;
     },
 
     closeModal() {
       this.isOpenFormModal = false;
+
+      this.refreshKey++;
+      console.log(this.refreshKey)
     },
 
     handleOk() {
