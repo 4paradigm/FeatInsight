@@ -3,75 +3,104 @@ package com._4paradigm.openmldb.featureplatform.dao;
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
+import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
+import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.featureplatform.utils.TypeUtil;
 import com._4paradigm.openmldb.sdk.Column;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.core.env.Environment;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class FeatureViewService {
 
-    private final Connection openmldbConnection;
-    private final SqlClusterExecutor openmldbSqlExecutor;
+    private final Environment env;
 
     @Autowired
-    public FeatureViewService(Connection openmldbConnection, SqlClusterExecutor openmldbSqlExecutor) {
-        this.openmldbConnection = openmldbConnection;
-        this.openmldbSqlExecutor = openmldbSqlExecutor;
+    public FeatureViewService(Environment env) {
+        this.env = env;
+    }
+
+    // Convert featureNames string in database to list of string
+    public static List<String> featureNamesStringToList(String featureNamesString) {
+        List<String> featureNames = new ArrayList<>();
+
+        String[] featureNameArray = featureNamesString.split(",");
+        for (String featureName: featureNameArray) {
+            featureNames.add(featureName.trim());
+        }
+
+        return featureNames;
+    }
+
+    public Map<String, String> getFeatureDescriptionMap(FeaturesService featureService, String featureViewName,
+                                                        List<String> featureNames) throws SQLException {
+        Map<String, String> featureDescriptionMap = new HashMap<>();
+
+        for (String featureName: featureNames) {
+            Feature feature = featureService.getFeatureByName(featureViewName, featureName);
+            featureDescriptionMap.put(featureName, feature.getDescription());
+        }
+
+        return featureDescriptionMap;
+    }
+
+    public FeatureView getFeatureViewFromResultSet(FeaturesService featureService, ResultSet resultSet)
+            throws SQLException {
+        String featureViewName = resultSet.getString(1);
+        String db = resultSet.getString(2);
+        String sql = resultSet.getString(3);
+        String description = resultSet.getString(4);
+        List<String> featureNames = featureNamesStringToList(resultSet.getString(5));
+        Map<String, String> featureDescriptionMap = getFeatureDescriptionMap(featureService, featureViewName,
+                featureNames);
+
+        return new FeatureView(featureViewName, db, sql, description, featureNames, featureDescriptionMap);
     }
 
     public List<FeatureView> getFeatureViews() throws SQLException {
-        String sql = "SELECT name, entity_names, db, sql, feature_names, description FROM SYSTEM_FEATURE_PLATFORM.feature_views";
-
+        FeaturesService featureService = new FeaturesService(env);
         ArrayList<FeatureView> featureViews = new ArrayList<>();
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = OpenmldbSdkUtil.getConnection(env).createStatement();
+        String sql = "SELECT name, db, sql, description, feature_names FROM SYSTEM_FEATURE_PLATFORM.feature_views";
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        while (result.next()) {
-            FeatureView featureView = new FeatureView(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6));
-            featureViews.add(featureView);
+        while (resultSet.next()) {
+            featureViews.add(getFeatureViewFromResultSet(featureService, resultSet));
         }
 
         return featureViews;
     }
 
     public FeatureView getFeatureViewByName(String name) throws SQLException {
-        // TODO: Set database before
-        String sql = String.format("SELECT name, entity_names, db, sql, feature_names, description FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
-        Statement openmldbStatement = openmldbConnection.createStatement();
-        openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        FeaturesService featureService = new FeaturesService(env);
 
-        if (result.getFetchSize() == 0) {
-            throw new SQLException("Can not get FeatureView with the name: " + name);
-        } else if (result.getFetchSize() > 1) {
-            throw new SQLException("Get more FeatureView with the same name: " + name);
-        } else {
-            while (result.next()) {
-                FeatureView featureView = new FeatureView(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6));
-                //System.out.print("Get feature view: " + featureView);
-                openmldbStatement.close();
-                return featureView;
-            }
-            return null;
-        }
+        String sql = String.format("SELECT name, db, sql, description, feature_names " +
+                "FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
+        Statement openmldbStatement = OpenmldbSdkUtil.getConnection(env).createStatement();
+        openmldbStatement.execute(sql);
+        ResultSet resultSet = openmldbStatement.getResultSet();
+
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
+
+        return getFeatureViewFromResultSet(featureService, resultSet);
     }
 
-    public String validateFeatureView(FeatureView featureView) throws SQLException {
-
+    public void assertFeatureViewValid(FeatureView featureView) throws SQLException {
         if (featureView.getName() == "") {
             throw new SQLException("The feature view name is empty");
         }
@@ -83,104 +112,101 @@ public class FeatureViewService {
         if (featureView.getSql() == "") {
             throw new SQLException("The sql of feature view is empty");
         }
+    }
 
+    public List<String> getOutputFeatureNames(FeatureView featureView) throws SQLException {
+        assertFeatureViewValid(featureView);
 
-        Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor);
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+        Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
-        String sql = featureView.getSql();
+        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(featureView.getSql(), featureView.getDb(),
+                        schemaMaps).getColumnList();
 
-        StringBuilder featureNamesBuilder = new StringBuilder();
-
-        // TODO: Use for package with openmldb-0.8
-        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, featureView.getDb(), schemaMaps).getColumnList();
-        //List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, schemaMaps).getColumnList();
+        List<String> outputFeatureNames = new ArrayList<>();
         for (Column outputSchemaColumn : outputSchemaColumns) {
             String name = outputSchemaColumn.getColumnName();
-            int intType = outputSchemaColumn.getSqlType();
-            String stringType = TypeUtil.javaSqlTypeToString(intType);
-
-            if (featureNamesBuilder.length() == 0) {
-                featureNamesBuilder.append(name);
-            } else {
-                featureNamesBuilder.append(", " + name);
-            }
+            outputFeatureNames.add(name);
         }
 
-        return featureNamesBuilder.toString();
+        return outputFeatureNames;
     }
 
     public FeatureView addFeatureView(FeatureView featureView) throws SQLException {
-        validateFeatureView(featureView);
+        assertFeatureViewValid(featureView);
+        if (featureView.getFeatureNames().size() == 0) {
+            throw new SQLException("The number of features in feature view is 0");
+        }
 
-        Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor);
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+        FeaturesService featureService = new FeaturesService(env);
 
-        String sql = featureView.getSql();
+        Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
-        StringBuilder featureNamesBuilder = new StringBuilder();
+        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(featureView.getSql(), featureView.getDb(),
+                schemaMaps).getColumnList();
 
-        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(sql, featureView.getDb(), schemaMaps).getColumnList();
         for (Column outputSchemaColumn : outputSchemaColumns) {
             String name = outputSchemaColumn.getColumnName();
             int intType = outputSchemaColumn.getSqlType();
             String stringType = TypeUtil.javaSqlTypeToString(intType);
 
-            FeaturesService featuresService = new FeaturesService(openmldbConnection, openmldbSqlExecutor);
-
             String featureDescription = "";
-            if (featureView.getFeatureDescriptionMap() != null && !featureView.getFeatureDescriptionMap().isEmpty()) {
+            if (featureView.getFeatureDescriptionMap() != null) {
                 if (featureView.getFeatureDescriptionMap().containsKey(name)) {
                     featureDescription = featureView.getFeatureDescriptionMap().get(name);
                 }
             }
 
+            // Create and insert feature in database
             Feature feature = new Feature(featureView.getName(), name, stringType, featureDescription);
-            featuresService.addFeature(feature);
-
-            if (featureNamesBuilder.length() == 0) {
-                featureNamesBuilder.append(name);
-            } else {
-                featureNamesBuilder.append(", " + name);
-            }
+            featureService.addFeature(feature);
         }
 
-        // TODO: It would be better to use JDBC prepared statement from connection
-        String featureNames = featureNamesBuilder.toString();
+        String featureNamesString = String.join(",", featureView.getFeatureNames());
+        String insertSql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_views (name, db, " +
+                "sql, description, feature_names) values ('%s', '%s', '%s', '%s', '%s')",
+                featureView.getName(), featureView.getDb(), featureView.getSql(), featureView.getDescription(),
+                featureNamesString);
 
-        FeatureView newFeatureView = new FeatureView(featureView.getName(), featureView.getEntityNames(), featureView.getDb(), featureView.getSql(), featureNames, featureView.getDescription());
-
-        String insertSql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_views (name, entity_names, db, sql, feature_names, description) values ('%s', '%s', '%s', '%s', '%s', '%s')", newFeatureView.getName(), newFeatureView.getEntityNames(), newFeatureView.getDb(), newFeatureView.getSql(), newFeatureView.getFeatureNames(), newFeatureView.getDescription());
-
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(insertSql);
         openmldbStatement.close();
 
-        return newFeatureView;
+        return featureView;
     }
 
     public void deleteFeatureView(String name) throws SQLException {
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+        FeaturesService featureService = new FeaturesService(env);
+
         // Delete the features
-        FeaturesService featuresService = new FeaturesService(openmldbConnection, openmldbSqlExecutor);
-        List<Feature> features = featuresService.getFeaturesByFeatureView(name);
+        List<Feature> features = featureService.getFeaturesByFeatureView(name);
         for (Feature feature : features) {
-            featuresService.deleteFeature(feature);
+            featureService.deleteFeature(feature);
         }
 
         // Delete the feature view
-        // TODO: It would be better to use JDBC prepared statement from connection
         String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
-
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
         openmldbStatement.close();
     }
 
     public List<String> getDependentTables(String name) throws SQLException {
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+
         FeatureView featureView = getFeatureViewByName(name);
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureView.getSql(), featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
+
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureView.getSql(),
+                featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
         List<String> fullNameTables = new ArrayList<>();
         for (Pair<String, String> tableItem : tables) {
-            fullNameTables.add(tableItem.getKey() + "." + tableItem.getValue());
+            String fullTablename = tableItem.getKey() + "." + tableItem.getValue();
+            fullNameTables.add(fullTablename);
         }
         return fullNameTables;
     }

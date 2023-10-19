@@ -6,34 +6,36 @@ import lombok.Data;
 public class FeatureService {
     private String name;
     private String version;
-    private String featureList;
+    private String featureNames;
+    private String description;
+    private String joinKeys;
     private String db;
     private String sql;
     private String deployment;
-    private String description;
 
     public FeatureService() {
 
     }
 
-    public FeatureService(String name, String version, String featureList) {
-        this(name, version, featureList, "");
-    }
-
-    public FeatureService(String name, String version, String featureList, String description) {
+    public FeatureService(String name, String version, String featureNames, String description, String joinKeys, String db, String sql, String deployment) {
         this.name = name;
         this.version = version;
-        this.featureList = featureList;
+        this.featureNames = featureNames;
         this.description = description;
-    }
-
-    public FeatureService(String name, String version, String featureList, String db, String sql, String deployment, String description) {
-        this.name = name;
-        this.version = version;
-        this.featureList = featureList;
+        this.joinKeys = joinKeys;
         this.db = db;
         this.sql = sql;
         this.deployment = deployment;
-        this.description = description;
     }
+
+    public FeatureService(String name, String version, String featureNames, String description, String joinKeys) {
+        this(name, version, featureNames, description, joinKeys, "", "", "");
+    }
+
+    public FeatureService(String name, String version, String featureNames, String description, String db, String sql,
+                          String deployment) {
+        this(name, version, featureNames, description, "", db, sql, deployment);
+    }
+
+
 }

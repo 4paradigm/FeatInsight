@@ -47,7 +47,6 @@
           </a-textarea>
         </a-form-item>
 
-
         <div v-if="validatedFeatureNames.length > 0">
           <h3>
             {{ $t('Feature List') }}:
@@ -71,7 +70,6 @@
           </ul>
         </div>
 
-        <br/>
         <a-form-item>
             <a-button v-if="validatedFeatureNames.length == 0" type="primary" @click="validateForm()">{{ $t('Validate') }} {{ $t('SQL') }}</a-button>
             <a-button v-else type="primary" @click="handleSubmit()">{{ $t('Submit') }}</a-button>
@@ -156,6 +154,7 @@
           "db": this.formState.db,
           "sql": this.formState.sql,
           "description": this.formState.description,
+          "featureNames": this.validatedFeatureNames,
           "featureDescriptionMap": this.formState.featureDescriptionMap
         })
         .then(response => {

@@ -39,8 +39,9 @@ public class FeatureViewController {
 
     @PostMapping("/validate")
     public ResponseEntity<String> validateFeatureView(@RequestBody FeatureView featureView) throws SQLException {
-        String featureNames = featureViewService.validateFeatureView(featureView);
-        return new ResponseEntity<>(featureNames, HttpStatus.OK);
+        List<String> featureNames = featureViewService.getOutputFeatureNames(featureView);
+        String featureNamesString = String.join(",", featureNames);
+        return new ResponseEntity<>(featureNamesString, HttpStatus.OK);
     }
 
     @DeleteMapping("/{name}")

@@ -11,22 +11,6 @@ public class UseFeaturePlatformClient {
 
     private static final FeaturePlatformClient client = new FeaturePlatformClient("127.0.0.1", 8888);
 
-    public static void useEntity() throws IOException {
-        // List all entities
-        List<Entity> entities = client.getEntities();
-        System.out.println(entities);
-
-        // Create an entity
-        client.createEntity("entity1", "pk1, pk2");
-
-        // Get an entity
-        Entity entity = client.getEntity("entity1");
-        System.out.println(entity);
-
-        // Delete an entity
-        client.deleteEntity("entity1");
-    }
-
     public static void accessFeatures() throws IOException {
                 /*
         // List all features

@@ -17,7 +17,6 @@ public class SingleTableMultiFeatureViewExample {
             client.executeSql("CREATE TABLE IF NOT EXISTS t1v2.user (name string, age int)");
 
             // Create entity
-            client.createEntity("t1v2_name", "name");
 
             // Create feature view
             client.createFeatureView("t1v2_v1", "t1v2_name", "t1v2", "SELECT name FROM user");

@@ -1,6 +1,8 @@
 package com._4paradigm.openmldb.featureplatform.dao;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
+import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
+import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,27 +18,31 @@ public class OfflineJobService {
     @Autowired
     private Environment env;
 
-    private final Connection openmldbConnection;
-    private final SqlClusterExecutor openmldbSqlExecutor;
-
     @Autowired
-    public OfflineJobService(Connection openmldbConnection, SqlClusterExecutor openmldbSqlExecutor) {
-        this.openmldbConnection = openmldbConnection;
-        this.openmldbSqlExecutor = openmldbSqlExecutor;
+    public OfflineJobService(Environment env) {
+        this.env = env;
     }
 
+    public static OfflineJobInfo resultSetToOfflineJobInfo(ResultSet resultSet) throws SQLException {
+        return new OfflineJobInfo(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                resultSet.getTimestamp(4), resultSet.getTimestamp(5), resultSet.getString(6),
+                resultSet.getString(7), resultSet.getString(8), resultSet.getString(9));
+    }
 
     public List<OfflineJobInfo> getOfflineJobInfos() throws SQLException {
-        String sql = "SELECT id, job_type, state, start_time, end_time, parameter, cluster, application_id, error FROM __INTERNAL_DB.JOB_INFO";
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
+        String sql = "SELECT id, job_type, state, start_time, end_time, parameter, cluster, application_id, error " +
+                "FROM __INTERNAL_DB.JOB_INFO";
 
         ArrayList<OfflineJobInfo> offlineJobInfos = new ArrayList<>();
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        while (result.next()) {
-            OfflineJobInfo offlineJobInfo = new OfflineJobInfo(result.getInt(1), result.getString(2), result.getString(3), result.getTimestamp(4), result.getTimestamp(5), result.getString(6), result.getString(7), result.getString(8), result.getString(9));
+        while (resultSet.next()) {
+            OfflineJobInfo offlineJobInfo = resultSetToOfflineJobInfo(resultSet);
             offlineJobInfos.add(offlineJobInfo);
         }
 
@@ -44,33 +50,34 @@ public class OfflineJobService {
     }
 
     public OfflineJobInfo getOfflineJobInfo(int id) throws SQLException {
-        String sql = "SELECT id, job_type, state, start_time, end_time, parameter, cluster, application_id, error FROM __INTERNAL_DB.JOB_INFO WHERE id = " + id;
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        String sql = "SELECT id, job_type, state, start_time, end_time, parameter, cluster, application_id, error " +
+                "FROM __INTERNAL_DB.JOB_INFO WHERE id = " + id;
+
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        while (result.next()) {
-            OfflineJobInfo offlineJobInfo = new OfflineJobInfo(result.getInt(1), result.getString(2), result.getString(3), result.getTimestamp(4), result.getTimestamp(5), result.getString(6), result.getString(7), result.getString(8), result.getString(9));
-            return offlineJobInfo;
-        }
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
 
-        // TODO: throw exception if not found
-        return null;
+        return resultSetToOfflineJobInfo(resultSet);
     }
 
     public String getOfflineJobLog(int id) throws SQLException {
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
         String sql = "SHOW JOBLOG " + id;
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        if (result.next()) {
-          return result.getString(1);
-        }
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
 
-        throw new SQLException("Fail to to get job log for job " + id);
+        return resultSet.getString(1);
     }
 
 }

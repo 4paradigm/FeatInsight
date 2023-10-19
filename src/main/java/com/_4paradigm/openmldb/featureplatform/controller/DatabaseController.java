@@ -22,7 +22,7 @@ public class DatabaseController {
     }
 
     @GetMapping
-    public List<String> getDatabases() {
+    public List<String> getDatabases() throws SQLException {
         return databaseService.getDatabases();
     }
 

@@ -2,11 +2,11 @@ package com._4paradigm.openmldb.featureplatform.dao;
 
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
-import com._4paradigm.openmldb.featureplatform.utils.TypeUtil;
+import com._4paradigm.openmldb.featureplatform.utils.*;
 import com._4paradigm.openmldb.sdk.Column;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import com.mysql.cj.x.protobuf.MysqlxCursor;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,10 +25,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class FeatureServiceService {
@@ -36,78 +33,70 @@ public class FeatureServiceService {
     @Autowired
     private Environment env;
 
-    private final Connection openmldbConnection;
-    private final SqlClusterExecutor openmldbSqlExecutor;
-
     @Autowired
-    public FeatureServiceService(Connection openmldbConnection, SqlClusterExecutor openmldbSqlExecutor) {
-        this.openmldbConnection = openmldbConnection;
-        this.openmldbSqlExecutor = openmldbSqlExecutor;
+    public FeatureServiceService(Environment env) {
+        this.env = env;
     }
 
-    public void initOnlineMode() throws SQLException {
-        // TODO(tobe): Remove this and create connection for each request
-        Statement openmldbStatement = openmldbConnection.createStatement();
-        openmldbStatement.execute("SET @@execute_mode='online'");
+    public static FeatureService resultSetToFeatureService(ResultSet resultSet) throws SQLException {
+        return new FeatureService(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
+                resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                resultSet.getString(7));
     }
-
 
     public List<FeatureService> getFeatureServices() throws SQLException {
-        String sql = "SELECT name, version, feature_list, db, sql, deployment, description FROM SYSTEM_FEATURE_PLATFORM.feature_services";
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
+        String sql = "SELECT name, version, feature_names, description, db, sql, deployment FROM SYSTEM_FEATURE_PLATFORM.feature_services";
 
         ArrayList<FeatureService> featureServices = new ArrayList<>();
-
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        while (result.next()) {
-            FeatureService featureService = new FeatureService(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6), result.getString(7));
+        while (resultSet.next()) {
+            FeatureService featureService = resultSetToFeatureService(resultSet);
             featureServices.add(featureService);
         }
 
         return featureServices;
     }
 
-    public List<FeatureService> getLatestFeatureServices() throws SQLException {
-        ArrayList<FeatureService> featureServices = new ArrayList<>();
-
-        Map<String, String> latestVersionMap = new HashMap<>();
+    public static Map<String, String> getLatestServiceNameVersionMap(Connection connection) throws SQLException {
+        Map<String, String> latestNameVersionMap = new HashMap<>();
 
         String sql = "SELECT name, version FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services";
-
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
         ResultSet result = openmldbStatement.getResultSet();
 
         while (result.next()) {
             String name = result.getString(1);
             String version = result.getString(2);
-
-            latestVersionMap.put(name, version);
+            latestNameVersionMap.put(name, version);
         }
 
-        sql = "SELECT name, version, feature_list, db, sql, deployment, description FROM SYSTEM_FEATURE_PLATFORM.feature_services";
-        openmldbStatement = openmldbConnection.createStatement();
-        openmldbStatement.execute(sql);
-        result = openmldbStatement.getResultSet();
+        return latestNameVersionMap;
+    }
 
-        while (result.next()) {
+    public List<FeatureService> getLatestFeatureServices() throws SQLException {
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
 
-            String name = result.getString(1);
-            String version = result.getString(2);
+        ArrayList<FeatureService> outputFeatureServices = new ArrayList<>();
 
-            if (!latestVersionMap.containsKey(name)) {
-                System.out.println("Error and fail to find latest version of feature service name: " + name);
-            } else {
-                if (latestVersionMap.get(name).equals(version)) {
-                    FeatureService featureService = new FeatureService(name, version, result.getString(3), result.getString(4), result.getString(5), result.getString(6), result.getString(7));
-                    featureServices.add(featureService);
+        Map<String, String> latestNameVersionMap = getLatestServiceNameVersionMap(connection);
+        List<FeatureService> allFeatureServices = getFeatureServices();
+
+        // Filter and only get the latest version
+        for (FeatureService featureService: allFeatureServices) {
+            if (latestNameVersionMap.containsKey(featureService.getName())) {
+                if (latestNameVersionMap.get(featureService.getName()).equals(featureService.getVersion())) {
+                    outputFeatureServices.add(featureService);
                 }
             }
         }
 
-        return featureServices;
+        return outputFeatureServices;
     }
 
     public FeatureService getFeatureServiceByName(String name) throws SQLException {
@@ -115,200 +104,95 @@ public class FeatureServiceService {
         return getFeatureServiceByNameAndVersion(name, latestVersion);
     }
 
-    public LatestFeatureService getLatestFeatureServiceByName(String name) throws SQLException {
-        String sql = String.format("SELECT name, version, db, deployment FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'", name);
-        Statement openmldbStatement = openmldbConnection.createStatement();
-        openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+    public static LatestFeatureService resultSetToLatestFeatureService(ResultSet resultSet) throws SQLException {
+        return new LatestFeatureService(resultSet.getString(1), resultSet.getString(2),
+                resultSet.getString(3), resultSet.getString(4));
+    }
 
-        if (result.getFetchSize() == 0) {
-            throw new SQLException("Can not get latest FeatureService with name: %s", name);
-        } else if (result.getFetchSize() > 1) {
-            throw new SQLException("Get more latest FeatureService with the same name");
-        } else {
-            result.next();
-            LatestFeatureService latestFeatureService = new LatestFeatureService(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
-            openmldbStatement.close();
-            return latestFeatureService;
-        }
+    public LatestFeatureService getLatestFeatureServiceByName(String name) throws SQLException {
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
+        String sql = String.format("SELECT name, version, db, deployment FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'", name);
+        Statement openmldbStatement = connection.createStatement();
+        openmldbStatement.execute(sql);
+        ResultSet resultSet = openmldbStatement.getResultSet();
+
+        ResultSetUtil.assertSizeIsOne(resultSet);
+
+        return resultSetToLatestFeatureService(resultSet);
     }
 
     public FeatureService getFeatureServiceByNameAndVersion(String name, String version) throws SQLException {
-        String sql = String.format("SELECT name, version, feature_list, db, sql, deployment, description FROM SYSTEM_FEATURE_PLATFORM.feature_services WHERE name='%s' AND version='%s'", name, version);
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
+        String sql = String.format("SELECT name, version, feature_names, description, db, sql, deployment FROM SYSTEM_FEATURE_PLATFORM.feature_services WHERE name='%s' AND version='%s'", name, version);
+
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        if (result.getFetchSize() == 0) {
-            throw new SQLException(String.format("Can not get FeatureService with name: %s and version: %s", name, version));
-        } else if (result.getFetchSize() > 1) {
-            throw new SQLException(String.format("Get more FeatureService with the name: %s and version: %s", name, version));
-        } else {
-            while (result.next()) {
-                FeatureService featureService = new FeatureService(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6), result.getString(7));
-
-                openmldbStatement.close();
-                return featureService;
-            }
-            return null;
-        }
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        return resultSetToFeatureService(resultSet);
     }
 
-    public String mergeSqlList(SqlClusterExecutor openmldbSqlExecutor, List<String> sqlList, String db, List<String> joinKeys, Map<String, Map<String, Schema>> tableSchema) throws SQLException {
-        if (sqlList.size() == 1) {
-            return sqlList.get(0);
-        } else {
-            //System.out.println("Try to merge SQLs: " + sqlList);
-            String mergeSql = SqlClusterExecutor.mergeSQL(sqlList, db, joinKeys, tableSchema);
 
-            //System.out.println("Try to merge SQLs and get merged SQL: " + mergeSql);
-            return mergeSql;
+    public void assertServiceNotExist(FeatureService newFeatureService) throws SQLException {
+        List<FeatureService> allFatureServices = getFeatureServices();
+        for (FeatureService featureService: allFatureServices) {
+            if (featureService.getName().equals(newFeatureService.getName()) &&
+                    featureService.getVersion().equals(newFeatureService.getVersion())) {
+                throw new SQLException(String.format("The feature service has exists, name: %s and version: %s",
+                        featureService.getName(), featureService.getVersion()));
+            }
         }
     }
 
     public FeatureService createFeatureService(FeatureService featureService) throws SQLException {
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        assertServiceNotExist(featureService);
 
-        // Get name and feature_list
-        FeatureService newFeatureService = new FeatureService();
-        newFeatureService.setName(featureService.getName());
-        newFeatureService.setVersion(featureService.getVersion());
-        newFeatureService.setFeatureList(featureService.getFeatureList());
-        newFeatureService.setDescription(featureService.getDescription());
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+        FeatureViewService featureViewService = new FeatureViewService(env);
 
-        // Merge SQL from FeatureViews
-        List<String> sqlList = new ArrayList<>();
-        String[] featureList = featureService.getFeatureList().split(",");
-
-        FeatureViewService featureViewService = new FeatureViewService(openmldbConnection, openmldbSqlExecutor);
-        FeatureView latestFeatureView = null;
-
-        boolean isChooseSingleFeature = false;
-        List<String> choosedFeatureNames = new ArrayList<>();
-        List<String> choosedFeautreViewNames = new ArrayList<>();
-
-        for (String splitFeatureList : featureList) {
-            String featureListItem = splitFeatureList.trim();
-            if (!featureListItem.equals("")) {
-
-                String featureViewName = featureListItem;
-                if (featureListItem.contains(":")) {
-                    // Handle as single feature
-                    isChooseSingleFeature = true;
-
-                    // Update feature view name
-                    featureViewName = featureListItem.split(":")[0];
-
-                    // Add feature to output list
-                    String featureName = featureListItem.split(":")[1];
-                    if (!choosedFeatureNames.contains(featureName)) {
-                        choosedFeatureNames.add(featureName);
-                    }
-
-                } else {
-                    // Handle as feature view
-                    FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
-                    if (featureView == null) {
-                       throw new SQLException("Can not get feature view by name: " + featureViewName);
-                    }
-
-                    String[] featureNameLists = featureView.getFeatureNames().split(",");
-                    for (String featureName: featureNameLists) {
-                        if (!choosedFeatureNames.contains(featureName)) {
-                            choosedFeatureNames.add(featureName);
-                        }
-                    }
-
-                }
-
-                if (!choosedFeautreViewNames.contains(featureViewName)) {
-                    choosedFeautreViewNames.add(featureViewName);
-                }
-            }
-        }
-
-
-        for (String featureViewName: choosedFeautreViewNames) {
-            FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
-            if (featureView == null) {
-                System.out.println("Can not get feature view by name: " + featureViewName);
-                return null;
-            }
-            sqlList.add(featureView.getSql());
-            // TODO: Maks sure all the features use the same db
-            latestFeatureView = featureView;
-        }
-
-
-        String db = latestFeatureView.getDb();
-        newFeatureService.setDb(db);
-
-        if (sqlList.size() == 0) {
-            System.out.println("Can not get sql from feature views: " + String.join(",", featureList));
-            return null;
-        }
-
-        EntityService entityService = new EntityService(openmldbConnection);
-        List<String> joinKeys = new ArrayList<>();
-        for (String rawEntityName : latestFeatureView.getEntityNames().split(",")) {
-            if (rawEntityName != null && !rawEntityName.trim().equals("")) {
-                String entityName = rawEntityName.trim();
-                Entity entity = entityService.getEntityByName(entityName);
-                if (entity != null) {
-                    for (String rawPrimaryKey : entity.getPrimaryKeys().split(",")) {
-                        joinKeys.add(rawPrimaryKey.trim());
-                    }
-                }
-            }
-        }
-
-        String mergedSql = mergeSqlList(openmldbSqlExecutor, sqlList, db, joinKeys, OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
-        if (mergedSql.endsWith(";")) {
-            mergedSql = mergedSql.substring(0, mergedSql.length()-1);
-        }
-        //System.out.println("Generate merged SQL: " + mergedSql);
-
-        String generatedSql = mergedSql;
-
-        if (isChooseSingleFeature) {
-            generatedSql = String.format("SELECT %s FROM (%s)", String.join(",", choosedFeatureNames), mergedSql);
-            //System.out.println("Generate SQL: " + generatedSql);
-        }
-
+        String featureSetString = featureService.getFeatureNames();
 
         String deploymentName = String.format("FEATURE_PLATFORM_%s_%s", featureService.getName(), featureService.getVersion());
 
-        // If deployment is provided
-        if (featureService.getDeployment() != null && !featureService.getDeployment().isEmpty()) {
-            deploymentName = featureService.getDeployment();
-        } else {
-            if (!db.equals("")) {
-                openmldbStatement.execute("USE " + db);
-            }
+        List<String> joinKeys = new ArrayList<>(Arrays.asList(featureService.getJoinKeys().split(",")));
+        String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService, featureSetString, joinKeys);
+        String db = FeatureSetUtil.getDbFromFeatureSet(featureViewService, featureSetString);
 
-            // Deploy with SQL
-            // TODO: Skip index check for compatibility of old OpenMLDB cluster
-            String deploymentSql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, generatedSql);
-            System.out.println("Try to create deployment with SQL: " + deploymentSql);
-            openmldbStatement.execute(deploymentSql);
-        }
+        // TODO: Skip index check for compatibility of old OpenMLDB cluster
+        String deploySql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, mergedSql);
 
-        newFeatureService.setSql(generatedSql);
-        newFeatureService.setDeployment(deploymentName);
+        Statement openmldbStatement = connection.createStatement();
+        openmldbStatement.execute(String.format("USE %s", db));
+        openmldbStatement.execute(deploySql);
 
-        // TODO: Check if name and version is existed or not
+        String newFeatureNames = String.join(",", FeatureSetUtil.featureSetToFeatureNames(featureViewService, featureSetString));
 
-        // TODO: It would be better to use JDBC prepared statement from connection
-        String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_services (name, version, feature_list, db, sql, deployment, description) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')", featureService.getName(), featureService.getVersion(), featureService.getFeatureList(), db, generatedSql, deploymentName, featureService.getDescription());
+        FeatureService newFeatureService = new FeatureService(featureService.getName(), featureService.getVersion(),
+            newFeatureNames, featureService.getDescription(), db, deploySql, deploymentName);
+
+        // Insert into database
+        String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_services (name, version, feature_names, " +
+                "description, db, sql, deployment) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                newFeatureService.getName(), newFeatureService.getVersion(), newFeatureService.getFeatureNames(),
+                newFeatureService.getDescription(), newFeatureService.getDescription(), newFeatureService.getSql(),
+                newFeatureService.getDeployment());
         openmldbStatement.execute(sql);
 
         // Add to latest feature service
-        sql = String.format("SELECT count(name) FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'", featureService.getName());
+        sql = String.format("SELECT count(name) FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'",
+                newFeatureService.getName());
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
-        result.next();
-        if (result.getLong(1) == 0) { // Has no other versions
-            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.latest_feature_services (name, version, db, deployment) values ('%s', '%s', '%s', '%s')", featureService.getName(), featureService.getVersion(), db, deploymentName);
+        ResultSet resultSet = openmldbStatement.getResultSet();
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
+        if (resultSet.getLong(1) == 0) { // Has no other versions
+            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.latest_feature_services " +
+                    "(name, version, db, deployment) values ('%s', '%s', '%s', '%s')", newFeatureService.getName(),
+                    newFeatureService.getVersion(), newFeatureService.getDb(), newFeatureService.getDeployment());
             openmldbStatement.execute(sql);
         }
 
@@ -316,14 +200,17 @@ public class FeatureServiceService {
         return newFeatureService;
     }
 
-    public FeatureService createFeatureServiceFromDeployment(FeatureServiceDeploymentRequest request) throws SQLException {
+    // Deprecated and this function is not used yet
+    public FeaturesService createFeatureServiceFromDeployment(FeatureServiceDeploymentRequest request) throws SQLException {
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
         String featureServiceName = request.getName();
         String version = request.getVersion();
         String db = request.getDb();
         String deploymentName = request.getDeploymentName();
         String description = request.getDescription();
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         if (!db.equals("")) {
             openmldbStatement.execute("USE " + db);
         }
@@ -376,8 +263,9 @@ public class FeatureServiceService {
             // Create feature view
             // TODO: Handle the duplicated name
             String featureViewName = featureServiceName;
-            FeatureViewService featureViewService = new FeatureViewService(openmldbConnection, openmldbSqlExecutor);
-            featureViewService.addFeatureView(new FeatureView(featureViewName, "", db, selectSql));
+            FeatureViewService featureViewService = new FeatureViewService(this.env);
+            // TODO: Do not update feature view and add to database now
+            //featureViewService.addFeatureView(new FeatureView(featureViewName, "", db, selectSql));
 
             // Add to latest feature service
             sql = String.format("SELECT count(name) FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'", featureServiceName);
@@ -391,19 +279,21 @@ public class FeatureServiceService {
 
             // Create feature service
             String featureList = featureViewName;
-            FeatureService featureService = new FeatureService(featureServiceName, version, featureList, db, selectSql, deploymentName, description);
-            return createFeatureService(featureService);
+            //FeaturesService featureService = new FeaturesService(featureServiceName, version, featureList, db, selectSql, deploymentName, description);
+            //return createFeatureService(featureService);
         }
 
         return null;
     }
 
     public List<String> getFeatureServiceVersions(String name) throws SQLException {
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
         ArrayList<String> versions = new ArrayList<>();
 
         String sql = String.format("SELECT version FROM SYSTEM_FEATURE_PLATFORM.feature_services WHERE name='%s'", name);
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
         ResultSet result = openmldbStatement.getResultSet();
         while (result.next()) {
@@ -423,24 +313,26 @@ public class FeatureServiceService {
     }
 
     public void deleteFeatureService(String name, String version) throws SQLException {
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
+
+        Statement openmldbStatement = connection.createStatement();
+
+        FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
 
         // Delete the deployment
-        FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
-        if (!featureService.getDb().equals("")) {
-            openmldbStatement.execute("USE " + featureService.getDb());
-        }
+        openmldbStatement.execute("USE " + featureService.getDb());
         String dropDeploymentSql = String.format("DROP DEPLOYMENT %s", featureService.getDeployment());
-        System.out.println("Try to drop deployment with sql: " + dropDeploymentSql);
         openmldbStatement.execute(dropDeploymentSql);
 
-        // TODO: It would be better to use JDBC prepared statement from connection
-        String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.feature_services WHERE name='%s' AND version='%s'", name, version);
+        // Delete record in database
+        String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.feature_services " +
+                "WHERE name='%s' AND version='%s'", name, version);
         openmldbStatement.execute(sql);
 
         // Delete if it is the latest version
         if (getLatestVersion(name).equals(version)) {
-            sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s' AND version='%s'", name, version);
+            sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services " +
+                    "WHERE name='%s' AND version='%s'", name, version);
             openmldbStatement.execute(sql);
         }
 
@@ -449,16 +341,23 @@ public class FeatureServiceService {
 
     public void updateLatestVersion(String name, String newVersion) throws SQLException {
         String oldLatestVersion = getLatestVersion(name);
-        if (!oldLatestVersion.equals(newVersion)) {
-            Statement openmldbStatement = openmldbConnection.createStatement();
 
-            String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s' AND version='%s'", name, oldLatestVersion);
+        if (!oldLatestVersion.equals(newVersion)) {
+            Connection connection = OpenmldbSdkUtil.getConnection(env);
+            Statement openmldbStatement = connection.createStatement();
+
+            String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services " +
+                    "WHERE name='%s' AND version='%s'", name, oldLatestVersion);
             openmldbStatement.execute(sql);
 
             FeatureService featureService = getFeatureServiceByNameAndVersion(name, newVersion);
-
-            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.latest_feature_services (name, version, db, deployment) values ('%s', '%s', '%s', '%s')", featureService.getName(), featureService.getVersion(), featureService.getDb(), featureService.getDeployment());
+            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.latest_feature_services " +
+                    "(name, version, db, deployment) values ('%s', '%s', '%s', '%s')",
+                    featureService.getName(), featureService.getVersion(), featureService.getDb(),
+                    featureService.getDeployment());
             openmldbStatement.execute(sql);
+
+            openmldbStatement.close();
         }
     }
 
@@ -469,7 +368,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(openmldbConnection, openmldbSqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService(env);
         LatestFeatureService featureService = featureServiceService.getLatestFeatureServiceByName(name);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -494,7 +393,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(openmldbConnection, openmldbSqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService(env);
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -513,18 +412,21 @@ public class FeatureServiceService {
     }
 
     public Schema getRequestSchema(String serviceName, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db, OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db,
+                OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
         Pair<String, String> mainTablePair = tables.get(0);
 
         String mainDb = mainTablePair.getKey();
         String mainTable = mainTablePair.getValue();
 
-        Schema schema = openmldbSqlExecutor.getTableSchema(mainDb, mainTable);
+        Schema schema = sqlExecutor.getTableSchema(mainDb, mainTable);
         return schema;
     }
 
@@ -562,22 +464,28 @@ public class FeatureServiceService {
     }
 
     public String getLatestVersion(String serviceName) throws SQLException {
-        String sql = String.format("SELECT version FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'", serviceName);
+        Connection connection = OpenmldbSdkUtil.getConnection(env);
 
-        Statement openmldbStatement = openmldbConnection.createStatement();
+        String sql = String.format("SELECT version FROM SYSTEM_FEATURE_PLATFORM.latest_feature_services WHERE name='%s'"
+                , serviceName);
+
+        Statement openmldbStatement = connection.createStatement();
         openmldbStatement.execute(sql);
-        ResultSet result = openmldbStatement.getResultSet();
-        while (result.next()) {
-            String version = result.getString(1);
-            return version;
-        }
+        ResultSet resultSet = openmldbStatement.getResultSet();
 
-        throw new SQLException("Fail to find version for feature service: " + serviceName);
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
+
+        String version = resultSet.getString(1);
+        return version;
     }
 
     public List<String> getDependentTables(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+
         FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureService.getSql(), featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureService.getSql(),
+                featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
         List<String> fullNameTables = new ArrayList<>();
         for (Pair<String, String> tableItem : tables) {
@@ -592,11 +500,13 @@ public class FeatureServiceService {
     }
 
     public Schema getOutputSchema(String serviceName, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        Schema schema = SqlClusterExecutor.genOutputSchema(sql, db, OpenmldbTableUtil.getSystemSchemaMaps(openmldbSqlExecutor));
+        Schema schema = SqlClusterExecutor.genOutputSchema(sql, db, OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
         return schema;
     }
 

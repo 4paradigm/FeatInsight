@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.DataType;
 import com._4paradigm.openmldb.Schema;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.StringJoiner;
 
@@ -36,6 +37,14 @@ public class ResultSetUtil {
         }
 
         return joiner.toString();
+    }
+
+    public static void assertSizeIsOne(ResultSet result) throws SQLException {
+        if (result.getFetchSize() == 0) {
+            throw new SQLException("The size of result set is 0, can not find the resource");
+        } else if (result.getFetchSize() > 1) {
+            throw new SQLException(String.format("The size of result set is %d, get more than one resource", result.getFetchSize()));
+        }
     }
 
 }

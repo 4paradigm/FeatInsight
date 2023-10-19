@@ -28,33 +28,27 @@ public class FeatureServiceController {
 
     @GetMapping
     public List<FeatureService> getFeatureServices() throws SQLException {
-        featureServiceService.initOnlineMode();
         return featureServiceService.getFeatureServices();
     }
 
     @GetMapping("/latest")
     public List<FeatureService> getLatestFeatureServices() throws SQLException {
-        featureServiceService.initOnlineMode();
         return featureServiceService.getLatestFeatureServices();
     }
 
     @GetMapping("/{name}")
     public FeatureService getFeatureServiceByName(@PathVariable String name) throws SQLException {
-        featureServiceService.initOnlineMode();
         return featureServiceService.getFeatureServiceByName(name);
     }
 
     @PostMapping
     public FeatureService createFeatureService(@RequestBody FeatureService featureService) throws SQLException {
-        featureServiceService.initOnlineMode();
         return featureServiceService.createFeatureService(featureService);
     }
 
     @PutMapping(value = "/{name}/latestversion")
     public ResponseEntity<String> updateLatestVersion(@PathVariable String name, @RequestBody UpdateLatestVersionRequest request) {
         try {
-            featureServiceService.initOnlineMode();
-
             featureServiceService.updateLatestVersion(name, request.getVersion());
             return new ResponseEntity<>("Success to update latest version", HttpStatus.OK);
         } catch (SQLException e) {
@@ -65,16 +59,12 @@ public class FeatureServiceController {
 
     @GetMapping("/{name}/versions")
     public List<String> getFeatureServiceVersions(@PathVariable String name) throws SQLException {
-        featureServiceService.initOnlineMode();
-
         return featureServiceService.getFeatureServiceVersions(name);
     }
 
     @GetMapping("/{name}/latestversion")
     public String getFeatureServiceLatestVersion(@PathVariable String name) {
         try {
-            featureServiceService.initOnlineMode();
-
             return featureServiceService.getLatestVersion(name);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,7 +112,8 @@ public class FeatureServiceController {
 
     @PostMapping(value = "/deployments")
     public FeatureService createFeatureServiceFromDeployment(@RequestBody FeatureServiceDeploymentRequest request) throws SQLException {
-        return featureServiceService.createFeatureServiceFromDeployment(request);
+        //return featureServiceService.createFeatureServiceFromDeployment(request);
+        return null;
     }
 
     @GetMapping("/{name}/{version}/request/schema")
