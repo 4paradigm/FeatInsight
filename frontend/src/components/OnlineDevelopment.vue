@@ -22,8 +22,8 @@
 </template>
   
 <script>
-import FeatureServicesPage from './FeatureServicesPage.vue';
-import OnlineTables from './tablecontent/OnlineTables.vue';
+import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue';
+import OnlineTables from '@/components/table/OnlineTables.vue';
 import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 
 export default {

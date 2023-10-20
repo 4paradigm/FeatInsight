@@ -14,11 +14,11 @@ import java.util.List;
 @Repository
 public class DatabaseService {
 
-    private final SqlClusterExecutor sqlExecutor;
-
     @Autowired
-    public DatabaseService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    private SqlClusterExecutor sqlExecutor;
+
+    public DatabaseService() {
+
     }
 
     public List<String> getDatabases() {

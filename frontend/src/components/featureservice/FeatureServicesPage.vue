@@ -85,8 +85,8 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import CreateFeatureServiceForm from './form/CreateFeatureServiceForm.vue';
-import TestFeatureService from './TestFeatureService.vue';
+import CreateFeatureServiceForm from '@/components/form/CreateFeatureServiceForm.vue';
+import TestFeatureService from '@/components/TestFeatureService.vue';
 
 export default {
   components: { 

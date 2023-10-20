@@ -18,9 +18,8 @@ public class OfflineSampleService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-    @Autowired
-    public OfflineSampleService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    public OfflineSampleService() {
+
     }
 
     public OfflineSample resultSetToOfflineSample(ResultSet resultSet) throws SQLException {
@@ -73,7 +72,7 @@ public class OfflineSampleService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         List<String> joinKeys = new ArrayList<>(Arrays.asList(offlineSample.getMainTableKeys().split(",")));
         String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService,

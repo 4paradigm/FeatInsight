@@ -21,7 +21,7 @@
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { ref, onMounted } from 'vue';
-import OfflineJobDetail from './OfflineJobDetail.vue';
+import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue';
 
 
 export default {

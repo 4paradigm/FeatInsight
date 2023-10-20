@@ -14,11 +14,12 @@ import java.util.Map;
 @Repository
 public class SqlService {
 
-    private final SqlClusterExecutor sqlExecutor;
-
     @Autowired
-    public SqlService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    private SqlClusterExecutor sqlExecutor;
+
+
+    public SqlService() {
+
     }
 
     public void initDbAndTables() throws SQLException {

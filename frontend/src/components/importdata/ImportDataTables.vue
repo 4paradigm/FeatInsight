@@ -31,7 +31,7 @@
 </template>
   
 <script>
-import OnlineTables from '../tablecontent/OnlineTables.vue';
+import OnlineTables from '../table/OnlineTables.vue';
 import CreateTableFromSqlForm from '@/components/form/CreateTableFromSqlForm.vue'
 
 export default {

@@ -32,9 +32,8 @@ public class FeatureServiceService {
     @Autowired
     private Environment env;
 
-    @Autowired
-    public FeatureServiceService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    public FeatureServiceService() {
+
     }
 
     public static FeatureService resultSetToFeatureService(ResultSet resultSet) throws SQLException {
@@ -159,7 +158,7 @@ public class FeatureServiceService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         String featureSetString = featureService.getFeatureNames();
 
@@ -373,7 +372,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         LatestFeatureService featureService = featureServiceService.getLatestFeatureServiceByName(name);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -398,7 +397,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();

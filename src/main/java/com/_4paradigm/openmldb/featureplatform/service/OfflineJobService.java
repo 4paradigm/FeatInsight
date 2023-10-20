@@ -18,9 +18,8 @@ public class OfflineJobService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-    @Autowired
-    public OfflineJobService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    public OfflineJobService() {
+
     }
 
     public static OfflineJobInfo resultSetToOfflineJobInfo(ResultSet resultSet) throws SQLException {

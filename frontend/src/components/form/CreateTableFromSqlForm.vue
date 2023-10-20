@@ -4,7 +4,7 @@
 
   <div>
     <a-typography-paragraph>
-      <pre>{{ $t("Text of introduce create table from SQL") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
+      <pre>{{ $t("Text of introduce create table from sql") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
     </a-typography-paragraph>
     <br/>
 

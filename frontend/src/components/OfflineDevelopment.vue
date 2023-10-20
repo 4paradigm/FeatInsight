@@ -27,8 +27,8 @@
 </template>
   
 <script>
-import OfflineSamplesPage from './OfflineSamplesPage.vue';
-import OfflineTables from './tablecontent/OfflineTables.vue';
+import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue';
+import OfflineTables from './table/OfflineTables.vue';
 import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 
 export default {

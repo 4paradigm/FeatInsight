@@ -17,11 +17,12 @@ import java.util.List;
 @Repository
 public class TableService {
 
-    private final SqlClusterExecutor sqlExecutor;
-
     @Autowired
-    public TableService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    private SqlClusterExecutor sqlExecutor;
+
+
+    public TableService() {
+
     }
 
     public List<SimpleTableInfo> getTables() throws SQLException {
@@ -52,7 +53,7 @@ public class TableService {
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
         // Get all feature services
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
         for (FeatureService featureService : allFeatureServices) {
@@ -78,7 +79,7 @@ public class TableService {
         List<FeatureView> relatedFeatureViews = new ArrayList<>();
 
         // Get all feature services
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
         for (FeatureView featureView : allFeatureViews) {

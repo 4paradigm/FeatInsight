@@ -31,7 +31,7 @@
   </template>
     
 <script>
-  import OfflineTables from '../tablecontent/OfflineTables.vue';
+  import OfflineTables from '../table/OfflineTables.vue';
   import LoadDataForm from '@/components/form/LoadDataForm.vue';
 
   export default {

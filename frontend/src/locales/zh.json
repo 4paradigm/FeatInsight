@@ -171,7 +171,7 @@
     "Online Import": "在线导入",
     "Offline Import": "离线导入",
     "Text of introduce create database": "用户可以创建新的数据库，请参考",
-    "Text of introduce create table": "用户可以创建新的数据表，请参考",
+    "Text of introduce create table from sql": "用户可以创建新的数据表，请参考",
     "Text of introduce online import": "用户可以进行在线导入，把用于在线实时计算的数据导入到在线存储中，请参考",
     "Text of introduce offline import": "用户可以进行离线导入，把用于生成训练样本的数据导入到离线存储中，请参考",
     "Create From SQL": "使用SQL创建",

@@ -16,11 +16,12 @@ import java.util.List;
 @Repository
 public class FeaturesService {
 
-    private final SqlClusterExecutor sqlExecutor;
-
     @Autowired
-    public FeaturesService(SqlClusterExecutor sqlExecutor) throws SQLException {
-        this.sqlExecutor = sqlExecutor;
+    private SqlClusterExecutor sqlExecutor;
+
+
+    public FeaturesService() {
+
     }
 
     public static Feature resultSetToFeature(ResultSet resultSet) throws SQLException {
@@ -69,7 +70,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureView(String featureViewName) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         // Get the feature service with latest version
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
@@ -85,7 +86,7 @@ public class FeaturesService {
 
     public List<Feature> getFeaturesByFeatureService(String featureServiceName) throws SQLException {
         // Get the feature service with latest version
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         String version = featureServiceService.getLatestVersion(featureServiceName);
 
         return getFeaturesByFeatureServiceAndVersion(featureServiceName, version);
@@ -94,7 +95,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureServiceAndVersion(String featureServiceName, String version) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
 
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(featureServiceName, version);
         String featureNames = featureService.getFeatureNames();
