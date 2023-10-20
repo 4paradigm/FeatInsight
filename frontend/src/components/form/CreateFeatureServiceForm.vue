@@ -2,6 +2,14 @@
 
 <div>
 
+    <!-- Create Feature Form Modal -->
+    <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" >
+      <template #footer>
+        <a-button @click="handleCancel">Cancel</a-button>
+      </template>
+      <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
+    </a-modal>
+
   <div>
     <a-typography-paragraph>
       <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
@@ -33,10 +41,20 @@
         :label="$t('Feature Collection')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
-        <a-select mode="multiple" v-model:value="formState.featureCollection">
+        <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
+        
+        <br/><br/>
+        <a-select mode="multiple" v-model:value="formState.featureSet">
             <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
+      </a-form-item>
 
+      <a-form-item 
+          :label="$t('Main Table Keys')">
+          <a-tooltip>
+            <template #title>{{$t('Text of introduce join keys')}}</template>
+            <a-input id="mainTableKeys" v-model:value="formState.mainTableKeys"></a-input>
+          </a-tooltip>
       </a-form-item>
 
       <a-form-item
@@ -60,6 +78,7 @@ import { message } from 'ant-design-vue';
 export default {
   data() {
     return {
+      isShowCreateFeatureModal: false,
 
       featureOptions: [],
 
@@ -69,7 +88,8 @@ export default {
       formState: {
         name: '',
         version: '',
-        featureCollection: [],
+        featureSet: [],
+        mainTableKeys: "",
         description: '',
       },
 
@@ -91,6 +111,10 @@ export default {
         })
         .finally(() => {});
 
+      this.updateSelectFeatureOptions();
+    },
+
+    updateSelectFeatureOptions() {
       axios.get(`/api/featureviews`)
         .then(response => {
           response.data.forEach(featureView => {
@@ -117,7 +141,7 @@ export default {
         .finally(() => {});
 
       if (this.$route.query.featureview != null) {
-        this.formState.featureCollection = [this.$route.query.featureview];
+        this.formState.featureSet = [this.$route.query.featureview];
       }
 
 
@@ -136,8 +160,9 @@ export default {
       axios.post(`/api/featureservices`, {
         "name": this.formState.name,
         "version": this.formState.version,
-        "featureList": this.formState.featureCollection.join(','),
+        "featureNames": this.formState.featureSet.join(','),
         "description": this.formState.description,
+        "mainTableKeys": this.formState.mainTableKeys
       })
       .then(response => {
         message.success(`Success to add feature service ${this.formState.name} and version ${this.formState.version}`);
@@ -177,9 +202,23 @@ export default {
       if (this.test.includes(this.formState.version)){
          message.error("Service version already exists, please rename.");
          this.formState.version = ''
-      }
-      
+      } 
+    },
+
+    clickCreateFeature() {
+      this.isShowCreateFeatureModal = true;
+    },
+
+    handleCancel() {
+      this.isShowCreateFeatureModal = false;
+    },
+
+    submittedCreateFeatureForm(newFeatureViewName) {
+      this.isShowCreateFeatureModal = false;
+      this.updateSelectFeatureOptions();
+      this.formState.featureSet = [newFeatureViewName]
     }
+
   },
 };
 </script>

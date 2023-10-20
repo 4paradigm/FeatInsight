@@ -8,7 +8,7 @@ public class FeatureService {
     private String version;
     private String featureNames;
     private String description;
-    private String joinKeys;
+    private String mainTableKeys;
     private String db;
     private String sql;
     private String deployment;
@@ -17,19 +17,19 @@ public class FeatureService {
 
     }
 
-    public FeatureService(String name, String version, String featureNames, String description, String joinKeys, String db, String sql, String deployment) {
+    public FeatureService(String name, String version, String featureNames, String description, String mainTableKeys, String db, String sql, String deployment) {
         this.name = name;
         this.version = version;
         this.featureNames = featureNames;
         this.description = description;
-        this.joinKeys = joinKeys;
+        this.mainTableKeys = mainTableKeys;
         this.db = db;
         this.sql = sql;
         this.deployment = deployment;
     }
 
-    public FeatureService(String name, String version, String featureNames, String description, String joinKeys) {
-        this(name, version, featureNames, description, joinKeys, "", "", "");
+    public FeatureService(String name, String version, String featureNames, String description, String mainTableKeys) {
+        this(name, version, featureNames, description, mainTableKeys, "", "", "");
     }
 
     public FeatureService(String name, String version, String featureNames, String description, String db, String sql,

@@ -22,7 +22,7 @@
 
 
   <br/>
-  <a-switch v-model:checked="isShowJobLog" checked-children="$t('Diskplay log')" un-checked-children="Hide log" @click="showJobLog"/>
+  <a-switch v-model:checked="isShowJobLog" :checked-children="$t('Display log')" :un-checked-children="$t('Hide log')" @click="showJobLog"/>
   <br/><br/>
   <div v-if="isShowJobLog">
     <pre>{{ jobLog }}</pre>

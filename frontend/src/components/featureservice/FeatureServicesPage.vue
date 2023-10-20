@@ -9,7 +9,10 @@
 
   <!-- Create form modal -->
   <div>
-    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Deploy Feature Service')" @ok="handleOk">
+    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Deploy Feature Service')">
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+      </template>
       <CreateFeatureServiceForm></CreateFeatureServiceForm>
     </a-modal>
   </div>
@@ -39,7 +42,10 @@
   </a-table>
 
   <div>
-    <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" @ok="handleOk">
+    <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" >
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+      </template>
       <TestFeatureService></TestFeatureService>
     </a-modal>
   </div>
@@ -209,7 +215,7 @@ export default {
       this.isOpenFormModal = true;
     },
 
-    handleOk() {
+    handleCancel() {
       this.isOpenFormModal = false;
       this.isOpenTestFormModal = false;
     },

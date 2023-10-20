@@ -26,8 +26,9 @@ public class FeatureViewService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-    public FeatureViewService() {
-
+    @Autowired
+    public FeatureViewService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     // Convert featureNames string in database to list of string
@@ -71,7 +72,7 @@ public class FeatureViewService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeaturesService featureService = new FeaturesService();
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
         ArrayList<FeatureView> featureViews = new ArrayList<>();
 
         String sql = "SELECT name, db, sql, description, feature_names FROM SYSTEM_FEATURE_PLATFORM.feature_views";
@@ -90,7 +91,7 @@ public class FeatureViewService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeaturesService featureService = new FeaturesService();
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         String sql = String.format("SELECT name, db, sql, description, feature_names " +
                 "FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
@@ -146,7 +147,7 @@ public class FeatureViewService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeaturesService featureService = new FeaturesService();
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
@@ -185,7 +186,7 @@ public class FeatureViewService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeaturesService featureService = new FeaturesService();
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         // Delete the features
         List<Feature> features = featureService.getFeaturesByFeatureView(name);

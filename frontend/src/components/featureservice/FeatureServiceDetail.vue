@@ -11,7 +11,7 @@
     <a-descriptions bordered>
       <a-descriptions-item :span="24" :label="$t('Name')"> {{ data.name }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Latest Version')"><router-link :to="`/featureservices/${data.name}/${data.version}`">{{ data.version }}</router-link></a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Feature List')">{{ data.featureList }}</a-descriptions-item>
+      <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Database')"><router-link :to="`/databases/${data.db}`">{{ data.db }}</router-link></a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('SQL')">{{ data.sql }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>

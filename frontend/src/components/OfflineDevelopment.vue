@@ -13,7 +13,7 @@
     <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="handleOk">
       <template #footer>
           <a-button @click="handleCancel">Cancel</a-button>
-        </template>
+      </template>
       <ExecuteSqlForm></ExecuteSqlForm>
     </a-modal>
   </div>

@@ -5,12 +5,12 @@
   <h1>{{ $t('Offline Sample') }}: {{ data.jobId }} </h1>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.jobId }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Feature List')">{{ data.featureList }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Format')"> {{ data.format }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Path')"> {{ data.path }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Options')"> {{ data.options }}</a-descriptions-item>
-</a-descriptions>
-
+    <a-descriptions-item :span="24" :label="$t('Database')"> {{ data.db }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('SQL')"> {{ data.sql }}</a-descriptions-item>
+  </a-descriptions>
 
   <OfflineJobDetail :id=id></OfflineJobDetail>
 

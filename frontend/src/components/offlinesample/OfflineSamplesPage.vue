@@ -60,14 +60,9 @@ export default {
         slots: { customRender: 'jobId' }
       },
       {
-        title: this.$t('Feature List'),
-        dataIndex: 'featureList',
-        key: 'featureList',
-      },
-      {
-        title: this.$t('Format'),
-        dataIndex: 'format',
-        key: 'format',
+        title: this.$t('Features'),
+        dataIndex: 'featureNames',
+        key: 'featureName',
       },
       {
         title: this.$t('Path'),
@@ -92,9 +87,7 @@ export default {
     initData() {
       this.loading = true;
 
-      let requestUrl = "/api/offlinesamples"
-
-      axios.get(requestUrl)
+      axios.get("/api/offlinesamples")
         .then(response => {
           this.offlineSamples = response.data;
           this.searchFilteredOfflineSamples = this.offlineSamples;

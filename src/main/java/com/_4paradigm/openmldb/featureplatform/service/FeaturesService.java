@@ -19,9 +19,9 @@ public class FeaturesService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-
-    public FeaturesService() {
-
+    @Autowired
+    public FeaturesService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public static Feature resultSetToFeature(ResultSet resultSet) throws SQLException {
@@ -60,6 +60,7 @@ public class FeaturesService {
         ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
 
         Feature feature = resultSetToFeature(resultSet);
 
@@ -70,7 +71,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureView(String featureViewName) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureViewService featureViewService = new FeatureViewService();
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
 
         // Get the feature service with latest version
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
@@ -86,7 +87,7 @@ public class FeaturesService {
 
     public List<Feature> getFeaturesByFeatureService(String featureServiceName) throws SQLException {
         // Get the feature service with latest version
-        FeatureServiceService featureServiceService = new FeatureServiceService();
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         String version = featureServiceService.getLatestVersion(featureServiceName);
 
         return getFeaturesByFeatureServiceAndVersion(featureServiceName, version);
@@ -95,7 +96,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureServiceAndVersion(String featureServiceName, String version) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureServiceService featureServiceService = new FeatureServiceService();
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
 
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(featureServiceName, version);
         String featureNames = featureService.getFeatureNames();

@@ -27,7 +27,7 @@
         <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
         
         <br/><br/>
-        <a-select mode="multiple" v-model:value="formState.featureList">
+        <a-select mode="multiple" v-model:value="formState.featureSet">
           <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
       </a-form-item>
@@ -36,7 +36,7 @@
           :label="$t('Main Table Keys')">
           <a-tooltip>
             <template #title>{{$t('Text of introduce join keys')}}</template>
-            <a-input id="joinKeys" v-model:value="formState.joinKeys"></a-input>
+            <a-input id="mainTableKeys" v-model:value="formState.mainTableKeys"></a-input>
           </a-tooltip>
       </a-form-item>
 
@@ -99,8 +99,8 @@ export default {
       ],
 
       formState: {
-        featureList: [],
-        joinKeys: "",
+        featureSet: [],
+        mainTableKeys: "",
         format: 'CSV',
         path: '',
         options: '',
@@ -147,13 +147,13 @@ export default {
 
     handleSubmit() {
       axios.post(`/api/offlinesamples`, {
-        "featureNames": this.formState.featureList.join(','),
+        "featureNames": this.formState.featureSet.join(','),
         "path": this.formState.path,
         "options": this.formState.options,
-        "joinKeys": this.formState.joinKeys,
+        "mainTableKeys": this.formState.mainTableKeys,
       })
       .then(response => {
-        //message.success(`Success to export offline sample for feature list ${this.formState.featureList}`);
+        //message.success(`Success to export offline sample for feature list ${this.formState.featureSet}`);
 
         console.log(response.data)
         const jobId = response.data.jobId;
@@ -181,7 +181,7 @@ export default {
     submittedCreateFeatureForm(newFeatureViewName) {
       this.isShowCreateFeatureModal = false;
       this.updateSelectFeatureOptions();
-      this.formState.featureList = [newFeatureViewName]
+      this.formState.featureSet = [newFeatureViewName]
     }
   },
 };

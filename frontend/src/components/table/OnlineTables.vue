@@ -19,7 +19,10 @@
   </a-table>
 
   <div>
-    <a-modal v-model:visible="isOpenPreviewTableModal" width="1000px" :title="$t('Preview Data')" @ok="handleOk">
+    <a-modal v-model:visible="isOpenPreviewTableModal" width="1000px" :title="$t('Preview Data')" >
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+      </template>
       <h3>{{$t('Preview Data')}} ({{$t('Limit')}} 10 {{$t('Rows')}})</h3>
       <p v-html="previewTableContent"></p>
     </a-modal>
@@ -121,7 +124,7 @@ export default {
 
     },
 
-    handleOk() {
+    handleCancel() {
       this.isOpenPreviewTableModal = false;
     },
 

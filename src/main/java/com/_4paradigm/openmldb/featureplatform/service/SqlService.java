@@ -17,9 +17,9 @@ public class SqlService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-
-    public SqlService() {
-
+    @Autowired
+    public SqlService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public void initDbAndTables() throws SQLException {

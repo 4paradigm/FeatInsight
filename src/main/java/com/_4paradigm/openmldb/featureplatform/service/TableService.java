@@ -20,9 +20,9 @@ public class TableService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-
-    public TableService() {
-
+    @Autowired
+    public TableService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public List<SimpleTableInfo> getTables() throws SQLException {
@@ -53,7 +53,7 @@ public class TableService {
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
         // Get all feature services
-        FeatureServiceService featureServiceService = new FeatureServiceService();
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
         for (FeatureService featureService : allFeatureServices) {
@@ -74,12 +74,11 @@ public class TableService {
         return relatedFeatureServices;
     }
 
-
     public List<FeatureView> getRelatedFeatureViews(String db, String table) throws SQLException {
         List<FeatureView> relatedFeatureViews = new ArrayList<>();
 
         // Get all feature services
-        FeatureViewService featureViewService = new FeatureViewService();
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
         for (FeatureView featureView : allFeatureViews) {

@@ -32,8 +32,9 @@ public class FeatureServiceService {
     @Autowired
     private Environment env;
 
-    public FeatureServiceService() {
-
+    @Autowired
+    public FeatureServiceService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public static FeatureService resultSetToFeatureService(ResultSet resultSet) throws SQLException {
@@ -118,6 +119,7 @@ public class FeatureServiceService {
         ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
 
         LatestFeatureService latestFeatureService = resultSetToLatestFeatureService(resultSet);
 
@@ -134,6 +136,7 @@ public class FeatureServiceService {
         ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
         FeatureService featureService = resultSetToFeatureService(resultSet);
 
         statement.close();
@@ -158,13 +161,13 @@ public class FeatureServiceService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService();
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
 
         String featureSetString = featureService.getFeatureNames();
 
         String deploymentName = String.format("FEATURE_PLATFORM_%s_%s", featureService.getName(), featureService.getVersion());
 
-        List<String> joinKeys = new ArrayList<>(Arrays.asList(featureService.getJoinKeys().split(",")));
+        List<String> joinKeys = new ArrayList<>(Arrays.asList(featureService.getMainTableKeys().split(",")));
         String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService, featureSetString, joinKeys);
         String db = FeatureSetUtil.getDbFromFeatureSet(featureViewService, featureSetString);
 
@@ -182,7 +185,7 @@ public class FeatureServiceService {
         String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_services (name, version, feature_names, " +
                 "description, db, sql, deployment) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                 newFeatureService.getName(), newFeatureService.getVersion(), newFeatureService.getFeatureNames(),
-                newFeatureService.getDescription(), newFeatureService.getDescription(), newFeatureService.getSql(),
+                newFeatureService.getDescription(), newFeatureService.getDb(), newFeatureService.getSql(),
                 newFeatureService.getDeployment());
         statement.execute(sql);
 
@@ -193,6 +196,7 @@ public class FeatureServiceService {
         ResultSet resultSet = statement.getResultSet();
         ResultSetUtil.assertSizeIsOne(resultSet);
         resultSet.next();
+
         if (resultSet.getLong(1) == 0) { // Has no other versions
             sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.latest_feature_services " +
                     "(name, version, db, deployment) values ('%s', '%s', '%s', '%s')", newFeatureService.getName(),
@@ -372,7 +376,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService();
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         LatestFeatureService featureService = featureServiceService.getLatestFeatureServiceByName(name);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -397,7 +401,7 @@ public class FeatureServiceService {
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService();
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();

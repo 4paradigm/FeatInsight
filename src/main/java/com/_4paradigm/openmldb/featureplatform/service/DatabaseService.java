@@ -17,8 +17,9 @@ public class DatabaseService {
     @Autowired
     private SqlClusterExecutor sqlExecutor;
 
-    public DatabaseService() {
-
+    @Autowired
+    public DatabaseService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public List<String> getDatabases() {

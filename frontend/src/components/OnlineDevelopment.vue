@@ -9,7 +9,10 @@
   </h1>
 
   <div>
-    <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Online SQL')" @ok="handleOk">
+    <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Online SQL')" >
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+      </template>
       <ExecuteSqlForm></ExecuteSqlForm>
     </a-modal>
   </div>
@@ -43,7 +46,7 @@ export default {
   },
 
   methods: {
-    handleOk() {
+    handleCancel() {
       this.isOpenExecuteSqlModal = false;
     },
 
