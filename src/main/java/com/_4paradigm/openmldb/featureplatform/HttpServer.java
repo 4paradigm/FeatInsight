@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform;
 
-import com._4paradigm.openmldb.featureplatform.dao.SqlService;
+import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;

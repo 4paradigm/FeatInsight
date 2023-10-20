@@ -1,4 +1,4 @@
-package com._4paradigm.openmldb.featureplatform.dao;
+package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
@@ -12,8 +12,6 @@ import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.core.env.Environment;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,11 +23,11 @@ import java.util.Map;
 @Repository
 public class FeatureViewService {
 
-    private final Environment env;
+    private final SqlClusterExecutor sqlExecutor;
 
     @Autowired
-    public FeatureViewService(Environment env) {
-        this.env = env;
+    public FeatureViewService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     // Convert featureNames string in database to list of string
@@ -44,12 +42,12 @@ public class FeatureViewService {
         return featureNames;
     }
 
-    public Map<String, String> getFeatureDescriptionMap(FeaturesService featureService, String featureViewName,
+    public Map<String, String> getFeatureDescriptionMap(FeaturesService featuresService, String featureViewName,
                                                         List<String> featureNames) throws SQLException {
         Map<String, String> featureDescriptionMap = new HashMap<>();
 
         for (String featureName: featureNames) {
-            Feature feature = featureService.getFeatureByName(featureViewName, featureName);
+            Feature feature = featuresService.getFeature(featureViewName, featureName);
             featureDescriptionMap.put(featureName, feature.getDescription());
         }
 
@@ -70,34 +68,42 @@ public class FeatureViewService {
     }
 
     public List<FeatureView> getFeatureViews() throws SQLException {
-        FeaturesService featureService = new FeaturesService(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
         ArrayList<FeatureView> featureViews = new ArrayList<>();
 
-        Statement openmldbStatement = OpenmldbSdkUtil.getConnection(env).createStatement();
         String sql = "SELECT name, db, sql, description, feature_names FROM SYSTEM_FEATURE_PLATFORM.feature_views";
-        openmldbStatement.execute(sql);
-        ResultSet resultSet = openmldbStatement.getResultSet();
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
 
         while (resultSet.next()) {
             featureViews.add(getFeatureViewFromResultSet(featureService, resultSet));
         }
 
+        statement.close();
         return featureViews;
     }
 
     public FeatureView getFeatureViewByName(String name) throws SQLException {
-        FeaturesService featureService = new FeaturesService(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         String sql = String.format("SELECT name, db, sql, description, feature_names " +
                 "FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
-        Statement openmldbStatement = OpenmldbSdkUtil.getConnection(env).createStatement();
-        openmldbStatement.execute(sql);
-        ResultSet resultSet = openmldbStatement.getResultSet();
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
         resultSet.next();
 
-        return getFeatureViewFromResultSet(featureService, resultSet);
+        FeatureView featureView = getFeatureViewFromResultSet(featureService, resultSet);
+
+        statement.close();
+        return featureView;
     }
 
     public void assertFeatureViewValid(FeatureView featureView) throws SQLException {
@@ -117,7 +123,6 @@ public class FeatureViewService {
     public List<String> getOutputFeatureNames(FeatureView featureView) throws SQLException {
         assertFeatureViewValid(featureView);
 
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
         Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
         List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(featureView.getSql(), featureView.getDb(),
@@ -138,9 +143,10 @@ public class FeatureViewService {
             throw new SQLException("The number of features in feature view is 0");
         }
 
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-        FeaturesService featureService = new FeaturesService(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
@@ -169,18 +175,17 @@ public class FeatureViewService {
                 "sql, description, feature_names) values ('%s', '%s', '%s', '%s', '%s')",
                 featureView.getName(), featureView.getDb(), featureView.getSql(), featureView.getDescription(),
                 featureNamesString);
+        statement.execute(insertSql);
 
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(insertSql);
-        openmldbStatement.close();
-
+        statement.close();
         return featureView;
     }
 
     public void deleteFeatureView(String name) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-        FeaturesService featureService = new FeaturesService(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
 
         // Delete the features
         List<Feature> features = featureService.getFeaturesByFeatureView(name);
@@ -190,14 +195,12 @@ public class FeatureViewService {
 
         // Delete the feature view
         String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(sql);
-        openmldbStatement.close();
+        statement.execute(sql);
+
+        statement.close();
     }
 
     public List<String> getDependentTables(String name) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         FeatureView featureView = getFeatureViewByName(name);
 
         List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureView.getSql(),
@@ -205,8 +208,8 @@ public class FeatureViewService {
 
         List<String> fullNameTables = new ArrayList<>();
         for (Pair<String, String> tableItem : tables) {
-            String fullTablename = tableItem.getKey() + "." + tableItem.getValue();
-            fullNameTables.add(fullTablename);
+            String fullTableName = tableItem.getKey() + "." + tableItem.getValue();
+            fullNameTables.add(fullTableName);
         }
         return fullNameTables;
     }

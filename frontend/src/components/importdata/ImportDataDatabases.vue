@@ -7,7 +7,10 @@
 
   <!-- Create form modal -->
   <div>
-    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Create Database')" @ok="handleOk">
+    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Create Database')">
+      <template #footer>
+        <a-button @click="handleCancel">Cancel</a-button>
+      </template>
       <CreateDatabaseForm @close="closeModal"></CreateDatabaseForm>
     </a-modal>
   </div>
@@ -73,7 +76,7 @@ export default {
       this.isOpenFormModal = false;
     },
 
-    handleOk() {
+    handleCancel() {
       this.isOpenFormModal = false;
     },
 

@@ -20,55 +20,20 @@ public class OpenmldbBean {
     private Environment env;
 
     @Bean
-    public Connection openmldbConnection() {
-        // Read config from yaml file
-        String zkHost = env.getProperty("openmldb.zk_cluster");
-        String zkPath = env.getProperty("openmldb.zk_path");
-
-        Connection connection = null;
-
-        try {
-            Class.forName("com._4paradigm.openmldb.jdbc.SQLDriver");
-            System.out.println("Try to connect OpenMLDB with zk host: " + zkHost + ", path: " + zkPath);
-            connection = DriverManager.getConnection("jdbc:openmldb:///?zk=" + zkHost + "&zkPath=" + zkPath);
-            Statement stmt = connection.createStatement();
-
-            stmt.execute("SET @@execute_mode='online'");
-            stmt.execute("CREATE DATABASE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM");
-            stmt.execute("USE SYSTEM_FEATURE_PLATFORM");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return connection;
-    }
-
-    @Bean
-    public Statement openmldbStatement() {
-        Connection openmldbConnection = openmldbConnection();
-        Statement openmldbStatement = null;
-
-        try {
-            openmldbStatement = openmldbConnection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return openmldbStatement;
-    }
-
-
-    @Bean
-    public SqlClusterExecutor openmldbSqlExecutor() throws SqlException {
+    public SqlClusterExecutor sqlExecutor() throws SQLException {
         String zkHost = env.getProperty("openmldb.zk_cluster");
         String zkPath = env.getProperty("openmldb.zk_path");
 
         SdkOption option = new SdkOption();
         option.setZkCluster(zkHost);
         option.setZkPath(zkPath);
-        SqlClusterExecutor sqlExecutor = new SqlClusterExecutor(option);
+
+        SqlClusterExecutor sqlExecutor = null;
+        try {
+            sqlExecutor = new SqlClusterExecutor(option);
+        } catch (SqlException e) {
+            throw new SQLException(e);
+        }
         return sqlExecutor;
     }
 

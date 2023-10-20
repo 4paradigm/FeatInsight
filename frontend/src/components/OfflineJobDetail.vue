@@ -65,7 +65,7 @@ export default {
           if (this.data.state.toLowerCase() === "failed") {
             this.statePercent = 90,
             this.stateStatus = 'exception'
-          } else if (this.data.state.toLowerCase() === "completed") {
+          } else if (this.data.state.toLowerCase() === "finished") {
             this.statePercent = 100,
             this.stateStatus = 'success'
           } else {

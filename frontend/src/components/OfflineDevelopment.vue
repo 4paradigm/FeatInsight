@@ -11,6 +11,9 @@
   
   <div>
     <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="handleOk">
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+        </template>
       <ExecuteSqlForm></ExecuteSqlForm>
     </a-modal>
   </div>
@@ -18,19 +21,19 @@
   <br/>
   <OfflineTables></OfflineTables>
 
-  <TrainingSetsPage></TrainingSetsPage>
+  <OfflineSamplesPage></OfflineSamplesPage>
  
 </div>
 </template>
   
 <script>
-import TrainingSetsPage from './TrainingSetsPage.vue';
+import OfflineSamplesPage from './OfflineSamplesPage.vue';
 import OfflineTables from './tablecontent/OfflineTables.vue';
 import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 
 export default {
   components: {
-    TrainingSetsPage,
+    OfflineSamplesPage,
     OfflineTables,
     ExecuteSqlForm
   },

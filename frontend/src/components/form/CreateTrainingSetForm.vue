@@ -2,15 +2,16 @@
 
 <div>
     <!-- Create Feature Form Modal -->
-    <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" @ok="handleOk">
-      <CreateFeatureViewForm></CreateFeatureViewForm>
+    <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" >
+      <template #footer>
+        <a-button @click="handleCancel">Cancel</a-button>
+      </template>
+      <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
     </a-modal>
 
-
     <a-typography-paragraph>
-      <pre>{{ $t("Text of introduce create training set") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+      <pre>{{ $t("Text of introduce create offline sample") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
     </a-typography-paragraph>
-
     <br/>
 
     <!-- Create form -->
@@ -23,15 +24,20 @@
       <a-form-item
         :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
-
         <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
         
         <br/><br/>
         <a-select mode="multiple" v-model:value="formState.featureList">
           <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
         </a-select>
+      </a-form-item>
 
- 
+      <a-form-item 
+          :label="$t('Main Table Keys')">
+          <a-tooltip>
+            <template #title>{{$t('Text of introduce join keys')}}</template>
+            <a-input id="joinKeys" v-model:value="formState.joinKeys"></a-input>
+          </a-tooltip>
       </a-form-item>
 
       <a-form-item
@@ -83,6 +89,8 @@ export default {
 
   data() {
     return {
+      isShowCreateFeatureModal: false,
+
       featureOptions: [],
 
       formatOptions:[
@@ -90,13 +98,10 @@ export default {
         {id: 'parquet', name: 'Parquet'}
       ],
 
-      tables: [],
-
-      isShowCreateFeatureModal: false,
-
       formState: {
         featureList: [],
-        format: '',
+        joinKeys: "",
+        format: 'CSV',
         path: '',
         options: '',
       },
@@ -110,7 +115,10 @@ export default {
 
   methods: {
     initData() {
+      this.updateSelectFeatureOptions();
+    },
 
+    updateSelectFeatureOptions() {
       axios.get(`/api/featureviews`)
         .then(response => {
           response.data.forEach(featureView => {
@@ -135,24 +143,23 @@ export default {
           message.error(error.message);
         })
         .finally(() => {});
-
     },
 
     handleSubmit() {
-      axios.post(`/api/trainingsets`, {
-        "featureList": this.formState.featureList.join(','),
-        "format": this.formState.format,
+      axios.post(`/api/offlinesamples`, {
+        "featureNames": this.formState.featureList.join(','),
         "path": this.formState.path,
         "options": this.formState.options,
+        "joinKeys": this.formState.joinKeys,
       })
       .then(response => {
-        //message.success(`Success to export training set for feature list ${this.formState.featureList}`);
+        //message.success(`Success to export offline sample for feature list ${this.formState.featureList}`);
 
         console.log(response.data)
         const jobId = response.data.jobId;
 
         // Redirect to result page
-        this.$router.push(`/trainingsets/${jobId}/result`);
+        this.$router.push(`/offlinesamples/${jobId}/result`);
       })
       .catch(error => {
           if (error.response.data) {
@@ -167,10 +174,15 @@ export default {
       this.isShowCreateFeatureModal = true;
     },
 
-    handleOk() {
+    handleCancel() {
       this.isShowCreateFeatureModal = false;
     },
 
+    submittedCreateFeatureForm(newFeatureViewName) {
+      this.isShowCreateFeatureModal = false;
+      this.updateSelectFeatureOptions();
+      this.formState.featureList = [newFeatureViewName]
+    }
   },
 };
 </script>

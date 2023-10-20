@@ -20,7 +20,7 @@
   
         <a-form-item
           :label="$t('Database')"
-          :rules="[{ required: true, message: 'Please input database!' }]">
+          :rules="[{ required: true, message: 'Please select database!' }]">
           <a-select v-model:value="formState.db">
             <option v-for="database in databases" :value="database">{{ database }}</option>
           </a-select>
@@ -35,12 +35,12 @@
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
           
-          <!-- TODO(siqi): Enable the button and functions
+          
           <a-button>
             <router-link to='/dag'> {{ $t('Visual SQL Tool') }}</router-link>
           </a-button>
           <br/><br/>
-          -->
+          
 
           <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"
             placeholder="select * from t1">
@@ -100,8 +100,8 @@
         formState: {
           name: '',
           db: '',
-          description: '',
           sql: '',
+          description: '',
           featureDescriptionMap: {}
         }
       };
@@ -160,8 +160,7 @@
         .then(response => {
           message.success(`Success to add feature view ${this.formState.name}`);
   
-          // Redirect to FeatureView detail page
-          this.$router.push(`/featureviews/${this.formState.name}`);
+          this.$emit('submitted', this.formState.name);
         })
         .catch(error => {
           if (error.response.data) {

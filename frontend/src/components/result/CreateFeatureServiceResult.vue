@@ -3,7 +3,7 @@
 <div>
 
   <!-- TODO: :sub-title or :subTitle does not work -->
-  <!-- :sub-title="$('Text of creating training set')" -->
+  <!-- :sub-title="$('Text of creating offline sample')" -->
   <a-result
     status="success"
     :title="$t('Success to deploy feature service')"

@@ -31,9 +31,9 @@
       </a-col>
 
       <a-col :span="6">
-        <router-link to='/trainingsets'>
-          <a-card :title="$t('Training Set')" :bordered="false">
-            <h1>{{ trainingSetCount }}</h1>
+        <router-link to='/offlinesamples'>
+          <a-card :title="$t('Offline Sample')" :bordered="false">
+            <h1>{{ offlineSampleCount }}</h1>
           </a-card>
         </router-link>
       </a-col>
@@ -66,12 +66,12 @@ export default {
       return {
         tables: [],
         features: [],
-        trainingSets: [],
+        offlineSamples: [],
         featureservices: [],
         
         tableCount: 0,
         featureCount: 0,
-        trainingSetCount: 0,
+        offlineSampleCount: 0,
         featureServiceCount: 0,
 
         chartContainer: null,
@@ -158,10 +158,10 @@ export default {
             console.log(error.message);
           });
 
-          await axios.get(`/api/trainingsets`)
+          await axios.get(`/api/offlinesamples`)
           .then(response => {
-            this.trainingSets = response.data;
-            this.trainingSetCount = this.trainingSets.length;
+            this.offlineSamples = response.data;
+            this.offlineSampleCount = this.offlineSamples.length;
           })
           .catch(error => {
             console.log(error.message);
@@ -179,7 +179,7 @@ export default {
 
         this.chartData = [
           { name: this.$t('Data Tables'), value: this.tableCount },
-          { name: this.$t('Training Sets'), value: this.trainingSetCount },
+          { name: this.$t('Offline Samples'), value: this.offlineSampleCount },
           { name: this.$t('Features'), value: this.featureCount },
           { name: this.$t('Feature Services'), value: this.featureServiceCount },
         ];

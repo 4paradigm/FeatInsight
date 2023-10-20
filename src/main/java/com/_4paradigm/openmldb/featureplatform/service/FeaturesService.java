@@ -1,14 +1,12 @@
-package com._4paradigm.openmldb.featureplatform.dao;
+package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
+import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,11 +16,11 @@ import java.util.List;
 @Repository
 public class FeaturesService {
 
-    private final Environment env;
+    private final SqlClusterExecutor sqlExecutor;
 
     @Autowired
-    public FeaturesService(Environment env) throws SQLException {
-        this.env = env;
+    public FeaturesService(SqlClusterExecutor sqlExecutor) throws SQLException {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public static Feature resultSetToFeature(ResultSet resultSet) throws SQLException {
@@ -31,55 +29,54 @@ public class FeaturesService {
     }
 
     public List<Feature> getFeatures() throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-
-        String sql = "SELECT feature_view_name, feature_name, type, description FROM SYSTEM_FEATURE_PLATFORM.features";
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
 
         ArrayList<Feature> features = new ArrayList<>();
 
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(sql);
-        ResultSet resultSet = openmldbStatement.getResultSet();
+        String sql = "SELECT feature_view_name, feature_name, type, description FROM SYSTEM_FEATURE_PLATFORM.features";
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
 
         while (resultSet.next()) {
             Feature feature = resultSetToFeature(resultSet);
             features.add(feature);
         }
 
+        statement.close();
         return features;
     }
 
-    public Feature getFeatureByName(String featureViewName, String featureName) throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-        return getFeature(connection, featureViewName, featureName);
-    }
 
-    public Feature getFeature(Connection connection, String featureViewName, String featureName) throws SQLException {
+    public Feature getFeature(String featureViewName, String featureName) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
         String sql = String.format("SELECT feature_view_name, feature_name, type, description FROM " +
                         "SYSTEM_FEATURE_PLATFORM.features WHERE feature_view_name='%s' AND feature_name='%s'",
                 featureViewName, featureName);
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(sql);
-        ResultSet resultSet = openmldbStatement.getResultSet();
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
 
-        return resultSetToFeature(resultSet);
+        Feature feature = resultSetToFeature(resultSet);
+
+        statement.close();
+        return feature;
     }
 
     public List<Feature> getFeaturesByFeatureView(String featureViewName) throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureViewService featureViewService = new FeatureViewService(env);
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
 
         // Get the feature service with latest version
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
         List<String> featureNames = featureView.getFeatureNames();
 
         for (String featureName : featureNames) {
-            Feature feature = getFeature(connection, featureViewName, featureName);
+            Feature feature = getFeature(featureViewName, featureName);
             outputFeatures.add(feature);
         }
 
@@ -88,18 +85,16 @@ public class FeaturesService {
 
     public List<Feature> getFeaturesByFeatureService(String featureServiceName) throws SQLException {
         // Get the feature service with latest version
-        FeatureServiceService featureServiceService = new FeatureServiceService(env);
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         String version = featureServiceService.getLatestVersion(featureServiceName);
 
         return getFeaturesByFeatureServiceAndVersion(featureServiceName, version);
     }
 
     public List<Feature> getFeaturesByFeatureServiceAndVersion(String featureServiceName, String version) throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
-
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureServiceService featureServiceService = new FeatureServiceService(env);
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
 
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(featureServiceName, version);
         String featureNames = featureService.getFeatureNames();
@@ -107,7 +102,7 @@ public class FeaturesService {
         for (String fullFeatureName : featureNames.split(",")) {
             String featureViewName = fullFeatureName.split(":")[0];
             String featureName = fullFeatureName.split(":")[1];
-            Feature feature = getFeature(connection, featureViewName, featureName);
+            Feature feature = getFeature(featureViewName, featureName);
             outputFeatures.add(feature);
         }
 
@@ -115,29 +110,28 @@ public class FeaturesService {
     }
 
     public Feature addFeature(Feature feature) throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
 
         String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.features " +
                 "(feature_view_name, feature_name, type, description) values ('%s', '%s', '%s', '%s')",
                 feature.getFeatureViewName(), feature.getFeatureName(), feature.getType(), feature.getDescription());
+        statement.execute(sql);
 
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(sql);
-        openmldbStatement.close();
-
+        statement.close();
         return feature;
     }
 
     public void deleteFeature(Feature feature) throws SQLException {
-        Connection connection = OpenmldbSdkUtil.getConnection(env);
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
 
         String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.features " +
                 "WHERE feature_view_name='%s' AND feature_name='%s'", feature.getFeatureViewName(),
                 feature.getFeatureName());
+        statement.execute(sql);
 
-        Statement openmldbStatement = connection.createStatement();
-        openmldbStatement.execute(sql);
-        openmldbStatement.close();
+        statement.close();
     }
 
 }

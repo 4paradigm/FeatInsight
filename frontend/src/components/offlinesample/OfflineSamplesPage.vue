@@ -3,15 +3,17 @@
 <div>
   <br/>
   <h1>
-    {{ $t('Training Set') }}
-    &nbsp;&nbsp;&nbsp;<a-button type="primary" @click="showFormModal">{{ $t('Create Training Set') }}</a-button>
+    {{ $t('Offline Sample') }}
+    &nbsp;&nbsp;&nbsp;<a-button type="primary" @click="showFormModal">{{ $t('Create Offline Sample') }}</a-button>
 </h1>
 
   <!-- Form modal -->
   <div>
-    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Offline Train Set Generation')" @ok="handleOk">
-
-      <CreateTrainingSetForm></CreateTrainingSetForm>
+    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Offline Sample Generation')" >
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+        </template>
+      <CreateOfflineSampleForm></CreateOfflineSampleForm>
 
     </a-modal>
   </div>
@@ -21,9 +23,9 @@
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
-  <a-table :columns="columns" :data-source="searchFilteredTrainingSets" :loading="loading">
+  <a-table :columns="columns" :data-source="searchFilteredOfflineSamples" :loading="loading">
     <template #jobId="{ text, record }">
-      <router-link :to="`/trainingsets/${record.jobId}`">{{ text }}</router-link>
+      <router-link :to="`/offlinesamples/${record.jobId}`">{{ text }}</router-link>
     </template>
   </a-table>
 
@@ -34,25 +36,25 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 
-import CreateTrainingSetForm from './form/CreateTrainingSetForm.vue';
+import CreateOfflineSampleForm from '@/components/form/CreateOfflineSampleForm.vue';
 
 export default {
   components: { 
-    CreateTrainingSetForm
+    CreateOfflineSampleForm
   },
   data() {
     return {
 
       searchText: "",
-      searchFilteredTrainingSets: [],
-      trainingSets: [],
+      searchFilteredOfflineSamples: [],
+      offlineSamples: [],
 
       isOpenFormModal: false,
 
       loading: false,
 
       columns: [{
-        title: this.$t('Training Set ID'),
+        title: this.$t('Offline Sample ID'),
         dataIndex: 'jobId',
         key: 'jobId',
         slots: { customRender: 'jobId' }
@@ -90,12 +92,12 @@ export default {
     initData() {
       this.loading = true;
 
-      let requestUrl = "/api/trainingsets"
+      let requestUrl = "/api/offlinesamples"
 
       axios.get(requestUrl)
         .then(response => {
-          this.trainingSets = response.data;
-          this.searchFilteredTrainingSets = this.trainingSets;
+          this.offlineSamples = response.data;
+          this.searchFilteredOfflineSamples = this.offlineSamples;
         })
         .catch(error => {
           message.error(error.message);
@@ -118,9 +120,9 @@ export default {
 
     handleSearch() {
       if (this.searchText === "") {
-        this.searchFilteredTrainingSets = this.trainingSets;
+        this.searchFilteredOfflineSamples = this.offlineSamples;
       } else {
-        this.searchFilteredTrainingSets = this.trainingSets.filter((item) => this.matchSearch(item));
+        this.searchFilteredOfflineSamples = this.offlineSamples.filter((item) => this.matchSearch(item));
       }
     },
 
@@ -128,7 +130,7 @@ export default {
       this.isOpenFormModal = true;
     },
 
-    handleOk() {
+    handleCancel() {
       this.isOpenFormModal = false;
     }
 

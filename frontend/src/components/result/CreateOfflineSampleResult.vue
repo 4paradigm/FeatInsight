@@ -3,10 +3,10 @@
 <div>
 
   <!-- TODO: :sub-title or :subTitle does not work -->
-  <!-- :sub-title="$('Text of creating training set')" -->
+  <!-- :sub-title="$('Text of creating offline sample')" -->
   <a-result
     status="success"
-    :title="$t('Success to create training set')"
+    :title="$t('Success to create offline sample')"
     sub-title="离线导出样本任务需要1到10分钟，请等待。"
   >
     <template #extra>
@@ -38,11 +38,11 @@ export default {
 
   methods: {
     redirectToDetail() {
-      this.$router.push(`/trainingsets/${this.id}`);
+      this.$router.push(`/offlinesamples/${this.id}`);
     },
 
     redirectToCreateMore() {
-      this.$router.push(`/trainingsets`);
+      this.$router.push(`/offlinesamples`);
     }
   },
 };

@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
+import com._4paradigm.openmldb.featureplatform.service.FeatureServiceService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureServiceDeploymentRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.UpdateLatestVersionRequest;

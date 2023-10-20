@@ -8,9 +8,6 @@
     </h1>
     <a-descriptions bordered>
       <a-descriptions-item :span="24" :label='$t("Name")'> {{ data.name }} </a-descriptions-item>
-      <a-descriptions-item :span="24" :label='$t("Entities")'>
-        <router-link v-for="entity in entities" :to="`/entities/${entity}`" :key="entity">{{ entity }} </router-link>
-      </a-descriptions-item>
       <a-descriptions-item :span="24" :label='$t("Database")'><router-link :to="`/databases/${data.db}`">{{ data.db }}</router-link></a-descriptions-item>
       <a-descriptions-item :span="24" :label='$t("SQL")'>{{ data.sql }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label='$t("Features")'>
@@ -58,7 +55,6 @@ export default {
   data() {
     return {
       data: "",
-      entities: [],
       features: [],
       columns: [
         {
@@ -108,7 +104,6 @@ export default {
         .get(`/api/featureviews/${this.name}`)
         .then((response) => {
           this.data = response.data;
-          this.entities = this.data.entityNames.split(',').map((item) => item.trim());
         })
         .catch((error) => {
           if (error.response != null) {

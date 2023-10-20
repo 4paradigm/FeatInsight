@@ -2,7 +2,7 @@
 <div>
 
   <br/>
-  <h1>{{ $t('Traing Set') }}: {{ data.jobId }} </h1>
+  <h1>{{ $t('Offline Sample') }}: {{ data.jobId }} </h1>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.jobId }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Feature List')">{{ data.featureList }}</a-descriptions-item>
@@ -42,7 +42,7 @@ export default {
     methods: {
         initData() {
             axios
-                .get(`/api/trainingsets/${this.id}`)
+                .get(`/api/offlinesamples/${this.id}`)
                 .then((response) => {
                 this.data = response.data;
             })

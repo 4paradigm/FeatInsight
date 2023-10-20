@@ -17,7 +17,10 @@
 
     <!-- Create form modal -->
     <div>
-      <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Import From SQL')" @ok="handleOk">
+      <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Import From SQL')" @ok="handleCancel">
+        <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+        </template>
         <LoadDataForm @close="closeModal"></LoadDataForm>
       </a-modal>
     </div>
@@ -57,7 +60,7 @@
         this.isOpenFormModal = false;
       },
   
-      handleOk() {
+      handleCancel() {
         this.isOpenFormModal = false;
       },
     }

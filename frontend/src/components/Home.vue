@@ -32,9 +32,6 @@
         <a-menu-item key="5">
           <router-link to='/tables'>{{ $t('Data Tables') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="6">
-          <router-link to='/entities'>{{ $t('Entities') }}</router-link>
-        </a-menu-item>
         <a-menu-item key="7">
           <router-link to='/features'>{{ $t('Feature List') }}</router-link>
         </a-menu-item>
@@ -42,7 +39,7 @@
           <router-link to='/featureviews'>{{ $t('Feature Views') }}</router-link>
         </a-menu-item>
         <a-menu-item key="9">
-          <router-link to='/trainingsets'>{{ $t('Offline Train Sets') }}</router-link>
+          <router-link to='/offlinesamples'>{{ $t('Offline Samples') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
 

@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeatureViewService;
+import com._4paradigm.openmldb.featureplatform.service.FeatureViewService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 

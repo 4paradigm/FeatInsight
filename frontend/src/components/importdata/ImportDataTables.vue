@@ -18,6 +18,9 @@
   <!-- Create form modal -->
   <div>
     <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Create From SQL')" @ok="handleOk">
+      <template #footer>
+          <a-button @click="handleCancel">Cancel</a-button>
+        </template>
       <CreateTableFromSqlForm @close="closeModal"></CreateTableFromSqlForm>
     </a-modal>
   </div>
@@ -61,7 +64,7 @@ export default {
       console.log(this.refreshKey)
     },
 
-    handleOk() {
+    handleCancel() {
       this.isOpenFormModal = false;
     },
   }

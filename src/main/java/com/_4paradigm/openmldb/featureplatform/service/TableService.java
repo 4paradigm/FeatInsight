@@ -1,36 +1,30 @@
-package com._4paradigm.openmldb.featureplatform.dao;
+package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class TableService {
 
-    private final Environment env;
+    private final SqlClusterExecutor sqlExecutor;
 
     @Autowired
-    public TableService(Environment env) {
-        this.env = env;
+    public TableService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     public List<SimpleTableInfo> getTables() throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> databases = sqlExecutor.showDatabases();
@@ -48,8 +42,6 @@ public class TableService {
     }
 
     public SimpleTableInfo getTable(String db, String table) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         Schema schema = sqlExecutor.getTableSchema(db, table);
         String schemaString = schema.toString();
         SimpleTableInfo simpleTableInfo = new SimpleTableInfo(db, table, schemaString);
@@ -57,12 +49,10 @@ public class TableService {
     }
 
     public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
         // Get all feature services
-        FeatureServiceService featureServiceService = new FeatureServiceService(env);
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
         List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
         for (FeatureService featureService : allFeatureServices) {
@@ -85,12 +75,10 @@ public class TableService {
 
 
     public List<FeatureView> getRelatedFeatureViews(String db, String table) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         List<FeatureView> relatedFeatureViews = new ArrayList<>();
 
         // Get all feature services
-        FeatureViewService featureViewService = new FeatureViewService(this.env);
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
         for (FeatureView featureView : allFeatureViews) {

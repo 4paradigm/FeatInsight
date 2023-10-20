@@ -20,9 +20,9 @@ import OfflineJobsPage from '../components/OfflineJobsPage.vue'
 import OfflineJobDetail from '../components/OfflineJobDetail.vue'
 import OnlineDevelopment from '../components/OnlineDevelopment.vue'
 import OfflineDevelopment from '../components/OfflineDevelopment.vue'
-import TrainingSetsPage from '../components/TrainingSetsPage.vue'
-import TrainingSetDetail from '../components/TrainingSetDetail.vue'
-import CreateTrainingSetResult from '../components/result/CreateTrainingSetResult.vue'
+import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
+import OfflineSampleDetail from '../components/offlinesample/OfflineSampleDetail.vue'
+import CreateOfflineSampleResult from '../components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '../components/result/CreateFeatureServiceResult.vue'
 import ImportDataMenu from '../components/importdata/ImportDataMenu.vue'
 import ImportDataDatabases from '../components/importdata/ImportDataDatabases.vue'
@@ -63,9 +63,9 @@ const router = createRouter({
     { path: '/developprocess/offline', component: OfflineDevelopment, props: true },
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/tutorial', component: TutorialPage},
-    { path: '/trainingsets', component: TrainingSetsPage},
-    { path: '/trainingsets/:id', component: TrainingSetDetail, props: true },
-    { path: '/trainingsets/:id/result', component: CreateTrainingSetResult, props: true },
+    { path: '/offlinesamples', component: OfflineSamplesPage},
+    { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },
+    { path: '/offlinesamples/:id/result', component: CreateOfflineSampleResult, props: true },
     { path: '/404', redirect: "/" },
     //{ path: '/:pathMatch(.*)*', redirect: "/404" }
   ]

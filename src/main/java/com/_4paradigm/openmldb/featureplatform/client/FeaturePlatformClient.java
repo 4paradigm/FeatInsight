@@ -1,6 +1,5 @@
 package com._4paradigm.openmldb.featureplatform.client;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

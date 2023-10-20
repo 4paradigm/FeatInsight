@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.SqlService;
+import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
@@ -31,6 +31,7 @@ public class SqlController {
             String responseMessage = "Success to execute sql: " + sqlRequest.getSql();
             if (resultSet != null) {
                 responseMessage = ResultSetUtil.resultSetToString(resultSet);
+                resultSet.close();
                 System.out.println("Result set to string: " + responseMessage);
             }
             return new ResponseEntity<>(responseMessage, HttpStatus.OK);

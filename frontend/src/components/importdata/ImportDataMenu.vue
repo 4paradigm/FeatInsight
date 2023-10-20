@@ -3,11 +3,11 @@
 <a-menu mode="horizontal">
 
   <a-menu-item key="1">
-    <router-link to='/developprocess/import/databases'>{{ $t('Import Databases') }}</router-link>
+    <router-link to='/developprocess/import/databases'>{{ $t('Create Database') }}</router-link>
   </a-menu-item>
 
   <a-menu-item key="2">
-    <router-link to='/developprocess/import/tables'>{{ $t('Import Tables')}}</router-link>
+    <router-link to='/developprocess/import/tables'>{{ $t('Create Table')}}</router-link>
   </a-menu-item>
 
   <a-menu-item key="3">

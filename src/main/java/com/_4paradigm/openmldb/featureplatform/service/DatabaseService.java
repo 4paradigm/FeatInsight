@@ -1,4 +1,4 @@
-package com._4paradigm.openmldb.featureplatform.dao;
+package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
@@ -14,22 +14,19 @@ import java.util.List;
 @Repository
 public class DatabaseService {
 
-    private final Environment env;
+    private final SqlClusterExecutor sqlExecutor;
 
     @Autowired
-    public DatabaseService(Environment env) {
-        this.env = env;
+    public DatabaseService(SqlClusterExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
-    public List<String> getDatabases() throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
+    public List<String> getDatabases() {
         List<String> databases = sqlExecutor.showDatabases();
         return databases;
     }
 
     public List<SimpleTableInfo> getDatabaseTables(String database) throws SQLException {
-        SqlClusterExecutor sqlExecutor = OpenmldbSdkUtil.getSqlExecutor(env);
-
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> tables = sqlExecutor.getTableNames(database);
