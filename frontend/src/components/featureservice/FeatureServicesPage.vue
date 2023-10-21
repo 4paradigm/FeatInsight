@@ -128,9 +128,9 @@ export default {
         slots: { customRender: 'version' }
       },
       {
-        title: this.$t('Feature List'),
-        dataIndex: 'featureList',
-        key: 'featureList',
+        title: this.$t('Feature Names'),
+        dataIndex: 'featureNames',
+        key: 'featureNames',
       },
       {
         title: this.$t('Description'),

@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class FeatureServiceService {
@@ -419,12 +421,24 @@ public class FeatureServiceService {
         return new ResponseEntity<String>(responseBody, HttpStatus.valueOf(statusCode));
     }
 
+    public static String removeDeploySubstring(String inputSql) {
+        int substringIndex = inputSql.toLowerCase().indexOf("select");
+
+        if (substringIndex >= 0) {
+            return inputSql.substring(substringIndex);
+        } else {
+            return inputSql;
+        }
+    }
+
     public Schema getRequestSchema(String serviceName, String version) throws SQLException {
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db,
+        String selectSql = removeDeploySubstring(sql);
+
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(selectSql, db,
                 OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
         Pair<String, String> mainTablePair = tables.get(0);
@@ -489,7 +503,10 @@ public class FeatureServiceService {
 
     public List<String> getDependentTables(String name, String version) throws SQLException {
         FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(featureService.getSql(),
+
+        String selectSql = removeDeploySubstring(featureService.getSql());
+
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(selectSql,
                 featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
         List<String> fullNameTables = new ArrayList<>();
@@ -509,7 +526,9 @@ public class FeatureServiceService {
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        Schema schema = SqlClusterExecutor.genOutputSchema(sql, db, OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+        String selectSql = removeDeploySubstring(sql);
+
+        Schema schema = SqlClusterExecutor.genOutputSchema(selectSql, db, OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
         return schema;
     }
 
