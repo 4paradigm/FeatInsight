@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.TableService;
+import com._4paradigm.openmldb.featureplatform.service.TableService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;

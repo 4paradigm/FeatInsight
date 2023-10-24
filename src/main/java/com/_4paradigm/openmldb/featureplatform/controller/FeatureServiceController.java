@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeatureServiceService;
+import com._4paradigm.openmldb.featureplatform.service.FeatureServiceService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureServiceDeploymentRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.UpdateLatestVersionRequest;
@@ -112,7 +112,8 @@ public class FeatureServiceController {
 
     @PostMapping(value = "/deployments")
     public FeatureService createFeatureServiceFromDeployment(@RequestBody FeatureServiceDeploymentRequest request) throws SQLException {
-        return featureServiceService.createFeatureServiceFromDeployment(request);
+        //return featureServiceService.createFeatureServiceFromDeployment(request);
+        return null;
     }
 
     @GetMapping("/{name}/{version}/request/schema")

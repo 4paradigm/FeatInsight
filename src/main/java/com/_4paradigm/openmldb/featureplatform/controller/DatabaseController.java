@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.DatabaseService;
+import com._4paradigm.openmldb.featureplatform.service.DatabaseService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class DatabaseController {
     }
 
     @GetMapping
-    public List<String> getDatabases() {
+    public List<String> getDatabases() throws SQLException {
         return databaseService.getDatabases();
     }
 

@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeaturesService;
+import com._4paradigm.openmldb.featureplatform.service.FeaturesService;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +41,7 @@ public class FeatureController {
 
     @GetMapping("/{feature_view_name}/{feature_name}")
     public Feature getFeatureViewByName(@PathVariable String feature_view_name, @PathVariable String feature_name) throws SQLException {
-        return featureService.getFeatureByName(feature_view_name, feature_name);
+        return featureService.getFeature(feature_view_name, feature_name);
     }
 
 }

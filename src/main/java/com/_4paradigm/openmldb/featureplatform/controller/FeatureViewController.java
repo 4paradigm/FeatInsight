@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
-import com._4paradigm.openmldb.featureplatform.dao.FeatureViewService;
+import com._4paradigm.openmldb.featureplatform.service.FeatureViewService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,8 +39,9 @@ public class FeatureViewController {
 
     @PostMapping("/validate")
     public ResponseEntity<String> validateFeatureView(@RequestBody FeatureView featureView) throws SQLException {
-        String featureNames = featureViewService.validateFeatureView(featureView);
-        return new ResponseEntity<>(featureNames, HttpStatus.OK);
+        List<String> featureNames = featureViewService.getOutputFeatureNames(featureView);
+        String featureNamesString = String.join(",", featureNames);
+        return new ResponseEntity<>(featureNamesString, HttpStatus.OK);
     }
 
     @DeleteMapping("/{name}")

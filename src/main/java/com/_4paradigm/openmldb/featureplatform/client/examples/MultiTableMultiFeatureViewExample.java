@@ -18,7 +18,6 @@ public class MultiTableMultiFeatureViewExample {
             client.executeSql("CREATE TABLE IF NOT EXISTS t2v2.trade (user_name string, amount float)");
 
             // Create entity
-            client.createEntity("t2v2_name", "name");
 
             // Create feature view
             client.createFeatureView("t2v2_v1", "t2v2_name", "t2v2", "SELECT age + 10 AS new_age FROM user");
