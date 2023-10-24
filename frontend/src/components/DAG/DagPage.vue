@@ -10,7 +10,7 @@
 <div>
   <a-button type="primary" @click="runGraph">{{$t('Generate SQL')}}</a-button>
   &nbsp;&nbsp;
-  <a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button>
+  <!-- a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button -->
 </div>
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
@@ -40,12 +40,12 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
-import RightDrawer from './DAG/RightDrawer.vue'
-import RightDrawerRes from './DAG/RightDrawerRes.vue'
-import TaskNode from './DAG/TaskNode.vue'
+import RightDrawer from '@/components/DAG/RightDrawer.vue'
+import RightDrawerRes from '@/components/DAG/RightDrawerRes.vue'
+import TaskNode from '@/components/DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
 import { message } from 'ant-design-vue'
-import { SQLStore} from '../pinia/store'
+import { SQLStore} from '@/pinia/store'
 import { computed } from 'vue'
 import { DagreLayout } from '@antv/layout'
 

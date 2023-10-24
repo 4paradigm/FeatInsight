@@ -1,6 +1,14 @@
 <template>
 
   <div>
+    <!-- Create Feature Form Modal -->
+    <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" >
+      <template #footer>
+        <a-button @click="handleCancel">Update</a-button>
+      </template>
+      <DagPage></DagPage>
+    </a-modal>
+
     <a-typography-paragraph>
       <pre>{{ $t("Text of introduce create feature view") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
     </a-typography-paragraph>
@@ -34,14 +42,10 @@
         <a-form-item
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
-          
-          
-          <a-button>
-            <router-link to='/dag'> {{ $t('Visual SQL Tool') }}</router-link>
-          </a-button>
+
+          <a-button type="primary" @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
           <br/><br/>
           
-
           <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"
             placeholder="select * from t1">
           </a-textarea>
@@ -84,8 +88,13 @@
   import { message } from 'ant-design-vue';
   import { SQLStore} from '@/pinia/store';
   import { computed } from 'vue';
+  import DagPage from '@/components/DAG/DagPage.vue';
 
   export default {
+    components: {
+      DagPage
+    },
+
     data() {
       return {
         databases: [],
@@ -93,6 +102,7 @@
         validatedFeatureNames: [],
 
         isDisplayAddFeatureDescription: false,
+        isShowDagPageModal: false,
 
         sharedSQL: '',
         SQLStore: '',
@@ -177,6 +187,17 @@
 
       updateInputSQL(){
         this.SQLStore.setSharedVariable(this.formState.sql);
+      },
+
+      clickDagPage() {
+        this.isShowDagPageModal = true;
+      },
+
+      handleCancel() {
+      this.isShowDagPageModal = false;
+      //update SQL code
+      this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
+      this.formState.sql = this.sharedSQL;
       },
   
     },
