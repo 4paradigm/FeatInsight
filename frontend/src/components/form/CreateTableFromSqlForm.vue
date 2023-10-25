@@ -1,31 +1,23 @@
 <template>
 
 <div>
+  <a-typography-paragraph>
+    <pre>{{ $t("Text of introduce create table from sql") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
+  </a-typography-paragraph>
 
-  <div>
-    <a-typography-paragraph>
-      <pre>{{ $t("Text of introduce create table from sql") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
-    </a-typography-paragraph>
-    <br/>
+  <br/>
+  <a-form
+    :model="formState"
+    layout="vertical"
+    @submit="submitForm">
 
-    <!-- Create form -->
-    <a-form
-      :model="formState"
-      layout="vertical"
-      @submit="handleSubmit">
- 
-      <a-form-item
-          :label="$t('SQL')"
-          :rules="[{ required: true, message: 'Please input SQL!' }]">
-          <a-input v-model:value="formState.sql" 
-            placeholder="CREATE TABLE db1.t1 (name string, age int)"/>
-        </a-form-item>
-
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
-    </a-form>
-  </div>
+    <a-form-item
+      :label="$t('SQL')"
+      :rules="[{ required: true, message: 'Please input SQL!' }]">
+      <a-input v-model:value="formState.sql" 
+        placeholder="CREATE TABLE db1.t1 (name string, age int)"/>
+    </a-form-item>
+  </a-form>
 
 </div>
 </template>
@@ -43,18 +35,15 @@ export default {
     };
   },
 
-  mounted() {
-  },
-
   methods: {
-    handleSubmit() {
+    submitForm() {
       axios.post(`/api/sql/execute`, {
         "sql": this.formState.sql
       })
       .then(response => {
         message.success(`Success to execute SQL: ${this.formState.sql}`);
 
-        this.$emit('close');
+        this.$emit('submitted');
       })
       .catch(error => {
         if (error.response.data) {
@@ -64,6 +53,6 @@ export default {
         }
       });
     },
-  },
+  }
 };
 </script>

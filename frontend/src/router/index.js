@@ -22,6 +22,7 @@ import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vu
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
+import CreateTableResult from '@/components/result/CreateTableResult.vue'
 import ImportDataMenu from '@/components/importdata/ImportDataMenu.vue'
 import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue'
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
@@ -35,6 +36,7 @@ const router = createRouter({
     { path: '/', component: BigScreenPage },
     { path: '/tables', component: TablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
+    { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
     { path: '/features', component: FeaturesPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
