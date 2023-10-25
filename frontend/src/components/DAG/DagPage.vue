@@ -535,6 +535,10 @@ export default {
           message.error(error.message);
         }
       });
+    },
+
+    updateValue() {
+        this.$emit('updateSql', this.out_SQL);
     }
   },
 };

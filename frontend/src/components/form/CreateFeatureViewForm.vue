@@ -2,11 +2,8 @@
 
   <div>
     <!-- Create Feature Form Modal -->
-    <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" >
-      <template #footer>
-        <a-button @click="handleCancel">Update</a-button>
-      </template>
-      <DagPage></DagPage>
+    <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" @ok="clickModalOk">
+      <DagPage ref="DagPage" @updateSql="updateOutputSql"></DagPage>
     </a-modal>
 
     <a-typography-paragraph>
@@ -193,12 +190,19 @@
         this.isShowDagPageModal = true;
       },
 
-      handleCancel() {
-      this.isShowDagPageModal = false;
-      //update SQL code
-      this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
-      this.formState.sql = this.sharedSQL;
+      updateOutputSql(outSql){
+        this.isShowDagPageModal = false;
+        this.formState.sql = outSql;
       },
+
+      clickModalOk() {
+        this.isShowDagPageModal = false;
+        //update SQL code
+        //this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
+        //this.formState.sql = this.sharedSQL;
+
+        this.$refs.DagPage.updateValue();
+    },
   
     },
   };
