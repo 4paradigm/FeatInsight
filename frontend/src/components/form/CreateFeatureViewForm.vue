@@ -42,9 +42,7 @@
 
           <a-button type="primary" @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
           <br/><br/>
-          
-          <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"
-            placeholder="select * from t1">
+          <a-textarea v-model:value="formState.sql" :rows="5" placeholder="select * from t1">
           </a-textarea>
         </a-form-item>
 
@@ -83,7 +81,6 @@
   <script>
   import axios from 'axios'
   import { message } from 'ant-design-vue';
-  import { SQLStore} from '@/pinia/store';
   import { computed } from 'vue';
   import DagPage from '@/components/DAG/DagPage.vue';
 
@@ -102,7 +99,6 @@
         isShowDagPageModal: false,
 
         sharedSQL: '',
-        SQLStore: '',
   
         formState: {
           name: '',
@@ -129,10 +125,6 @@
             message.error(error.message);
           })
           .finally(() => {});
-
-        this.SQLStore = SQLStore();
-        this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
-        this.formState.sql = this.sharedSQL;
       },
   
       validateForm() {
@@ -182,10 +174,6 @@
         this.isDisplayAddFeatureDescription = true;
       },
 
-      updateInputSQL(){
-        this.SQLStore.setSharedVariable(this.formState.sql);
-      },
-
       clickDagPage() {
         this.isShowDagPageModal = true;
       },
@@ -197,10 +185,6 @@
 
       clickModalOk() {
         this.isShowDagPageModal = false;
-        //update SQL code
-        //this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
-        //this.formState.sql = this.sharedSQL;
-
         this.$refs.DagPage.updateValue();
     },
   

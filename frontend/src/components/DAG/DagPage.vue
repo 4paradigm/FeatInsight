@@ -45,7 +45,6 @@ import RightDrawerRes from '@/components/DAG/RightDrawerRes.vue'
 import TaskNode from '@/components/DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
 import { message } from 'ant-design-vue'
-import { SQLStore} from '@/pinia/store'
 import { computed } from 'vue'
 import { DagreLayout } from '@antv/layout'
 
@@ -67,7 +66,6 @@ export default {
       templateLists: [],
       out_SQL: '',
       sharedSQL: '',
-      SQLStore: '',
       showRes: false,
       savedJson: '',
       sampleJson:'{"cells":[{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge1","zIndex":0,"source":{"cell":"nodeA","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge2","zIndex":0,"source":{"cell":"nodeC","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"position":{"x":220,"y":200},"attrs":{"text":{"text":"Node"},"label":{"text":"A"}},"visible":true,"shape":"vue-rect","id":"nodeA","data":{"name":"A","desc":"123"},"zIndex":1,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":300,"y":370},"attrs":{"text":{"text":"Node"},"label":{"text":"B"}},"visible":true,"shape":"vue-rect","id":"nodeB","data":{"name":"B","desc":"456"},"zIndex":2,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":340,"y":236},"attrs":{"text":{"text":"Node"},"label":{"text":"C"}},"visible":true,"shape":"vue-rect","id":"nodeC","data":{"name":"C","desc":"789"},"zIndex":3,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}}]}',
@@ -90,9 +88,6 @@ export default {
         cols: 4,
       })
       this.dagreLayout = dagreLayout;
-      this.SQLStore=SQLStore();
-      this.sharedSQL = computed(() => this.SQLStore.sharedSQL);
-      console.log(this.sharedSQL);
 
       const graph = new Graph({
         container: this.$refs.container,
@@ -526,7 +521,6 @@ export default {
         message.success(`Conversion Success`);
         this.out_SQL=response.data;
         this.showRes=true;
-        this.SQLStore.setSharedVariable(this.out_SQL);
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
