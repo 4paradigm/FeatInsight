@@ -1,85 +1,53 @@
 <template>
 
 <div>
-
   <br/>
-  <a-button type="primary" @click="handleCreateDatabase">{{ $t('Create Database') }}</a-button>
+  <a-button type="primary" @click="clickCreateButton">{{ $t('Create Database') }}</a-button>
 
-  <!-- Create form modal -->
-  <div>
-    <a-modal v-model:visible="isOpenFormModal" width="1000px" :title="$t('Create Database')">
-      <template #footer>
-        <a-button @click="handleCancel">Cancel</a-button>
-      </template>
-      <CreateDatabaseForm @close="closeModal"></CreateDatabaseForm>
-    </a-modal>
-  </div>
+  <!-- Create database modal -->
+  <a-modal v-model:visible="isShowModal" width="1000px" :title="$t('Create Database')" @ok="clickModalOk">
+    <CreateDatabaseForm ref="CreateDatabaseForm" @submitted="submittedForm"></CreateDatabaseForm>
+  </a-modal>
 
-  <!-- Databases table -->
-  <br/>
-  <a-table :columns="databaseColumns" :data-source="databases">
-    <template #database="{ text, record }">
-      <router-link :to="`/databases/${record}`">{{ text }}</router-link>
-    </template>
-  </a-table>
+  <DatabasesTable :key="refreshDataKey"></DatabasesTable>
 
 </div>
 </template>
   
 <script>
-import axios from 'axios'
-import { message } from 'ant-design-vue';
 import CreateDatabaseForm from '@/components/form/CreateDatabaseForm.vue'
+import DatabasesTable from '@/components/database/DatabasesTable.vue'
 
 export default {
   components: {
-    CreateDatabaseForm
+    CreateDatabaseForm,
+    DatabasesTable
   },
 
   data() {
     return {
-      isOpenFormModal: false,
+      isShowModal: false,
 
-      databases: [],
-
-      databaseColumns: [{
-        title: this.$t('Database'),
-        slots: { customRender: 'database' }
-      }],
+      refreshDataKey: 0
     };
   },
 
-  mounted() {
-    this.initData();
-  },
-
   methods: {
-    initData() {
-      axios.get(`/api/databases`)
-        .then(response => {
-          this.databases = response.data;
-        })
-        .catch(error => {
-          message.error(error.message);
-        })
-        .finally(() => {});
+    clickCreateButton() {
+      this.isShowModal = true;
     },
 
-    handleCreateDatabase() {
-      this.isOpenFormModal = true;
+    submittedForm() {
+      this.isShowModal = false;
+      // Update data when closing modal
+      this.refreshDataKey++;
     },
 
-    closeModal() {
-      // Update data when closing modal for submission
-      this.initData();
-
-      this.isOpenFormModal = false;
-    },
-
-    handleCancel() {
-      this.isOpenFormModal = false;
-    },
-
+    clickModalOk() {
+      this.isShowModal = false;
+      // Submit the form in child component
+      this.$refs.CreateDatabaseForm.submitForm();
+    }
   }
 };
 </script>

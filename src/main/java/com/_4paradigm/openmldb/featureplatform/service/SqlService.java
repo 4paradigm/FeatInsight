@@ -1,11 +1,14 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
+import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -61,12 +64,14 @@ public class SqlService {
 
     public SQLResultSet executeSql(String sql, boolean isOnline) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
-        statement.execute("SET @@execute_mode='online'");
 
         if (isOnline) {
             statement.execute("SET @@execute_mode='online'");
         } else {
             statement.execute("SET @@execute_mode='offline'");
+            // TODO: CREATE TABLE LIKE Parquet may not use sync_mode nor raise timeout exception
+            //statement.execute("SET @@sync_job=false");
+            //statement.execute("SET @@job_timeout=100");
         }
 
         statement.execute(sql);
@@ -77,6 +82,26 @@ public class SqlService {
             return null;
         }
 
+    }
+
+    public int importSql(String sql, boolean isOnline) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+
+        if (isOnline) {
+            statement.execute("SET @@execute_mode='online'");
+        } else {
+            statement.execute("SET @@execute_mode='offline'");
+        }
+
+        statement.execute(sql);
+
+        ResultSet resultSet = statement.getResultSet();
+
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
+
+        int jobId = resultSet.getInt(1);
+        return jobId;
     }
 
     public List<String> validateSql(String sql) throws SQLException {
