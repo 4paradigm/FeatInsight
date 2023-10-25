@@ -6,7 +6,7 @@
     </div>
     <div class="wrap">
       <a-form label-width="80px">
-          <a-textarea readonly v-model:value=this.out_SQL></a-textarea>
+          <a-textarea readonly v-model:value=this.outSql></a-textarea>
       </a-form>
     </div>
   </div>
@@ -14,9 +14,9 @@
 
 <script>
 export default {
-  props: ['out_SQL'],
+  props: ['outSql'],
   setup(props){
-    console.log(props.out_SQL)
+    console.log(props.outSql)
   }
 }
 </script>

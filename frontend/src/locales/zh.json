@@ -192,5 +192,6 @@
     "Text of introduce join keys": "如果选择特征来自多个特征视图，必须提供拼接主键实现拼接。填写特征视图SQL的主表的主键，例如'id'或'name'，联合主键可填写'name,id'。",
     "Create Table": "创建表",
     "Text of introduce load data infile": "",
-    "Create From CSV": "使用 CSV 创建表"
+    "Create From CSV": "使用 CSV 创建表",
+    "User Input SQL": "用户输入SQL"
 }

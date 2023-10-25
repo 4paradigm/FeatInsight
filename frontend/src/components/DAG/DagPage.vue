@@ -9,14 +9,21 @@
 <br />
 <div>
   <a-button type="primary" @click="runGraph">{{$t('Generate SQL')}}</a-button>
-  &nbsp;&nbsp;
-  <!-- a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button -->
 </div>
+<div v-if='showInputSql'>
+ {{ $t('User Input SQL')}} :
+  <a-textarea readonly v-model:value=this.inSql @onchange='updateShowInputSql'></a-textarea>
+</div>
+<div v-if='showOutputSql'>
+ {{ $t('Generated SQL')}} :
+  <a-textarea readonly v-model:value=this.outSql ></a-textarea>
+</div>
+
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
 <div>
-  <right-drawer-res v-if="showRes" :out_SQL="out_SQL"></right-drawer-res>
+  <right-drawer-res v-if="showRes" :outSql="outSql"></right-drawer-res>
 </div>
 <br />
 <!-- div>
@@ -64,13 +71,27 @@ export default {
       savedNodeData:[],
       nodeId: '',
       templateLists: [],
-      out_SQL: '',
+      inSql: '',
+      outSql: '',
       sharedSQL: '',
+      showInputSql: false,
+      showOutputSql: false,
       showRes: false,
       savedJson: '',
       sampleJson:'{"cells":[{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge1","zIndex":0,"source":{"cell":"nodeA","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge2","zIndex":0,"source":{"cell":"nodeC","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"position":{"x":220,"y":200},"attrs":{"text":{"text":"Node"},"label":{"text":"A"}},"visible":true,"shape":"vue-rect","id":"nodeA","data":{"name":"A","desc":"123"},"zIndex":1,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":300,"y":370},"attrs":{"text":{"text":"Node"},"label":{"text":"B"}},"visible":true,"shape":"vue-rect","id":"nodeB","data":{"name":"B","desc":"456"},"zIndex":2,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":340,"y":236},"attrs":{"text":{"text":"Node"},"label":{"text":"C"}},"visible":true,"shape":"vue-rect","id":"nodeC","data":{"name":"C","desc":"789"},"zIndex":3,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}}]}',
       sampleNodeData: [{"id":"nodeA","name":"A","desc":"123"},{"id":"nodeB","name":"B","desc":"456"},{"id":"nodeC","name":"C","desc":"789"}]
     };
+  },
+
+  watch: { //Act on change of inSql, TODO: include SQL to DAG conversion and graph update
+    inSql() {
+      if (this.inSql == '') {
+        this.showInputSql = false
+      } else {
+        this.showInputSql = true
+      }
+      this.showOutputSql = false
+    },
   },
 
   mounted() {
@@ -519,8 +540,10 @@ export default {
       .then(response => {
         console.log(response.data);
         message.success(`Conversion Success`);
-        this.out_SQL=response.data;
+        this.outSql=response.data;
         this.showRes=true;
+        this.showOutputSql=true;
+        this.showInputSql=false;
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
@@ -529,10 +552,18 @@ export default {
           message.error(error.message);
         }
       });
+
+      setTimeout(() => {
+        this.showRes = false;}, 5000); //Result disappear after 5 seconds
     },
 
+
     updateValue() {
-        this.$emit('updateSql', this.out_SQL);
+      if (this.outSql == ''){
+        this.$emit('cancel')
+      } else {
+        this.$emit('updateSql', this.outSql);
+      }
     }
   },
 };
