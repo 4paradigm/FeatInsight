@@ -12,7 +12,7 @@
     <a-form
       :model="formState"
       layout="vertical"
-      @submit="handleSubmit">
+      @submit="submitForm">
  
       <a-form-item
           :label="$t('Name')"
@@ -21,9 +21,6 @@
             placeholder="db1"/>
         </a-form-item>
 
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
     </a-form>
   </div>
 
@@ -47,7 +44,7 @@ export default {
   },
 
   methods: {
-    handleSubmit() {
+    submitForm() {
       const sql = "CREATE DATABASE IF NOT EXISTS " + this.formState.name;
       axios.post(`/api/sql/execute`, {
         "sql": sql,
@@ -56,7 +53,7 @@ export default {
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
 
-        this.$emit('close');
+        this.$emit('submitted');
       })
       .catch(error => {
         if (error.response.data) {

@@ -25,7 +25,7 @@ public class SqlController {
     }
 
     @PostMapping("/execute")
-    public ResponseEntity<String> execute(@RequestBody SqlRequest sqlRequest) {
+    public ResponseEntity<String> executeSqlr(@RequestBody SqlRequest sqlRequest) {
         try {
             SQLResultSet resultSet = sqlService.executeSql(sqlRequest.getSql(), sqlRequest.isOnline());
             String responseMessage = "Success to execute sql: " + sqlRequest.getSql();
@@ -47,6 +47,22 @@ public class SqlController {
             return new ResponseEntity<>("Success to validate sql", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(String.join(",", result), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<String> importSql(@RequestBody SqlRequest sqlRequest) {
+        try {
+            SQLResultSet resultSet = sqlService.executeSql(sqlRequest.getSql(), sqlRequest.isOnline());
+            String responseMessage = "Success to execute sql: " + sqlRequest.getSql();
+            if (resultSet != null) {
+                responseMessage = ResultSetUtil.resultSetToString(resultSet);
+                resultSet.close();
+                System.out.println("Result set to string: " + responseMessage);
+            }
+            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Fail to execute sql and get exception: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
