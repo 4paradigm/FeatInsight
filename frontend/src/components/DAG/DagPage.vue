@@ -536,7 +536,7 @@ export default {
 
     runGraph() {
       console.log(this.graph.toJSON()['cells']);
-      axios.post(`http://127.0.0.1:5000/sql`, this.graph.toJSON()['cells'])
+      axios.post(`/api/dag_conversion/forward`, this.graph.toJSON()['cells'])
       .then(response => {
         console.log(response.data);
         message.success(`Conversion Success`);
