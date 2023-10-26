@@ -14,14 +14,6 @@ public class SqlRequest {
     public SqlRequest(String sql, boolean online) {
         this.sql = sql;
         this.online = online;
-
-        System.out.println("call tobe2");
-    }
-
-    public SqlRequest(String sql) {
-        this(sql, true);
-
-        System.out.println("call tobe3");
     }
 
 }

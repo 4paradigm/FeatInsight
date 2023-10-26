@@ -1,13 +1,6 @@
 <template>
 
 <div>
-  <br/>
-  <h1>
-    {{ $t('Features') }}
-    <!-- &nbsp;&nbsp;<a-button type="primary"><router-link to='/features/create'>{{ $t('Create Feature') }}</router-link></a-button> -->
-  </h1>
-
-  <br/>
   <!-- Data table -->
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>

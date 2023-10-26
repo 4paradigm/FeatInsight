@@ -1,9 +1,6 @@
 <template>
-
 <div>
-
   <!-- Databases table -->
-  <br/>
   <a-table :columns="databaseColumns" :data-source="databases">
     <template #database="{ text, record }">
       <router-link :to="`/databases/${record}`">{{ text }}</router-link>

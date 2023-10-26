@@ -1,9 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import BigScreenPage from '@/components/BigScreenPage.vue'
-import TablesPage from '@/components/table/TablesPage.vue'
-import FeaturesPage from '@/components/feature/FeaturesPage.vue'
-import FeatureViewsPage from '@/components/featureview/FeatureViewsPage.vue'
+import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
+import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
 import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue'
 import TutorialPage from '@/components/TutorialPage.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
@@ -35,13 +34,12 @@ const router = createRouter({
   history: createWebHashHistory("/"),
   routes: [
     { path: '/', component: BigScreenPage },
-    { path: '/tables', component: TablesPage },
+    { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
-    { path: '/features', component: FeaturesPage},
+    { path: '/features', component: FeaturesAndFeatureViewsPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
-    { path: '/featureviews', component: FeatureViewsPage},
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
     { path: '/featureservices/test', component: TestFeatureService},

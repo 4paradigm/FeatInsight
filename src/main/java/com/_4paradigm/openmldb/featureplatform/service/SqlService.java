@@ -76,19 +76,21 @@ public class SqlService {
 
         statement.execute(sql);
 
-        SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
-
         String returnString = "";
         if (isOnline) {
-            returnString = ResultSetUtil.resultSetToString(resultSet);
+            if (isDql(sql)) {
+                SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+                returnString = ResultSetUtil.resultSetToString(resultSet);
+                resultSet.close();
+            }
         } else {
+            SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
             ResultSetUtil.assertSizeIsOne(resultSet);
             resultSet.next();
             int jobId = resultSet.getInt(1);
             returnString = String.valueOf(jobId);
+            resultSet.close();
         }
-
-        resultSet.close();
 
         return returnString;
     }

@@ -35,9 +35,6 @@
         <a-menu-item key="7">
           <router-link to='/features'>{{ $t('Feature List') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="8">
-          <router-link to='/featureviews'>{{ $t('Feature Views') }}</router-link>
-        </a-menu-item>
         <a-menu-item key="9">
           <router-link to='/offlinesamples'>{{ $t('Offline Samples') }}</router-link>
         </a-menu-item>
@@ -46,7 +43,7 @@
       <a-sub-menu key="task_center">
         <template #title>{{ $t('Task') }}{{ $t('Center') }}</template>
         <a-menu-item key="10">
-          <router-link to='/featureservices'>{{ $t('Online')}}{{ $t('Feature Services') }}</router-link>
+          <router-link to='/featureservices'>{{ $t('Feature Services') }}</router-link>
         </a-menu-item>
         <a-menu-item key="11">
           <router-link to='/offlinejobs'>{{ $t('Offline') }}{{ $t('Tasks')}}</router-link>
