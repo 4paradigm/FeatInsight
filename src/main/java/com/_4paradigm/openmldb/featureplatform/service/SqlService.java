@@ -62,7 +62,7 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show");
     }
 
-    public SQLResultSet executeSql(String sql, boolean isOnline) throws SQLException {
+    public String executeSql(String sql, boolean isOnline) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
 
         if (isOnline) {
@@ -76,15 +76,24 @@ public class SqlService {
 
         statement.execute(sql);
 
-        if (isDql(sql)) {
-            return (SQLResultSet) statement.getResultSet();
+        SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+
+        String returnString = "";
+        if (isOnline) {
+            returnString = ResultSetUtil.resultSetToString(resultSet);
         } else {
-            return null;
+            ResultSetUtil.assertSizeIsOne(resultSet);
+            resultSet.next();
+            int jobId = resultSet.getInt(1);
+            returnString = String.valueOf(jobId);
         }
 
+        resultSet.close();
+
+        return returnString;
     }
 
-    public int importSql(String sql, boolean isOnline) throws SQLException {
+    public int importData(String sql, boolean isOnline) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
 
         if (isOnline) {

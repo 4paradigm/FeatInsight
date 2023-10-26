@@ -20,7 +20,7 @@
     </a-form-item>
 
     <a-form-item
-      :label="$t('Ouput Table Name')"
+      :label="$t('Output Table Name')"
       :rules="[{ required: true, message: 'Please input output table name!' }]">
       <a-input v-model:value="formState.outputTable" 
         placeholder="t1"/>

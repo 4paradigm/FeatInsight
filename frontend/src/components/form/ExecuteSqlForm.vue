@@ -12,11 +12,11 @@
     <a-form
       :model="formState"
       layout="vertical"
-      @submit="handleSubmit">
+      @submit="submitForm">
 
       <a-form-item
         :label="$t('Execute Mode')">
-        <a-switch v-model:checked="formState.isOnlineMode" :checked-children="$t('Online')" :un-checked-children="$t('Offline')" />
+        <a-switch :disabled=true v-model:checked="formState.isOnlineMode" :checked-children="$t('Online')" :un-checked-children="$t('Offline')" />
       </a-form-item>
 
       <a-form-item
@@ -27,9 +27,6 @@
           placeholder="Please input SQL" />
       </a-form-item>
 
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
     </a-form>
   </div>
 
@@ -49,6 +46,13 @@ import axios from 'axios'
 import { message } from 'ant-design-vue';
 
 export default {
+  props: {
+    isOnline: {
+      type: Boolean,
+      default: true,
+    }
+  },
+
   data() {
     return {
       formState: {
@@ -62,21 +66,27 @@ export default {
   },
 
   mounted() {
+    this.formState.isOnlineMode = this.isOnline;
   },
 
   methods: {
-
-    handleSubmit() {
+    submitForm() {
       axios
         .post(`/api/sql/execute`, {
           sql: this.formState.sql,
-          isOnline: this.formState.isOnlineMode
+          online: this.formState.isOnlineMode
         })
         .then((response) => {
           message.success(`Success to execute SQL: ${this.formState.sql}`);
 
-          this.isOpenPreviewTableModal = true;
-          this.previewTableContent = response.data.replace(/\n/g, '<br>');
+          if (this.formState.isOnlineMode) {
+            this.isOpenPreviewTableModal = true;
+            this.previewTableContent = response.data.replace(/\n/g, '<br>');
+          } else {
+            const jobId = response.data;
+            this.$router.push(`/offlinejobs/${jobId}/result`);
+          }
+
         })
         .catch((error) => {
           console.log(error);

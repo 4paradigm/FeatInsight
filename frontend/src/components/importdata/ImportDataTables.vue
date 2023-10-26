@@ -28,6 +28,7 @@
       <a-button>{{ $t('Other Create Methods') }}</a-button>
   </a-dropdown>
 
+  <br/><br/>
   <OnlineTables :key="refreshDataKey"></OnlineTables>
 
 </div>
@@ -38,7 +39,6 @@ import OnlineTables from '@/components/table/OnlineTables.vue';
 import CreateTableFromSqlForm from '@/components/form/CreateTableFromSqlForm.vue'
 import CreateTableFromParquetForm from '@/components/form/CreateTableFromParquetForm.vue';
 import CreateTableFromHiveForm from '@/components/form/CreateTableFromHiveForm.vue';
-import { message } from 'ant-design-vue';
 
 export default {
   components: {

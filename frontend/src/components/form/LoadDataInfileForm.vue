@@ -2,7 +2,7 @@
 
 <div>
   <a-typography-paragraph>
-    <pre>{{ $t("`Text of introduce load data infile`") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+    <pre>{{ $t("Text of introduce load data infile") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
   </a-typography-paragraph>
 
   <br/>
@@ -12,6 +12,19 @@
     @submit="submitForm">
 
     <a-form-item
+      :label="$t('Execute Mode')">
+      <a-switch :disabled=true v-model:checked="formState.isOnlineMode" :checked-children="$t('Online')" :un-checked-children="$t('Offline')" />
+    </a-form-item>
+
+    <a-form-item
+      :label="$t('Table Name')"
+      :rules="[{ required: true, message: 'Please input table name!' }]">
+      <a-select v-model:value="formState.tableName">
+        <option v-for="tableName in tableNames" :value="tableName">{{ tableName }}</option>
+      </a-select>
+    </a-form-item>
+
+    <a-form-item
       :label="$t('Path')"
       :rules="[{ required: true, message: 'Please input path!' }]">
       <a-input v-model:value="formState.path" 
@@ -19,10 +32,19 @@
     </a-form-item>
 
     <a-form-item
-      :label="$t('Table Name')"
-      :rules="[{ required: true, message: 'Please input table name!' }]">
-      <a-input v-model:value="formState.tableName" 
-        placeholder="db1.t1"/>
+        :label="$t('File Format')"
+        :rules="[{ required: true, message: 'Please choose file format!' }]">
+        <a-select v-model:value="formState.format">
+          <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
+        </a-select>
+    </a-form-item>
+
+    <a-form-item
+        :label="$t('Write Mode')"
+        :rules="[{ required: true, message: 'Please choose write mode!' }]">
+        <a-select v-model:value="formState.mode">
+          <option v-for="mode in writeModeOptions" :key="mode.id" :value="mode.name">{{ mode.name}}</option>
+        </a-select>
     </a-form-item>
 
     <a-form-item
@@ -41,27 +63,79 @@ import axios from 'axios'
 import { message } from 'ant-design-vue';
 
 export default {
+  props: {
+    isOnline: {
+      type: Boolean,
+      default: true,
+    },
+    format: {
+      type: String,
+      default: "Parquet",
+    }
+  },
+
   data() {
     return {
+      tableNames: [],
+
+      formatOptions:[
+        {id: '', name: ''},
+        {id: 'CSV', name: 'CSV'},
+        {id: 'Parquet', name: 'Parquet'}
+      ],
+
+      writeModeOptions:[
+        {id: 'append', name: 'append'},
+        {id: 'overwrite', name: 'overwrite'},
+        {id: 'error_if_exists', name: 'error_if_exists'}
+      ],
+
       formState: {
-        path: "",
+        isOnlineMode: true,
         tableName: "",
+        path: "",
+        format: "",
+        mode: "",
         options: ""
       },
     };
   },
 
-  methods: {
-    submitForm() {
-      const sql = `LOAD DATA INFILE ${this.formState.path} INTO TABLE ${this.formState.tableName} OPTIONS (${this.formState.options})`;
+  mounted() {
+    this.formState.isOnlineMode = this.isOnline;
+    this.formState.format = this.format;
 
-      axios.post(`/api/sql/execute`, {
-        "sql": sql
+    this.initData();
+  },
+
+  methods: {
+    initData() {
+      axios.get(`/api/tables`)
+        .then(response => {
+          this.tableNames = [];
+          response.data.forEach((table) => {
+            this.tableNames.push(`${table.db}.${table.table}`);
+          });
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
+        .finally(() => {});
+    },
+
+    submitForm() {
+      // TODO: merge options
+      const sql = `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} OPTIONS (format='${this.formState.format}', mode='${this.formState.mode}')`;
+
+      axios.post(`/api/sql/import`, {
+        "sql": sql,
+        "online": this.formState.isOnlineMode
       })
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
 
-        this.$emit('submitted');
+        const jobId = response.data;
+        this.$router.push(`/offlinejobs/${jobId}/result`);
       })
       .catch(error => {
         if (error.response.data) {

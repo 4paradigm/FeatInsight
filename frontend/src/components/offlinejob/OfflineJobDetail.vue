@@ -10,7 +10,8 @@
     <a-descriptions-item :span="24" :label="$t('Job Type')">{{ data.jobType }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('State')">
       {{ data.state }} &nbsp;
-      <a-progress type="circle" :percent="statePercent" :status="stateStatus" :size="60" />
+      <!-- TODO: Size does not work -->
+      <a-progress type="circle" :percent="statePercent" :status="stateStatus" size="small" />
     </a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Start Time')"> {{ data.startTime }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('End Time')"> {{ data.endTime }}</a-descriptions-item>

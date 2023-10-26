@@ -182,6 +182,7 @@
     "Text of introduce load data": "Users can perform online and offline data imports. Please refer to",
     "Import From SQL": "Import From SQL",
     "Import From Parquet": "Import From Parquet",
+    "Import From CSV": "Import From CSV",
     "Import From Hive": "Import From Hive",
     "Create Feature View": "Create Feature View",
     "Text of introduce create feature view": "Users can use SQL statements to create feature views (a set of features defined by a single SQL statement). Please refer to",
@@ -190,6 +191,19 @@
     "Main Table Keys": "Join Keys",
     "Text of introduce join keys": "If the selected features come from multiple feature views, you must provide a concatenation key to achieve the concatenation. Fill in the primary key of the main table of the feature view SQL, for example, 'id' or 'name,' and you can specify a composite key as 'name,id'.",
     "Create Table": "Create Table",
-    "Text of introduce load data infile": "",
-    "Create From CSV": "Create From CSV"
+    "Text of introduce load data infile": "Users can load data, please infer to",
+    "Create From CSV": "Create From CSV",
+    "Output Table Name": "Ouput Table Name",
+    "Hive Path": "Hive Path",
+    "Text of introduce create table from parquet": "Users can create table form Parquet files. Please refer to",
+    "Text of introduce create table from hive": "Users can create table form Hive tables. Please refer to",
+    "Other Import Methods": "Other Import Methods",
+    "Text of introduce import table from sql": "Users can import data form SQL. Please refer to",
+    "Text of introduce import table from parquet": "Users can import data form Parquet files. Please refer to",
+    "Text of introduce import table from csv": "Users can import data form CSV files. Please refer to",
+    "Text of introduce import table from hive": "Users can import data form Hive tables. Please refer to",
+    "Mode": "Mode",
+    "Success to submit import data job": "Success to submit import data job",
+    "Write Mode": "Write Mode"
+    
 }

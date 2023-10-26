@@ -182,8 +182,9 @@
     "Create From Hive": "使用 Hive 创建表",
     "Text of introduce load data": "用户可以进行在线和离线的数据导入，请参考",
     "Import From SQL": "使用 SQL 导入",
-    "Import From Parquet": "使用Parquet导入",
-    "Import From Hive": "使用Hive导入",
+    "Import From Parquet": "使用 Parquet 导入",
+    "Import From CSV": "使用 CSV 导入",
+    "Import From Hive": "使用 Hive 导入",
     "Create Feature View": "创建特征视图",
     "Text of introduce create feature view": "用户可以使用SQL语句来创建特征视图（单个SQL定义的一组特征）和特征，请参考",
     "Visual SQL Tool": "可视化SQL工具",
@@ -191,6 +192,19 @@
     "Main Table Keys": "主表主键",
     "Text of introduce join keys": "如果选择特征来自多个特征视图，必须提供拼接主键实现拼接。填写特征视图SQL的主表的主键，例如'id'或'name'，联合主键可填写'name,id'。",
     "Create Table": "创建表",
-    "Text of introduce load data infile": "",
-    "Create From CSV": "使用 CSV 创建表"
+    "Text of introduce load data infile": "用户可以导入数据，请参考",
+    "Create From CSV": "使用 CSV 创建表",
+    "Output Table Name": "输出表名",
+    "Hive Path": "Hive表路径",
+    "Text of introduce create table from parquet": "用户可以使用 Parquet 文件创建新的数据表，请参考",
+    "Text of introduce create table from hive": "用户可以使用 Hive 数据表创建新的数据表，请参考",
+    "Other Import Methods": "其他导入方法",
+    "Text of introduce import table from sql": "用户可以使用 SQL 来导入数据，请参考",
+    "Text of introduce import table from parquet": "用户可以使用 Parquet 来导入数据，请参考",
+    "Text of introduce import table from csv": "用户可以使用 CSV 来导入数据，请参考",
+    "Text of introduce import table from hive": "用户可以使用 Hive 来导入数据，请参考",
+    "Mode": "模式",
+    "Success to submit import data job": "成功提交导入数据任务",
+    "Write Mode": "写入模式"
+
 }

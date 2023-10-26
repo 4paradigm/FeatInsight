@@ -23,6 +23,7 @@ import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
 import CreateTableResult from '@/components/result/CreateTableResult.vue'
+import OfflineJobResult from '@/components/result/OfflineJobResult.vue'
 import ImportDataMenu from '@/components/importdata/ImportDataMenu.vue'
 import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue'
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
@@ -49,6 +50,7 @@ const router = createRouter({
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
+    { path: '/offlinejobs/:id/result', component: OfflineJobResult, props: true },
     { path: '/developprocess/import', component: ImportDataMenu, props: true,
       children: [
         { path: 'databases', component: ImportDataDatabases, props: true },

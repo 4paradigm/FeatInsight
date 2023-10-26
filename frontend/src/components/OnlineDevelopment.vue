@@ -9,14 +9,12 @@
   </h1>
 
   <div>
-    <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Online SQL')" >
-      <template #footer>
-          <a-button @click="handleCancel">Cancel</a-button>
-      </template>
-      <ExecuteSqlForm></ExecuteSqlForm>
+    <a-modal v-model:visible="isShowModal" width="1000px" :title="$t('Execute Online SQL')" @ok="clickModalOk" >
+      <ExecuteSqlForm :isOnline=true ref="ExecuteSqlForm"></ExecuteSqlForm>
     </a-modal>
   </div>
 
+  <br/>
   <OnlineTables></OnlineTables>
 
   <FeatureServicesPage></FeatureServicesPage>
@@ -38,20 +36,19 @@ export default {
 
   data() {
     return {
-      isOpenExecuteSqlModal: false,
+      isShowModal: false,
     }
   },
 
-  mounted() {
-  },
-
   methods: {
-    handleCancel() {
-      this.isOpenExecuteSqlModal = false;
+    showExcuteSqlFormModal() {
+      this.isShowModal = true;
     },
 
-    showExcuteSqlFormModal() {
-      this.isOpenExecuteSqlModal = true;
+    clickModalOk() {
+      this.isShowModal = false;
+      // Submit the form in child component
+      this.$refs.ExecuteSqlForm.submitForm();
     }
   },
 };

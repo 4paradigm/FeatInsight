@@ -2,7 +2,6 @@
 
 <div>
   <!-- Tables table -->
-  <br/>
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 

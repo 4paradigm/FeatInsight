@@ -10,11 +10,8 @@
   
   
   <div>
-    <a-modal v-model:visible="isOpenExecuteSqlModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="handleOk">
-      <template #footer>
-          <a-button @click="handleCancel">Cancel</a-button>
-      </template>
-      <ExecuteSqlForm></ExecuteSqlForm>
+    <a-modal v-model:visible="isShowModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="clickModalOk">
+      <ExecuteSqlForm :isOnline=false ref="ExecuteSqlForm"></ExecuteSqlForm>
     </a-modal>
   </div>
 
@@ -40,24 +37,19 @@ export default {
 
   data() {
     return {
-      isOpenExecuteSqlModal: false,
+      isShowModal: false,
     }
   },
 
-  mounted() {
-    this.initData();
-  },
-
   methods: {
-    initData() {
-    },
-
-    handleOk() {
-      this.isOpenExecuteSqlModal = false;
-    },
-
     showExcuteSqlFormModal() {
-      this.isOpenExecuteSqlModal = true;
+      this.isShowModal = true;
+    },
+    
+    clickModalOk() {
+      this.isShowModal = false;
+      // Submit the form in child component
+      this.$refs.ExecuteSqlForm.submitForm();
     }
   },
 };
