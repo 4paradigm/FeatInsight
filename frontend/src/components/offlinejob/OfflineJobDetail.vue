@@ -27,6 +27,7 @@
     <pre>{{ jobLog }}</pre>
   </div>
 
+  <router-link :to="`/offlinejobs/${id}/log`"><a-button>{{ $t('Check Completed Log') }}</a-button></router-link>
 
 </div>
 </template>
@@ -34,7 +35,6 @@
 <script>
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { ref, onMounted } from 'vue';
 
 export default {
   props: {
@@ -43,6 +43,7 @@ export default {
       required: true,
     },
   },
+
   data() {
     return {
       data: "",
@@ -54,6 +55,11 @@ export default {
       isShowJobLog: false,
     };
   },
+
+  mounted() {
+    this.initData();
+  },
+
   methods: {
     initData() {
       axios
@@ -92,12 +98,8 @@ export default {
           })
           .finally(() => {});
       }
-    },
+    }
 
-
-  },
-  mounted() {
-    this.initData();
-  },
+  }
 };
 </script>

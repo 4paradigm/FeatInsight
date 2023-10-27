@@ -15,6 +15,7 @@ import TestFeatureService from '@/components/TestFeatureService.vue'
 import DagPage from '@/components/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
+import OfflineJobLog from '@/components/offlinejob/OfflineJobLog.vue'
 import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
 import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
@@ -50,6 +51,7 @@ const router = createRouter({
     { path: '/offlinepage', component: OfflineSamplesAndJobsPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
+    { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },
     { path: '/offlinejobs/:id/result', component: OfflineJobResult, props: true },
     { path: '/developprocess/import', component: ImportDataMenu, props: true,
       children: [

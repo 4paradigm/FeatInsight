@@ -217,6 +217,8 @@
     "Detail": "详情",
     "Create Data Table": "创建数据表",
     "Import Online Data": "导入在线数据",
-    "Import Offline Data": "导入离线数据"
+    "Import Offline Data": "导入离线数据",
+    "Offline Job Log": "离线任务日志",
+    "Check Completed Log": "查看完整日志"
 
 }
