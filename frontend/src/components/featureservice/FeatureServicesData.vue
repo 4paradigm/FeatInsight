@@ -1,6 +1,20 @@
 <template>
-
 <div>
+
+  <a-drawer
+    v-model:visible="isOpenFeatureServiceDrawer"
+    size="large"
+    :title="$t('Feature Service') + $t('Detail')">
+    <FeatureServiceDetail :name="currentDrawerFeatureService" :key="currentDrawerFeatureService"></FeatureServiceDetail>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenFeatureServiceVersionDrawer"
+    size="large"
+    :title="$t('Feature Service') + $t('Detail')">
+    <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
+  </a-drawer>
+
   <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" >
     <template #footer>
         <a-button @click="handleCancel">Cancel</a-button>
@@ -18,13 +32,10 @@
 
   <a-table :columns="columns" :data-source="searchFilteredFeatureServices">
     <template #name="{ text, record }">
-      <router-link :to="`/featureservices/${record.name}`">{{ text }}</router-link>
+      <a-button type="link" @click="openFeatureServiceDrawer(record.name)">{{ record.name }}</a-button>
     </template>
     <template #version="{ text, record }">
-      <router-link :to="`/featureservices/${record.name}/${record.version}`">{{ text }}</router-link>
-    </template>
-    <template #db="{ text, record }">
-      <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
+      <a-button type="link" @click="openFeatureServiceVersionDrawer(record.name, record.version)">{{ record.version }}</a-button>
     </template>
     <template v-slot:action="scope">
       <a-button type="default" @click="showTestFormModal">{{ $t('Test Service') }}</a-button>
@@ -38,14 +49,23 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 import TestFeatureService from '@/components/TestFeatureService.vue';
+import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
+import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
 
 export default {
   components: {
-    TestFeatureService
+    TestFeatureService,
+    FeatureServiceDetail,
+    FeatureServiceVersionDetail
   },
 
   data() {
     return {
+      isOpenFeatureServiceDrawer: false,
+      currentDrawerFeatureService: "",
+      isOpenFeatureServiceVersionDrawer: false,
+      currentDrawerFeatureServiceVersion: "",
+
       isDisplayAllVersion: false,
 
       searchText: "",
@@ -132,6 +152,17 @@ export default {
       this.isOpenTestFormModal = true;
     },
 
-  },
+    openFeatureServiceDrawer(name) {
+      this.isOpenFeatureServiceDrawer = true;
+      this.currentDrawerFeatureService = name;
+    },
+
+    openFeatureServiceVersionDrawer(name, version) {
+      this.isOpenFeatureServiceVersionDrawer = true;
+      this.currentDrawerFeatureService = name;
+      this.currentDrawerFeatureServiceVersion = version;
+    }
+
+  }
 };
 </script>

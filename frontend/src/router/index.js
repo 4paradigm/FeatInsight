@@ -19,6 +19,7 @@ import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
 import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
+import OfflineSamplesAndJobsPage from '@/components/offlinesample/OfflineSamplesAndJobsPage.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
 import CreateTableResult from '@/components/result/CreateTableResult.vue'
@@ -46,6 +47,7 @@ const router = createRouter({
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
+    { path: '/offlinepage', component: OfflineSamplesAndJobsPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/offlinejobs/:id/result', component: OfflineJobResult, props: true },

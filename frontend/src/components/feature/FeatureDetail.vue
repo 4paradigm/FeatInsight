@@ -1,11 +1,9 @@
 <template>
   <div>
-    <br/>
-    <h1>{{ $t('Feature') }}: {{ feature.featureName }} </h1>
+
+    <h2>{{ $t('Feature') }}: {{ feature.featureName }} </h2>
     <a-descriptions bordered>
-      <a-descriptions-item :span="24" :label="$t('Feature View Name')">
-        <router-link :to="`/featureviews/${feature.featureViewName}`">{{ feature.featureViewName }}</router-link>
-      </a-descriptions-item>
+      <a-descriptions-item :span="24" :label="$t('Feature View Name')">{{ feature.featureViewName }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Feature Name')">{{ feature.featureName }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Type')">{{ feature.type}}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Description')">{{ feature.description}}</a-descriptions-item>

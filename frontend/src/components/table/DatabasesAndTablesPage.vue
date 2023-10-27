@@ -1,10 +1,12 @@
 <template>
 
 <div>
-  <h1>{{ $t('Databases') }}</h1>
+  <h1>{{ $t('All Databases') }}</h1>
+  <br/>
   <DatabasesTable></DatabasesTable>
 
-  <h1>{{ $t('Data Tables') }}</h1>
+  <h1>{{ $t('All Tables') }}</h1>
+  <br/>
   <OnlineTables></OnlineTables>
 
 </div>

@@ -204,6 +204,18 @@
     "Text of introduce import table from hive": "Users can import data form Hive tables. Please refer to",
     "Mode": "Mode",
     "Success to submit import data job": "Success to submit import data job",
-    "Write Mode": "Write Mode"
+    "Write Mode": "Write Mode",
+    "All Features": "All Features",
+    "All Feature Views": "All Feature Views",
+    "All Databases": "All Databases",
+    "All Tables": "All Tables",
+    "All Offline Jobs": "All Offline Jobs",
+    "All Offline Samples": "All Offline Samples",
+    "All Feature Services": "All Feature Services",
+    "ID": "ID",
+    "Detail": "Detail",
+    "Create Data Table": "Create Data Table",
+    "Import Online Data": "Import Online Data",
+    "Import Offline Data": "Import Offline Data"
     
 }

@@ -1,10 +1,12 @@
 <template>
 <div>
 
-  <h1>{{ $t('Features') }}</h1>
+  <h1>{{ $t('All Features') }}</h1>
+  <br/>
   <FeaturesData></FeaturesData>
 
-  <h1>{{ $t('Feature Views') }}</h1>
+  <h1>{{ $t('All Feature Views') }}</h1>
+  <br/>
   <FeatureViewsData></FeatureViewsData>
 
 </div>

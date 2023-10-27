@@ -1,12 +1,19 @@
 <template>
-
 <div>
+
+  <a-drawer
+    v-model:visible="isOpenOfflineJobDrawer"
+    size="large"
+    :title="$t('Offline Job') + $t('Detail')">
+    <OfflineJobDetail :id="currentDrawerOfflineJob" :key="currentDrawerOfflineJob"></OfflineJobDetail>
+  </a-drawer>
+
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
   <a-table :columns="columns" :data-source="searchFilteredOfflineJobInfos" :loading="loading">
     <template #id="{ text, record }">
-      <router-link :to="`/offlinejobs/${record.id}`">{{ text }}</router-link>
+      <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>
     </template>
   </a-table>
 
@@ -16,10 +23,17 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
 
 export default {
+  components: {
+    OfflineJobDetail
+  },
+
   data() {
     return {
+      isOpenOfflineJobDrawer: false,
+      currentDrawerOfflineJob: -1,
 
       searchText: "",
       searchFilteredOfflineJobInfos: [],
@@ -104,8 +118,13 @@ export default {
       } else {
         this.searchFilteredOfflineJobInfos = this.offlineJobInfos.filter((item) => this.matchSearch(item));
       }
+    },
+
+    openOfflineJobDrawer(id) {
+      this.isOpenOfflineJobDrawer = true;
+      this.currentDrawerOfflineJob = id;
     }
 
-  },
+  }
 };
 </script>

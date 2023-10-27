@@ -205,6 +205,18 @@
     "Text of introduce import table from hive": "用户可以使用 Hive 来导入数据，请参考",
     "Mode": "模式",
     "Success to submit import data job": "成功提交导入数据任务",
-    "Write Mode": "写入模式"
+    "Write Mode": "写入模式",
+    "All Features": "所有特征",
+    "All Feature Views": "所有特征视图",
+    "All Databases": "所有数据库",
+    "All Tables": "所有数据表",
+    "All Offline Jobs": "所有离线任务",
+    "All Offline Samples": "所有离线样本",
+    "All Feature Services": "所有特征服务",
+    "ID": "ID",
+    "Detail": "详情",
+    "Create Data Table": "创建数据表",
+    "Import Online Data": "导入在线数据",
+    "Import Offline Data": "导入离线数据"
 
 }

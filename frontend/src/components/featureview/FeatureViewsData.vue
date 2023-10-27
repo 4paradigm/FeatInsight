@@ -1,16 +1,30 @@
 <template>
-
 <div>
+
+  <a-drawer
+    v-model:visible="isOpenFeatureViewDrawer"
+    size="large"
+    :title="$t('Feature View') + $t('Detail')">
+    <FeatureViewDetail :name="currentDrawerFeatureView" :key="currentDrawerFeatureView"></FeatureViewDetail>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenDatabaseDrawer"
+    size="large"
+    :title="$t('Database') + $t('Detail')">
+    <DatabaseDetail :db="currentDrawerDatabase" :key="currentDrawerDatabase"></DatabaseDetail>
+  </a-drawer>
+
   <!-- Data table -->
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
   <a-table :columns="columns" :data-source="searchFilteredFeatureViews" :loading="loading">
     <template #name="{ text, record }">
-      <router-link :to="`/featureviews/${record.name}`">{{ text }}</router-link>
+      <a-button type="link" @click="openFeatureViewDrawer(record.name)">{{ record.name }}</a-button>
     </template>
     <template #db="{ text, record }">
-      <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
+      <a-button type="link" @click="openDatabaseDrawer(record.db)">{{ record.db }}</a-button>
     </template>  
     <!-- The delete column-->
     <template v-slot:custom="scope">
@@ -28,10 +42,22 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
+import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 
 export default {
+  components: {
+    DatabaseDetail,
+    FeatureViewDetail
+  },
+
   data() {
     return {
+      isOpenFeatureViewDrawer: false,
+      currentDrawerFeatureView: "",
+      isOpenDatabaseDrawer: false,
+      currentDrawerDatabase: "",
+
       searchText: "",
       searchFilteredFeatureViews: [],
 
@@ -46,11 +72,6 @@ export default {
         slots: { customRender: 'name' }
       },
       {
-        title: 'Entities',
-        dataIndex: 'entityNames',
-        key: 'entityNames',
-      },
-      {
         title: 'Database',
         dataIndex: 'db',
         key: 'db',
@@ -60,11 +81,6 @@ export default {
         title: 'SQL',
         dataIndex: 'sql',
         key: 'sql',
-      },
-      {
-        title: 'Features',
-        dataIndex: 'featureNames',
-        key: 'featureNames',
       },
       {
         title: 'Description',
@@ -126,6 +142,16 @@ export default {
       } else {
         this.searchFilteredFeatureViews = this.featureViews.filter((item) => this.matchSearch(item));
       }
+    },
+
+    openFeatureViewDrawer(featureView) {
+      this.isOpenFeatureViewDrawer = true;
+      this.currentDrawerFeatureView = featureView;
+    },
+
+    openDatabaseDrawer(db) {
+      this.isOpenDatabaseDrawer = true;
+      this.currentDrawerDatabase = db;
     }
 
   },

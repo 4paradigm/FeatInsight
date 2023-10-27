@@ -1,10 +1,8 @@
 <template>
 <div>
 
-  <br/>
-  <h1>{{ $t('Offline Job') }}: {{ data.id }} </h1>
+  <h2>{{ $t('Offline Job') }}: {{ data.id }} </h2>
 
-  <br/>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.id }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Job Type')">{{ data.jobType }}</a-descriptions-item>

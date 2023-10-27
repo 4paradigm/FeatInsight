@@ -1,13 +1,20 @@
 <template>
-
 <div>
+
+  <a-drawer
+    v-model:visible="isOpenOfflineSampleDrawer"
+    size="large"
+    :title="$t('Offline Sample') + $t('Detail')">
+    <OfflineSampleDetail :id="currentDrawerOfflineSample" :key="currentDrawerOfflineSample"></OfflineSampleDetail>
+  </a-drawer>
+
   <!-- Data table -->
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
   <a-table :columns="columns" :data-source="searchFilteredOfflineSamples">
     <template #jobId="{ text, record }">
-      <router-link :to="`/offlinesamples/${record.jobId}`">{{ text }}</router-link>
+      <a-button type="link" @click="openOfflineSampleDrawer(record.jobId)">{{ record.jobId }}</a-button>
     </template>
   </a-table>
 
@@ -17,10 +24,18 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
 
 export default {
+  components: {
+    OfflineSampleDetail
+  },
+
   data() {
     return {
+      isOpenOfflineSampleDrawer: false,
+      currentDrawerOfflineSample: -1,
+      
       searchText: "",
       searchFilteredOfflineSamples: [],
       offlineSamples: [],
@@ -84,6 +99,11 @@ export default {
       } else {
         this.searchFilteredOfflineSamples = this.offlineSamples.filter((item) => this.matchSearch(item));
       }
+    },
+
+    openOfflineSampleDrawer(id) {
+      this.isOpenOfflineSampleDrawer = true;
+      this.currentDrawerOfflineSample = id;
     }
 
   }

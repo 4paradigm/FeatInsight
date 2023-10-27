@@ -5,7 +5,7 @@
 
 <a-layout class="layout">
   <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }">
-    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_management', 'task_center']">
+    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_management', 'languages']">
 
       <a-menu-item key="1">
         <router-link to='/'>{{ $t('Feature Big Screen') }}</router-link>
@@ -29,27 +29,24 @@
 
       <a-sub-menu key="advanced_management">
         <template #title>{{ $t('Management') }}{{ $t('Center') }}</template>
+       
         <a-menu-item key="5">
+          <router-link to='/features'>{{ $t('Features') }}</router-link>
+        </a-menu-item>
+       
+        <a-menu-item key="6">
           <router-link to='/tables'>{{ $t('Data Tables') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="7">
-          <router-link to='/features'>{{ $t('Feature List') }}</router-link>
-        </a-menu-item>
-        <a-menu-item key="9">
-          <router-link to='/offlinesamples'>{{ $t('Offline Samples') }}</router-link>
-        </a-menu-item>
-      </a-sub-menu>
 
-      <a-sub-menu key="task_center">
-        <template #title>{{ $t('Task') }}{{ $t('Center') }}</template>
-        <a-menu-item key="10">
+        <a-menu-item key="7">
+          <router-link to='/offlinepage'>{{ $t('Offline Samples') }}</router-link>
+        </a-menu-item>
+
+        <a-menu-item key="8">
           <router-link to='/featureservices'>{{ $t('Feature Services') }}</router-link>
         </a-menu-item>
-        <a-menu-item key="11">
-          <router-link to='/offlinejobs'>{{ $t('Offline') }}{{ $t('Tasks')}}</router-link>
-        </a-menu-item>
-      </a-sub-menu>
 
+      </a-sub-menu>
 
       <!--
       <a-sub-menu key="others">

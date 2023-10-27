@@ -7,15 +7,15 @@
   </a-menu-item>
 
   <a-menu-item key="2">
-    <router-link to='/developprocess/import/tables'>{{ $t('Create Table')}}</router-link>
+    <router-link to='/developprocess/import/tables'>{{ $t('Create Data Table')}}</router-link>
   </a-menu-item>
 
   <a-menu-item key="3">
-    <router-link to='/developprocess/import/online'>{{ $t('Online Import')}}</router-link>
+    <router-link to='/developprocess/import/online'>{{ $t('Import Online Data')}}</router-link>
   </a-menu-item>
 
   <a-menu-item key="4">
-    <router-link to='/developprocess/import/offline'>{{ $t('Offline Import')}}</router-link>
+    <router-link to='/developprocess/import/offline'>{{ $t('Import Offline Data')}}</router-link>
   </a-menu-item>
 
 </a-menu>

@@ -1,7 +1,8 @@
 <template>
   <div>
   
-    <h1>{{ $t('Feature Services') }}</h1>
+    <h1>{{ $t('All Feature Services') }}</h1>
+    <br/>
     <FeatureServicesData></FeatureServicesData>
   
   </div>

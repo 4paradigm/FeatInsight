@@ -1,9 +1,16 @@
 <template>
 <div>
-  <!-- Databases table -->
+
+  <a-drawer
+    v-model:visible="isOpenDatabaseDrawer"
+    size="large"
+    :title="$t('Database') + $t('Detail')">
+    <DatabaseDetail :db="currentDrawerDatabase" :key="currentDrawerDatabase"></DatabaseDetail>
+  </a-drawer>
+
   <a-table :columns="databaseColumns" :data-source="databases">
     <template #database="{ text, record }">
-      <router-link :to="`/databases/${record}`">{{ text }}</router-link>
+      <a-button type="link" @click="openDatabaseDrawer(text)">{{ text }}</a-button>
     </template>
   </a-table>
 
@@ -12,10 +19,18 @@
   
 <script>
 import axios from 'axios'
+import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 
 export default {
+  components: {
+    DatabaseDetail
+  },
+
   data() {
     return {
+      isOpenDatabaseDrawer: false,
+      currentDrawerDatabase: "",
+
       databases: [],
 
       databaseColumns: [{
@@ -40,6 +55,11 @@ export default {
         })
         .finally(() => {});
     },
+
+    openDatabaseDrawer(db) {
+      this.isOpenDatabaseDrawer = true;
+      this.currentDrawerDatabase = db;
+    }
 
   }
 };
