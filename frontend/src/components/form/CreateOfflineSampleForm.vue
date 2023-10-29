@@ -19,7 +19,7 @@
       :model="formState"
       layout="vertical"
       name="basic"
-      @submit="handleSubmit">
+      @submit="submitForm">
 
       <a-form-item
         :label="$t('Choose Features')"
@@ -63,16 +63,7 @@
             <a-input id="exportOptions" v-model:value="formState.options"></a-input>
           </a-tooltip>
       </a-form-item>
-
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
-
-
     </a-form>
-
-
-
 
 </div>
 </template>
@@ -145,7 +136,7 @@ export default {
         .finally(() => {});
     },
 
-    handleSubmit() {
+    submitForm() {
       axios.post(`/api/offlinesamples`, {
         "featureNames": this.formState.featureSet.join(','),
         "path": this.formState.path,

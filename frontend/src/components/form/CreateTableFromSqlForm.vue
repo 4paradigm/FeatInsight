@@ -38,7 +38,8 @@ export default {
   methods: {
     submitForm() {
       axios.post(`/api/sql/execute`, {
-        "sql": this.formState.sql
+        "sql": this.formState.sql,
+        "online": true
       })
       .then(response => {
         message.success(`Success to execute SQL: ${this.formState.sql}`);

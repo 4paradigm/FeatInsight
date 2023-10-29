@@ -1,6 +1,7 @@
 <template>
 
 <div>
+
   <a-typography-paragraph>
     <pre>{{ $t("Text of introduce import table from sql") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dml/LOAD_DATA_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
   </a-typography-paragraph>
@@ -12,10 +13,15 @@
     @submit="submitForm">
 
     <a-form-item
+      :label="$t('Execute Mode')">
+      <a-switch :disabled=true v-model:checked="formState.isOnlineMode" :checked-children="$t('Online')" :un-checked-children="$t('Offline')" />
+    </a-form-item>
+
+    <a-form-item
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
       <a-input v-model:value="formState.sql" 
-        placeholder="LOAD DATA INFILE 'file:///data/' INTO TABLE db1.t1"/>
+        placeholder="LOAD DATA INFILE 'file:///data/' INTO TABLE db1.t1 OPTIONS (format='parquet', mode='append')"/>
     </a-form-item>
   </a-form>
 
@@ -27,24 +33,37 @@ import axios from 'axios'
 import { message } from 'ant-design-vue';
 
 export default {
+  props: {
+    isOnline: {
+      type: Boolean,
+      default: true,
+    }
+  },
+
   data() {
     return {
       formState: {
-        sql: '',
+        isOnlineMode: true,
+        sql: ''
       },
-    };
+    }
+  },
+
+  mounted() {
+    this.formState.isOnlineMode = this.isOnline;
   },
 
   methods: {
     submitForm() {
-      axios.post(`/api/sql/execute`, {
-        "sql": this.formState.sql
+      axios.post(`/api/sql/import`, {
+        "sql": this.formState.sql,
+        "online": this.formState.isOnlineMode
       })
       .then(response => {
         message.success(`Success to execute SQL: ${this.formState.sql}`);
 
-        // TODO: get job id
-        this.$router.push(`/tables/${this.formState.db}/${this.formState.outputTable}/createresult`);
+        const jobId = response.data;
+        this.$router.push(`/offlinejobs/${jobId}/result`);
       })
       .catch(error => {
         if (error.response.data) {

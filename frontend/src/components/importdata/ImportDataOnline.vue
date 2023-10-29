@@ -1,39 +1,39 @@
 <template>
 
   <div>
-    <!-- Create form SQL modal -->
     <a-modal v-model:visible="isShowSqlModal" width="1000px" :title="$t('Import From SQL')" @ok="clickSqlModalOk">
-      <ImportTableFromSqlForm ref="ImportTableFromSqlForm" @submitted="submittedForm"></ImportTableFromSqlForm>
+      <ImportTableFromSqlForm ref="ImportTableFromSqlForm" :isOnline=true></ImportTableFromSqlForm>
     </a-modal>
   
-    <a-modal v-model:visible="isShowParquetModal" width="1000px" :title="$t('Create From Parquet')" @ok="clickParquetModalOk">
-      <LoadDataInfileForm ref="CreateTableFromParquetForm" @submitted="submittedForm"></LoadDataInfileForm>
+    <a-modal v-model:visible="isShowParquetModal" width="1000px" :title="$t('Import From Parquet')" @ok="clickParquetModalOk">
+      <LoadDataInfileForm ref="CreateTableFromParquetForm" :isOnline=true format="Parquet"></LoadDataInfileForm>
     </a-modal>
   
-    <a-modal v-model:visible="isShowCsvModal" width="1000px" :title="$t('Create From CSV')" @ok="clickCsvModalOk">
-      <LoadDataInfileForm ref="CreateTableFromCsvForm" @submitted="submittedForm"></LoadDataInfileForm>
+    <a-modal v-model:visible="isShowCsvModal" width="1000px" :title="$t('Import From CSV')" @ok="clickCsvModalOk">
+      <LoadDataInfileForm ref="CreateTableFromCsvForm" :isOnline=true format="CSV"></LoadDataInfileForm>
     </a-modal>
   
-    <a-modal v-model:visible="isShowHiveModal" width="1000px" :title="$t('Create From Hive')" @ok="clickHiveModalOk">
-      <LoadDataInfileForm ref="CreateTableFromHiveForm" @submitted="submittedForm"></LoadDataInfileForm>
+    <a-modal v-model:visible="isShowHiveModal" width="1000px" :title="$t('Import From Hive')" @ok="clickHiveModalOk">
+      <LoadDataInfileForm ref="CreateTableFromHiveForm" :isOnline=true format=""></LoadDataInfileForm>
     </a-modal>
   
     <br/>
-    <a-button type="primary" @click="clickImportFromSqlButton">{{ $t('Import From SQL') }}</a-button>
+    <a-button type="primary" @click="clickSqlButton">{{ $t('Import From SQL') }}</a-button>
   
     &nbsp;&nbsp;
     <a-dropdown>
         <template #overlay>
           <a-menu>
-            <a-menu-item @click="clickCreateFromParquetButton">{{ $t('Import From Parquet') }}</a-menu-item>
-            <a-menu-item @click="clickCreateFromCsvButton">{{ $t('Import From CSV') }}</a-menu-item>
-            <a-menu-item @click="clickCreateFromHiveButton">{{ $t('Import From Hive') }}</a-menu-item>
+            <a-menu-item @click="clickParquetButton">{{ $t('Import From Parquet') }}</a-menu-item>
+            <a-menu-item @click="clickCsvButton">{{ $t('Import From CSV') }}</a-menu-item>
+            <a-menu-item @click="clickHiveButton">{{ $t('Import From Hive') }}</a-menu-item>
           </a-menu>
         </template>
         <a-button>{{ $t('Other Import Methods') }}</a-button>
     </a-dropdown>
   
-    <OnlineTables :key="refreshDataKey"></OnlineTables>
+    <br/><br/>
+    <OnlineTables></OnlineTables>
   
   </div>
   </template>
@@ -56,37 +56,24 @@
         isShowParquetModal: false,
         isShowCsvModal: false,
         isShowHiveModal: false,
-  
-        refreshDataKey: 0
       };
     },
   
     methods: {
-  
-      clickImportFromSqlButton() {
+      clickSqlButton() {
         this.isShowSqlModal = true;
       },
   
-      clickCreateFromParquetButton() {
+      clickParquetButton() {
         this.isShowParquetModal = true;
       },
   
-      clickCreateFromCsvButton() {
+      clickCsvButton() {
         this.isShowCsvModal = true;
       },
   
-      clickCreateFromHiveButton() {
+      clickHiveButton() {
         this.isShowHiveModal = true;
-      },
-  
-      submittedForm() {
-        this.isShowSqlModal = false;
-        this.isShowParquetModal = false;
-        this.isShowSqlModal = false;
-        this.isShowHiveModal = false;
-  
-        // Update data when closing modal
-        this.refreshDataKey++;
       },
   
       clickSqlModalOk() {

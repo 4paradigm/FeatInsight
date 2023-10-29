@@ -1,8 +1,7 @@
 <template>
 <div>
 
-  <br/>
-  <h1>{{ $t('Offline Sample') }}: {{ data.jobId }} </h1>
+  <h2>{{ $t('Offline Sample') }}: {{ data.jobId }} </h2>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.jobId }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
@@ -12,6 +11,7 @@
     <a-descriptions-item :span="24" :label="$t('SQL')"> {{ data.sql }}</a-descriptions-item>
   </a-descriptions>
 
+  <br/>
   <OfflineJobDetail :id=id></OfflineJobDetail>
 
 </div>
@@ -20,7 +20,6 @@
 <script>
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { ref, onMounted } from 'vue';
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue';
 
 
@@ -28,12 +27,14 @@ export default {
     components: {
         OfflineJobDetail
     },
+
     props: {
         id: {
             type: Number,
             required: true,
         },
     },
+    
     data() {
         return {
             data: "",
