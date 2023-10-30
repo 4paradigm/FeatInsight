@@ -8,25 +8,14 @@
 </div>
 <br />
 <div>
-  <a-button type="primary" @click="runGraph">{{$t('Generate SQL')}}</a-button>
+  <a-button type="primary" @click="runGraph">{{$t('Preview SQL')}}</a-button>
 </div>
 <div v-if='showRes'>
- {{ $t('Preview SQL')}} :
   <a-textarea readonly v-model:value=this.outSql ></a-textarea>
 </div>
-
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
-<!-- div>
-  <right-drawer-res v-if="showRes" :outSql="outSql"></right-drawer-res>
-</div-->
-<br />
-<!-- div>
-  <a-button type="primary" @click="exportjson"> export json </a-button>
-  <a-button type="primary" @click="loadGraphFromJson"> load json</a-button>
-  <a-button type="primary" @click="loadSampleGraphFromJson"> load sample json</a-button>
-</div-->
 
 </template>
 
@@ -385,7 +374,6 @@ export default {
       this.graph.on('blank:click', () => {
         this.nodeId = ''
         this.showRight = false
-        this.showRes = false
       })
 
       // 连接线鼠标移入
