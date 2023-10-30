@@ -174,9 +174,6 @@
 
       clickDagPage() {
         this.isShowDagPageModal = true;
-        setTimeout(() => {
-        this.$refs.DagPage.inSql = this.formState.sql;
-        }, 50) // set timeout here to let DagPage initialized first before setting the inSql
       },
 
       updateOutputSql(outSql){
