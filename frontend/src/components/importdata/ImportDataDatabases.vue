@@ -1,14 +1,14 @@
 <template>
 
 <div>
-  <br/>
-  <a-button type="primary" @click="clickCreateButton">{{ $t('Create Database') }}</a-button>
-
-  <!-- Create database modal -->
   <a-modal v-model:visible="isShowModal" width="1000px" :title="$t('Create Database')" @ok="clickModalOk">
     <CreateDatabaseForm ref="CreateDatabaseForm" @submitted="submittedForm"></CreateDatabaseForm>
   </a-modal>
 
+  <br/>
+  <a-button type="primary" @click="clickCreateButton">{{ $t('Create Database') }}</a-button>
+
+  <br/><br/>
   <DatabasesTable :key="refreshDataKey"></DatabasesTable>
 
 </div>

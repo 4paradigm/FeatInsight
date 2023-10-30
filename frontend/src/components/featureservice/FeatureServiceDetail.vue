@@ -1,66 +1,60 @@
 <template>
-  <div>
-  
-    <br/>
-    <h1>
-      {{ $t('Feature Service') }}: {{ data.name }} 
-      &nbsp;&nbsp;<a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${data.name}&version=${latestVersion}`">{{ $t('Test Service') }}</router-link></a-button>
-    </h1>
+<div>
+  <a-drawer
+    v-model:visible="isOpenFeatureServiceVersionDrawer"
+    size="large"
+    :title="$t('Feature Service') + $t('Detail')">
+    <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
+  </a-drawer>
 
-    <br/>
-    <a-descriptions bordered>
-      <a-descriptions-item :span="24" :label="$t('Name')"> {{ data.name }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Latest Version')"><router-link :to="`/featureservices/${data.name}/${data.version}`">{{ data.version }}</router-link></a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Database')"><router-link :to="`/databases/${data.db}`">{{ data.db }}</router-link></a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('SQL')">{{ data.sql }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
-    </a-descriptions>
+  <h2>{{ $t('Feature Service') }}: {{ data.name }} </h2>
 
-    <br/><br/>
-    <h1>{{ $t('Features Service Versions') }}</h1>
-    <a-table :columns="columns" :data-source="featureServiceVersionList">
-      <template #version="{ text, record }">
-        <router-link :to="`/featureservices/${record.name}/${record.version}`">{{ text }}</router-link>
-      </template>
+  <a-table :columns="columns" :data-source="featureServiceVersionList">
+    <template #version="{ text, record }">
+      <a-button type="link" @click="openFeatureServiceVersionDrawer(record.name, record.version)">{{ record.version }}</a-button>
+    </template>
 
-      <template #isLatest="{ text, record }">
-        <span>
-          <div v-if="record.isLatest">
-            <a-tag color="green">{{ $t('Latest') }}</a-tag>
-          </div>
-          <div v-else>
-            <a-tag color="red">{{ $t('Not Latest') }}</a-tag>
-          </div>
-        </span>
-      </template>
+    <template #isLatest="{ text, record }">
+      <span>
+        <div v-if="record.isLatest">
+          <a-tag color="green">{{ $t('Latest') }}</a-tag>
+        </div>
+        <div v-else>
+          <a-tag color="red">{{ $t('Not Latest') }}</a-tag>
+        </div>
+      </span>
+    </template>
 
-      <template v-slot:action="scope">
-        <a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${scope.record.name}&version=${scope.record.version}`">{{ $t('Test Service') }}</router-link></a-button>
-        <br/>
-        <a-popconfirm
-            title="Sure to update as latest version?"
-            @confirm="handleUpdteLatestVersion(scope.record.name, scope.record.version)">
-          <a-button type="primary">{{ $t('Update Version') }}</a-button>
-        </a-popconfirm>
-        <br/>
-        <a-popconfirm
-            title="Sure to delete?"
-            @confirm="handleDelete(scope.record.name, scope.record.version)">
-          <a-button type="primary" danger>{{ $t('Delete Service') }}</a-button>
-        </a-popconfirm>
-      </template>
-    </a-table>
+    <template v-slot:action="scope">
+      <a-button><router-link :to="`/featureservices/test?featureservice=${scope.record.name}&version=${scope.record.version}`">{{ $t('Test Service') }}</router-link></a-button>
+      <br/>
+      <a-popconfirm
+          title="Sure to update as latest version?"
+          @confirm="handleUpdteLatestVersion(scope.record.name, scope.record.version)">
+        <a-button>{{ $t('Update Version') }}</a-button>
+      </a-popconfirm>
+      <br/>
+      <a-popconfirm
+          title="Sure to delete?"
+          @confirm="handleDelete(scope.record.name, scope.record.version)">
+        <a-button danger>{{ $t('Delete Service') }}</a-button>
+      </a-popconfirm>
+    </template>
+  </a-table>
 
-  </div>
-  </template>
+</div>
+</template>
     
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
 
 export default {
+  components: {
+    FeatureServiceVersionDetail
+  },
+
   props: {
     name: {
       type: String,
@@ -70,18 +64,17 @@ export default {
 
   data() {
     return {
+      isOpenFeatureServiceVersionDrawer: false,
+      currentDrawerFeatureService: "",
+      currentDrawerFeatureServiceVersion: "",
+
       data: {},
 
       featureServiceVersionList: [],
 
       latestVersion: "",
 
-      columns: [{
-        title: this.$t('Name'),
-        dataIndex: 'name',
-        key: 'name',
-        slots: { customRender: 'name' }
-      },
+      columns: [
       {
         title: this.$t('Version'),
         dataIndex: 'version',
@@ -106,6 +99,10 @@ export default {
       }],
 
     }
+  },
+
+  mounted() {
+    this.initData();
   },
 
   methods: {
@@ -152,12 +149,14 @@ export default {
       .catch(error => {
         message.error(error.message);
       });
-    }
-  },
+    },
 
-  mounted() {
-    this.initData();
+    openFeatureServiceVersionDrawer(name, version) {
+      this.isOpenFeatureServiceVersionDrawer = true;
+      this.currentDrawerFeatureService = name;
+      this.currentDrawerFeatureServiceVersion = version;
+    }
+
   }
-  
 }
 </script>

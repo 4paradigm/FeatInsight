@@ -492,6 +492,9 @@ public class FeatureServiceService {
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
 
+
+
+
         ResultSetUtil.assertSizeIsOne(resultSet);
         resultSet.next();
 

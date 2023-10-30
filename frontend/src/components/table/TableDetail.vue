@@ -1,14 +1,11 @@
 <template>
 <div>
 
-  <br/>
-  <h1>{{ $t('Table') }}: {{ data.table }} </h1>
-  <a-descriptions layout="vertical" bordered>
-    <a-descriptions-item :label="$t('Database')"> 
-      <router-link :to="`/databases/${data.db}`">{{ data.db }}</router-link>
-    </a-descriptions-item>
-    <a-descriptions-item :label="$t('Table')">{{ data.table }}</a-descriptions-item>
-    <a-descriptions-item :label="$t('Schema')">{{ data.schema}}</a-descriptions-item>
+  <h2>{{ $t('Table') }}: {{ data.table }} </h2>
+  <a-descriptions bordered>
+    <a-descriptions-item :span="24" :label="$t('Database')">{{ data.db }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Table Name')">{{ data.table }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Schema')">{{ data.schema}}</a-descriptions-item>
   </a-descriptions>
 
   <br/>
@@ -21,28 +18,12 @@
   </div>
 
   <br/><br/>
-  <h1>{{$t('Related Feature Views')}}</h1>
-  <a-table :columns="featureViewColumns" :data-source="featureViews">
-    <template #name="{ text, record }">
-      <router-link :to="`/featureviews/${record.name}`">{{ text }}</router-link>
-    </template>
-    <template #db="{ text, record }">
-      <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
-    </template>
-  </a-table>
+  <h2>{{$t('Related Feature Views')}}</h2>
+  <a-table :columns="featureViewColumns" :data-source="featureViews"></a-table>
 
-  <h1>{{$t('Related Feature Services')}}</h1>
-  <a-table :columns="featureServiceColumns" :data-source="featureServices">
-    <template #name="{ text, record }">
-      <router-link :to="`/featureservices/${record.name}`">{{ text }}</router-link>
-    </template>
-    <template #version="{ text, record }">
-      <router-link :to="`/featureservices/${record.name}/${record.version}`">{{ text }}</router-link>
-    </template>
-    <template #db="{ text, record }">
-      <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
-    </template>
-  </a-table>
+  <br/>
+  <h2>{{$t('Related Feature Services')}}</h2>
+  <a-table :columns="featureServiceColumns" :data-source="featureServices"></a-table>
 
 </div>
 </template>
@@ -65,6 +46,9 @@ export default {
 
   data() {
     return {
+      isOpenFeatureViewDrawer: false,
+      currentDrawerFeatureView: "",
+      
       data: "",
       isPreviewData: false,
       tableData: "",
@@ -76,11 +60,6 @@ export default {
         dataIndex: 'name',
         key: 'name',
         slots: { customRender: 'name' }
-      },
-      {
-        title: 'Entities',
-        dataIndex: 'entityNames',
-        key: 'entityNames',
       },
       {
         title: 'Database',
@@ -130,6 +109,10 @@ export default {
       }],
 
     };
+  },
+
+  mounted() {
+    this.initData();
   },
 
   methods: {
@@ -186,10 +169,8 @@ export default {
             message.error(error.message);
           }
         });
-    },
-  },
-  mounted() {
-    this.initData();
-  },
+    }
+  }
+  
 };
 </script>

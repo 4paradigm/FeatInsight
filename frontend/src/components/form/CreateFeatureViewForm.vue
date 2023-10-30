@@ -49,7 +49,7 @@
         <div v-if="validatedFeatureNames.length > 0">
           <h3>
             {{ $t('Feature List') }}:
-            &nbsp;<a-button type="primary" @click="displayAddFeatureDescription()">{{ $t('Add Feature Description') }}</a-button>
+            &nbsp;<a-button @click="displayAddFeatureDescription()">{{ $t('Add Feature Description') }}</a-button>
           </h3>
 
           <ul>

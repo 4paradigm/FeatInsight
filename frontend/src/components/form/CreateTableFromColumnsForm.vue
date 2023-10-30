@@ -2,7 +2,7 @@
 
 <div>
   <a-typography-paragraph>
-    <pre>{{ $t("Text of introduce create table from hive") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
+    <pre>{{ $t("Text of introduce create table") }} <a target="blank" href="https://openmldb.ai/docs/">{{$t('OpenMLDB documents')}}</a></pre>
   </a-typography-paragraph>
 
   <br/>
@@ -20,18 +20,24 @@
     </a-form-item>
 
     <a-form-item
-      :label="$t('Output Table Name')"
-      :rules="[{ required: true, message: 'Please input output table name!' }]">
-      <a-input v-model:value="formState.outputTable" 
+      :label="$t('Table Name')"
+      :rules="[{ required: true, message: 'Please input table name!' }]">
+      <a-input v-model:value="formState.table" 
         placeholder="t1"/>
     </a-form-item>
 
     <a-form-item
-      :label="$t('Hive Path')"
-      :rules="[{ required: true, message: 'Please input hive path!' }]">
-      <a-input v-model:value="formState.hivePath" 
-        placeholder="hive:///db1/t1"/>
+      :label="$t('Path')"
+      :rules="[{ required: true, message: 'Please input path!' }]">
+      <a-input v-model:value="formState.path" 
+        placeholder="file:///tmp/t1_parquet/"/>
     </a-form-item>
+
+
+    <!-- TODO: Add dynamic form -->
+
+
+    
   </a-form>
 
 </div>
@@ -48,8 +54,8 @@ export default {
 
       formState: {
         db: '',
-        outputTable: '',
-        hivePath: '',
+        table: '',
+        path: '',
       },
     };
   },
@@ -71,7 +77,7 @@ export default {
     },
 
     submitForm() {
-      const sql = `CREATE TABLE ${this.formState.db}.${this.formState.outputTable} LIKE HIVE '${this.formState.hivePath}'`;
+      const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
       axios.post(`/api/sql/execute`, {
         "sql": sql
@@ -79,7 +85,7 @@ export default {
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
 
-        this.$router.push(`/tables/${this.formState.db}/${this.formState.outputTable}/createresult`);
+        this.$router.push(`/tables/${this.formState.db}/${this.formState.table}/createresult`);
       })
       .catch(error => {
         if (error.response.data) {

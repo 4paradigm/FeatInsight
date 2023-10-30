@@ -1,16 +1,15 @@
 <template>
 <div>
 
-  <br/>
-  <h1>{{ $t('Offline Job') }}: {{ data.id }} </h1>
+  <h2>{{ $t('Offline Job') }}: {{ data.id }} </h2>
 
-  <br/>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')"> {{ data.id }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Job Type')">{{ data.jobType }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('State')">
       {{ data.state }} &nbsp;
-      <a-progress type="circle" :percent="statePercent" :status="stateStatus" :size="60" />
+      <!-- TODO: Size does not work -->
+      <a-progress type="circle" :percent="statePercent" :status="stateStatus" size="small" />
     </a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Start Time')"> {{ data.startTime }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('End Time')"> {{ data.endTime }}</a-descriptions-item>
@@ -28,6 +27,7 @@
     <pre>{{ jobLog }}</pre>
   </div>
 
+  <router-link :to="`/offlinejobs/${id}/log`"><a-button>{{ $t('Check Completed Log') }}</a-button></router-link>
 
 </div>
 </template>
@@ -35,7 +35,6 @@
 <script>
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { ref, onMounted } from 'vue';
 
 export default {
   props: {
@@ -44,6 +43,7 @@ export default {
       required: true,
     },
   },
+
   data() {
     return {
       data: "",
@@ -55,6 +55,11 @@ export default {
       isShowJobLog: false,
     };
   },
+
+  mounted() {
+    this.initData();
+  },
+
   methods: {
     initData() {
       axios
@@ -93,12 +98,8 @@ export default {
           })
           .finally(() => {});
       }
-    },
+    }
 
-
-  },
-  mounted() {
-    this.initData();
-  },
+  }
 };
 </script>

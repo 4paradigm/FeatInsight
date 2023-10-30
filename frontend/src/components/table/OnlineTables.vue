@@ -1,17 +1,30 @@
 <template>
-
 <div>
+  
+  <a-drawer
+    v-model:visible="isOpenDatabaseDrawer"
+    size="large"
+    :title="$t('Database') + $t('Detail')">
+    <DatabaseDetail :db="currentDrawerDatabase" :key="currentDrawerDatabase"></DatabaseDetail>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenTableDrawer"
+    size="large"
+    :title="$t('Table') + $t('Detail')">
+    <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerDatabase+currentDrawerTable"></TableDetail>
+  </a-drawer>
+
   <!-- Tables table -->
-  <br/>
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
   <a-table :columns="columns" :data-source="searchFilteredTables">
     <template #database="{ text, record }">
-      <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
+      <a-button type="link" @click="openDatabaseDrawer(record.db)">{{ record.db }}</a-button>
     </template>    
     <template #table="{ text, record }">
-      <router-link :to="`/tables/${record.db}/${record.table}`">{{ text }}</router-link>
+      <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
     </template>
     <template #action="{ text, record }">
       <a-button type="default" @click="previewTableData(record.db, record.table)">{{ $t('Preview Data') }}</a-button>
@@ -33,10 +46,22 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
+import TableDetail from '@/components/table/TableDetail.vue'
 
 export default {
+  components: {
+    DatabaseDetail,
+    TableDetail
+  },
+
   data() {
     return {
+      isOpenDatabaseDrawer: false,
+      currentDrawerDatabase: "",
+      isOpenTableDrawer: false,
+      currentDrawerTable: "",
+
       searchText: "",
       searchFilteredTables: [],
 
@@ -127,6 +152,17 @@ export default {
     handleCancel() {
       this.isOpenPreviewTableModal = false;
     },
+
+    openDatabaseDrawer(db) {
+      this.isOpenDatabaseDrawer = true;
+      this.currentDrawerDatabase = db;
+    },
+
+    openTableDrawer(db, table) {
+      this.isOpenTableDrawer = true;
+      this.currentDrawerDatabase = db;
+      this.currentDrawerTable = table;
+    }
 
   }
 };

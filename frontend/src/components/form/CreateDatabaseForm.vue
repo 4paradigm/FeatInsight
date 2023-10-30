@@ -48,7 +48,7 @@ export default {
       const sql = "CREATE DATABASE IF NOT EXISTS " + this.formState.name;
       axios.post(`/api/sql/execute`, {
         "sql": sql,
-        isOnline: true
+        online: true
       })
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
