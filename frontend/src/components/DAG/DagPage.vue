@@ -506,7 +506,6 @@ export default {
     },
 
     runGraph() {
-      console.log(this.graph.toJSON()['cells']);
       axios.post(`/api/dag_conversion/forward`, this.graph.toJSON()['cells'])
       .then(response => {
         console.log(response.data);
@@ -526,7 +525,8 @@ export default {
 
     updateValue() {
       this.runGraph()
-      this.$emit('updateSql', this.outSql);
+      setTimeout(() => {
+      this.$emit('updateSql', this.outSql);}, 50); //Set time delay for axios post
     }
   },
 };
