@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,15 @@ public class SqlController {
         this.sqlService = sqlService;
     }
 
-    @PostMapping("/execute")
-    public ResponseEntity<String> executeSql(@RequestBody SqlRequest sqlRequest) {
+    @PostMapping("/online")
+    public ResponseEntity<List<List<String>>> executeOnline(@RequestBody SqlRequest sqlRequest) throws SQLException {
+        return ResponseEntity.ok(sqlService.executeOnlineSql(sqlRequest.getSql()));
+    }
+
+    @PostMapping("/execute2")
+    public ResponseEntity<String> executeSql2(@RequestBody SqlRequest sqlRequest) {
         try {
-            String responseMessage = sqlService.executeSql(sqlRequest.getSql(), sqlRequest.isOnline());
+            String responseMessage = sqlService.executeSql2(sqlRequest.getSql(), false);
             return new ResponseEntity<>(responseMessage, HttpStatus.OK);
         } catch (SQLException e) {
             return new ResponseEntity<>("Fail to execute sql and get exception: " + e.getMessage(),
@@ -48,7 +54,7 @@ public class SqlController {
 
     @PostMapping("/import")
     public int importSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        int jobId = sqlService.importData(sqlRequest.getSql(), sqlRequest.isOnline());
+        int jobId = sqlService.importData(sqlRequest.getSql(), false);
         return jobId;
     }
 

@@ -218,6 +218,7 @@
     "Import Online Data": "Import Online Data",
     "Import Offline Data": "Import Offline Data",
     "Offline Job Log": "Offline Job Log",
-    "Check Completed Log": "Check Completed Log"
+    "Check Completed Log": "Check Completed Log",
+    "Exeucte SQL": "Execute SQL"
     
 }

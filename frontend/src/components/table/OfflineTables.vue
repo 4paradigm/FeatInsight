@@ -99,7 +99,7 @@ export default {
       axios
         .post(`/api/sql/execute`, {
           sql: sql,
-          isOnline: true
+          online: true
         })
         .then((response) => {
           message.success(`Success to execute SQL: ${sql}`);

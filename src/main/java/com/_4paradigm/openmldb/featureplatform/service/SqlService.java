@@ -5,6 +5,7 @@ import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -62,7 +63,7 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show");
     }
 
-    public String executeSql(String sql, boolean isOnline) throws SQLException {
+    public String executeSql2(String sql, boolean isOnline) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
 
         if (isOnline) {
@@ -93,6 +94,31 @@ public class SqlService {
         }
 
         return returnString;
+    }
+
+    /**
+     *
+     *
+     * @param sql
+     * @return the first element is schema(list of column name), other elements are row data(list of string value)
+     * @throws SQLException
+     */
+    public List<List<String>> executeOnlineSql(String sql) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        statement.execute(sql);
+
+        List<List<String>> returnList = null;
+
+        // TODO: Check if has result set
+        if (isDql(sql)) {
+            SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+            returnList = ResultSetUtil.resultSetToStringArray(resultSet);
+            resultSet.close();
+        }
+
+        return returnList;
     }
 
     public int importData(String sql, boolean isOnline) throws SQLException {

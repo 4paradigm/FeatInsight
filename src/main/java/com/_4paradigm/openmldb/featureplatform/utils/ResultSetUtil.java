@@ -1,12 +1,13 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
 import com._4paradigm.openmldb.DataType;
 import com._4paradigm.openmldb.Schema;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.StringJoiner;
 
 public class ResultSetUtil {
     public static String resultSetToString(SQLResultSet resultSet) throws SQLException {
@@ -37,6 +38,35 @@ public class ResultSetUtil {
         }
 
         return joiner.toString();
+    }
+
+    public static List<List<String>> resultSetToStringArray(SQLResultSet resultSet) throws SQLException {
+        List<List<String>> returnList = new ArrayList<>();
+
+        Schema schema = resultSet.GetInternalSchema();
+        int columnCount = schema.GetColumnCnt();
+
+        // Add schema
+        List<String> schemaList = new ArrayList<>();
+        for (int i = 0; i < columnCount; i++) {
+            schemaList.add(schema.GetColumnName(i));
+        }
+        returnList.add(schemaList);
+
+        // Add rows
+        while (resultSet.next()) {
+            List<String> rowList = new ArrayList<>();
+
+            for (int i = 0; i < columnCount; i++) {
+                DataType type = schema.GetColumnType(i);
+                String columnValue = TypeUtil.getResultSetStringColumn(resultSet, i + 1, type);
+                rowList.add(columnValue);
+            }
+
+            returnList.add(rowList);
+        }
+
+        return returnList;
     }
 
     public static void assertSizeIsOne(ResultSet result) throws SQLException {
