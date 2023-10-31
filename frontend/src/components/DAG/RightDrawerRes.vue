@@ -16,7 +16,6 @@
 export default {
   props: ['outSql'],
   setup(props){
-    console.log(props.outSql)
   }
 }
 </script>
