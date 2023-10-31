@@ -29,7 +29,6 @@ public class SqlController {
 
     @PostMapping("/offline")
     public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        System.out.println("----------------- tobe111");
         return ResponseEntity.ok(sqlService.executeOfflineSql(sqlRequest.getSql()));
     }
 
