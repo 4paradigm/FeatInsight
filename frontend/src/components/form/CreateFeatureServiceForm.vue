@@ -1,72 +1,67 @@
 <template>
 
 <div>
+  <!-- Create Feature Form Modal -->
+  <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" >
+    <template #footer>
+      <a-button @click="handleCancel">Cancel</a-button>
+    </template>
+    <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
+  </a-modal>
 
-    <!-- Create Feature Form Modal -->
-    <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" >
-      <template #footer>
-        <a-button @click="handleCancel">Cancel</a-button>
-      </template>
-      <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
-    </a-modal>
 
-  <div>
-    <a-typography-paragraph>
-      <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
-    </a-typography-paragraph>
-    <br/>
+  <a-typography-paragraph>
+    <pre>{{ $t("Text of introduce deploy feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/deployment_manage/DEPLOY_STATEMENT.html">{{$t('OpenMLDB documents')}}</a></pre>
+  </a-typography-paragraph>
+  <br/>
 
-    <!-- Create form -->
-    <a-form
-      :model="formState"
-      layout="vertical"
-      @submit="handleSubmit">
-      <a-form-item
-        :label="$t('Feature Service Name')"
-        :rules="[{ required: true, message: 'Please input name!' }]">
+  <!-- Create form -->
+  <a-form
+    :model="formState"
+    layout="vertical"
+    @submit="submitForm">
 
-        <a-select show-search @search="updateServiceName" id="itemSelect" v-model:value="formState.name" @change="updateSelectedService">
-            <option v-for="featureService in featureServices" :value="featureService.name">{{ featureService.name }}</option>
-        </a-select>
-      </a-form-item>
+    <a-form-item
+      :label="$t('Feature Service Name')"
+      :rules="[{ required: true, message: 'Please input name!' }]">
 
-      <a-form-item
-        :label="$t('Feature Service Version')"
-        :rules="[{ required: true, message: 'Please input version!' }]"
-        @blur="checkServiceVersion">
-        <a-input v-model:value="formState.version" />
-      </a-form-item>
+      <a-select show-search @search="updateServiceName" id="itemSelect" v-model:value="formState.name" @change="updateSelectedService">
+          <option v-for="featureService in featureServices" :value="featureService.name">{{ featureService.name }}</option>
+      </a-select>
+    </a-form-item>
 
-      <a-form-item
-        :label="$t('Feature Collection')"
-        :rules="[{ required: true, message: 'Please input feature list!' }]">
+    <a-form-item
+      :label="$t('Feature Service Version')"
+      :rules="[{ required: true, message: 'Please input version!' }]"
+      @blur="checkServiceVersion">
+      <a-input v-model:value="formState.version" />
+    </a-form-item>
 
-        <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
-        
-        <br/><br/>
-        <a-select mode="multiple" v-model:value="formState.featureSet">
-            <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
-        </a-select>
-      </a-form-item>
+    <a-form-item
+      :label="$t('Feature Collection')"
+      :rules="[{ required: true, message: 'Please input feature list!' }]">
 
-      <a-form-item 
-          :label="$t('Main Table Keys')">
-          <a-tooltip>
-            <template #title>{{$t('Text of introduce join keys')}}</template>
-            <a-input id="mainTableKeys" v-model:value="formState.mainTableKeys"></a-input>
-          </a-tooltip>
-      </a-form-item>
+      <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
+      
+      <br/><br/>
+      <a-select mode="multiple" v-model:value="formState.featureSet">
+          <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
+      </a-select>
+    </a-form-item>
 
-      <a-form-item
-          :label="$t('Feature Service Description')">
-          <a-input v-model:value="formState.description" />
-        </a-form-item>
+    <a-form-item 
+      :label="$t('Main Table Keys')">
+      <a-tooltip>
+        <template #title>{{$t('Text of introduce join keys')}}</template>
+        <a-input id="mainTableKeys" v-model:value="formState.mainTableKeys"></a-input>
+      </a-tooltip>
+    </a-form-item>
 
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-      </a-form-item>
-    </a-form>
-  </div>
+    <a-form-item
+      :label="$t('Feature Service Description')">
+      <a-input v-model:value="formState.description" />
+    </a-form-item>
+  </a-form>
 
 </div>
 </template>
@@ -74,8 +69,13 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import CreateFeatureViewForm from '@/components/form/CreateFeatureViewForm.vue'
 
 export default {
+  components: {
+    CreateFeatureViewForm
+  },
+
   data() {
     return {
       isShowCreateFeatureModal: false,
@@ -156,7 +156,7 @@ export default {
 
     },
 
-    handleSubmit() {
+    submitForm() {
       axios.post(`/api/featureservices`, {
         "name": this.formState.name,
         "version": this.formState.version,

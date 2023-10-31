@@ -1,12 +1,19 @@
 <template>
+<div>
+  
+  <a-drawer
+    v-model:visible="isOpenTableDrawer"
+    size="large"
+    :title="$t('Table') + $t('Detail')">
+    <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerTable"></TableDetail>
+  </a-drawer>
 
-  <div>
-    <br/>
-    <h1>{{ $t('Database') }}: {{ db }}</h1>
+    <h2>{{ $t('Database') }}: {{ db }}</h2>
+    
     <!-- Tables table -->
     <a-table :columns="columns" :data-source="tables">
       <template #table="{ text, record }">
-        <router-link :to="`/tables/${record.db}/${record.table}`">{{ text }}</router-link>
+        <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
       </template>
     </a-table>
   
@@ -16,17 +23,26 @@
 <script>
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { ref, onMounted } from 'vue';
+import TableDetail from '@/components/table/TableDetail.vue'
 
 export default {
+  components: {
+    TableDetail
+  },
+
   props: {
     db: {
       type: String,
       required: true,
     },
   },
+
   data() {
     return {
+      isOpenTableDrawer: false,
+      currentDrawerDatabase: "",
+      currentDrawerTable: "",
+      
       tables: [],
       columns: [
         {
@@ -43,6 +59,9 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.initData();
+  },
   methods: {
     initData() {
       axios
@@ -57,9 +76,13 @@ export default {
           // You can perform any additional logic here after the request completes.
         });
     },
-  },
-  mounted() {
-    this.initData();
-  },
+
+    openTableDrawer(db, table) {
+      this.isOpenTableDrawer = true;
+      this.currentDrawerDatabase = db;
+      this.currentDrawerTable = table;
+    }
+  }
+
 };
 </script>

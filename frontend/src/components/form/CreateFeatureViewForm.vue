@@ -1,7 +1,6 @@
 <template>
 
   <div>
-    <!-- Create Feature Form Modal -->
     <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" @ok="clickModalOk">
       <DagPage ref="DagPage" @updateSql="updateOutputSql"></DagPage>
     </a-modal>
@@ -49,7 +48,7 @@
         <div v-if="validatedFeatureNames.length > 0">
           <h3>
             {{ $t('Feature List') }}:
-            &nbsp;<a-button type="primary" @click="displayAddFeatureDescription()">{{ $t('Add Feature Description') }}</a-button>
+            &nbsp;<a-button @click="displayAddFeatureDescription()">{{ $t('Add Feature Description') }}</a-button>
           </h3>
 
           <ul>

@@ -1,9 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import BigScreenPage from '@/components/BigScreenPage.vue'
-import TablesPage from '@/components/table/TablesPage.vue'
-import FeaturesPage from '@/components/feature/FeaturesPage.vue'
-import FeatureViewsPage from '@/components/featureview/FeatureViewsPage.vue'
+import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
+import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
 import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue'
 import TutorialPage from '@/components/TutorialPage.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
@@ -16,13 +15,16 @@ import TestFeatureService from '@/components/TestFeatureService.vue'
 import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
+import OfflineJobLog from '@/components/offlinejob/OfflineJobLog.vue'
 import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
 import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
+import OfflineSamplesAndJobsPage from '@/components/offlinesample/OfflineSamplesAndJobsPage.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
 import CreateTableResult from '@/components/result/CreateTableResult.vue'
+import OfflineJobResult from '@/components/result/OfflineJobResult.vue'
 import ImportDataMenu from '@/components/importdata/ImportDataMenu.vue'
 import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue'
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
@@ -34,21 +36,23 @@ const router = createRouter({
   history: createWebHashHistory("/"),
   routes: [
     { path: '/', component: BigScreenPage },
-    { path: '/tables', component: TablesPage },
+    { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
-    { path: '/features', component: FeaturesPage},
+    { path: '/features', component: FeaturesAndFeatureViewsPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
-    { path: '/featureviews', component: FeatureViewsPage},
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
     { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
+    { path: '/offlinepage', component: OfflineSamplesAndJobsPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
+    { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },
+    { path: '/offlinejobs/:id/result', component: OfflineJobResult, props: true },
     { path: '/developprocess/import', component: ImportDataMenu, props: true,
       children: [
         { path: 'databases', component: ImportDataDatabases, props: true },

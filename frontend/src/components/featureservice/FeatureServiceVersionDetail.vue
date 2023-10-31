@@ -1,52 +1,92 @@
 <template>
-  <div>
-  
-    <br/>
-    <h1>
-      {{ $t('Feature Service') }}: {{ data.name }} {{ $t('Version') }}: {{ data.version }}
-      &nbsp;&nbsp;<a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${data.name}&version=${data.version}`">{{ $t('Test Service') }}</router-link></a-button>
-    </h1>
+<div>
 
-    <br/>
-    <a-descriptions bordered>
-      <a-descriptions-item :span="24" :label="$t('Name')"><router-link :to="`/featureservices/${data.name}`">{{ data.name }}</router-link></a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Version')"> {{ data.version }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Database')"><router-link :to="`/databases/${data.db}`">{{ data.db }}</router-link></a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('SQL')">{{ data.sql }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>
-      <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
-    </a-descriptions>
-  
-    <br/><br/>
-    <h1>{{ $t('Features') }}</h1>
-    <a-table :columns="columns" :data-source="features">
-      <template #featureView="{ text, record }">
-        <router-link :to="`/featureviews/${record.featureViewName}`">{{ text }}</router-link>
-      </template>
-      <template #name="{ text, record }">
-        <router-link :to="`/features/${record.featureViewName}/${record.featureName}`">{{ text }}</router-link>
-      </template>
-    </a-table>
+  <a-drawer
+    v-model:visible="isOpenFeatureViewDrawer"
+    size="large"
+    :title="$t('Feature View') + $t('Detail')">
+    <FeatureViewDetail :name="currentDrawerFeatureView" :key="currentDrawerFeatureView"></FeatureViewDetail>
+  </a-drawer>
 
-    <br/>
-    <h1>{{ $t('Dependent Tables') }}</h1>
-    <a-table :columns="tableColumns" :data-source="tables">
-      <template #db="{ text, record }">
-        <router-link :to="`/databases/${record.db}`">{{ text }}</router-link>
-      </template>
-      <template #table="{ text, record }">
-        <router-link :to="`/tables/${record.db}/${record.table}`">{{ text }}</router-link>
-      </template>
-    </a-table>
-  </div>
-  </template>
+  <a-drawer
+    v-model:visible="isOpenFeatureDrawer"
+    size="large"
+    :title="$t('Feature') + $t('Detail')">
+    <FeatureDetail :featureViewName="currentDrawerFeatureView" :featureName="currentDrawerFeature" :key="currentDrawerFeatureView+currentDrawerFeature"></FeatureDetail>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenDatabaseDrawer"
+    size="large"
+    :title="$t('Database') + $t('Detail')">
+    <DatabaseDetail :db="currentDrawerDatabase" :key="currentDrawerDatabase"></DatabaseDetail>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenTableDrawer"
+    size="large"
+    :title="$t('Table') + $t('Detail')">
+    <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerTable"></TableDetail>
+  </a-drawer>
+
+  <h2>
+    {{ $t('Feature Service') }}: {{ data.name }} {{ $t('Version') }}: {{ data.version }}
+    &nbsp;&nbsp;<a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${data.name}&version=${data.version}`">{{ $t('Test Service') }}</router-link></a-button>
+  </h2>
+
+  <br/>
+  <a-descriptions bordered>
+    <a-descriptions-item :span="24" :label="$t('Name')">{{ data.name }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Version')"> {{ data.version }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Database')">
+      <a-button type="link" @click="openDatabaseDrawer(data.db)">{{ data.db }}</a-button>
+    </a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('SQL')">{{ data.sql }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
+  </a-descriptions>
+
+  <br/><br/>
+  <h2>{{ $t('Features') }}</h2>
+  <a-table :columns="columns" :data-source="features">
+    <template #featureView="{ text, record }">
+      <a-button type="link" @click="openFeatureViewDrawer(record.featureViewName)">{{ record.featureViewName }}</a-button>
+    </template>
+    <template #name="{ text, record }">
+      <a-button type="link" @click="openFeatureDrawer(record.featureViewName, record.featureName)">{{ record.featureName }}</a-button>
+    </template>
+  </a-table>
+
+  <br/>
+  <h2>{{ $t('Dependent Tables') }}</h2>
+  <a-table :columns="tableColumns" :data-source="tables">
+    <template #db="{ text, record }">
+      <a-button type="link" @click="openDatabaseDrawer(record.db)">{{ record.db }}</a-button>
+    </template>
+    <template #table="{ text, record }">
+      <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
+    </template>
+  </a-table>
+</div>
+</template>
     
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import TableDetail from '@/components/table/TableDetail.vue'
+import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
+import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
+import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 
 export default {
+  components: {
+    FeatureViewDetail,
+    FeatureDetail,
+    DatabaseDetail,
+    TableDetail
+  },
+
   props: {
     name: {
       type: String,
@@ -58,8 +98,21 @@ export default {
     }
   },
 
+  mounted() {
+    this.initData();
+  },
+  
   data() {
     return {
+      isOpenFeatureViewDrawer: false,
+      currentDrawerFeatureView: "",
+      isOpenFeatureDrawer: false,
+      currentDrawerFeature: "",
+      isOpenDatabaseDrawer: false,
+      currentDrawerDatabase: "",
+      isOpenTableDrawer: false,
+      currentDrawerTable: "",
+
       data: {},
       features: [],
 
@@ -152,12 +205,31 @@ export default {
         .catch(error => {
           message.error(error.message);
         });  
-    }
-  },
+    },
 
-  mounted() {
-    this.initData();
+    openFeatureViewDrawer(featureView) {
+      this.isOpenFeatureViewDrawer = true;
+      this.currentDrawerFeatureView = featureView;
+    },
+
+    openFeatureDrawer(featureView, feature) {
+      this.isOpenFeatureDrawer = true;
+      this.currentDrawerFeatureView = featureView;
+      this.currentDrawerFeature = feature;
+    },
+
+    openDatabaseDrawer(db) {
+      this.isOpenDatabaseDrawer = true;
+      this.currentDrawerDatabase = db;
+    },
+
+    openTableDrawer(db, table) {
+      this.isOpenTableDrawer = true;
+      this.currentDrawerDatabase = db;
+      this.currentDrawerTable = table;
+    }
+
+
   }
-  
 }
 </script>

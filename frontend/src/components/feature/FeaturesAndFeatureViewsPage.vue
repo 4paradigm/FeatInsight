@@ -1,0 +1,25 @@
+<template>
+<div>
+
+  <h1>{{ $t('All Features') }}</h1>
+  <br/>
+  <FeaturesData></FeaturesData>
+
+  <h1>{{ $t('All Feature Views') }}</h1>
+  <br/>
+  <FeatureViewsData></FeatureViewsData>
+
+</div>
+</template>
+  
+<script>
+import FeaturesData from '@/components/feature/FeaturesData.vue';
+import FeatureViewsData from '@/components/featureview/FeatureViewsData.vue'
+
+export default {
+  components: {
+    FeaturesData,
+    FeatureViewsData
+  }
+};
+</script>
