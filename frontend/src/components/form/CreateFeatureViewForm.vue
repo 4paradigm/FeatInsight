@@ -1,7 +1,6 @@
 <template>
 
   <div>
-    <!-- Create Feature Form Modal -->
     <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" @ok="clickModalOk">
       <DagPage ref="DagPage" @updateSql="updateOutputSql"></DagPage>
     </a-modal>
