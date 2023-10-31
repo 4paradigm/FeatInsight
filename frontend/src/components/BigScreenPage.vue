@@ -31,7 +31,7 @@
       </a-col>
 
       <a-col :span="6">
-        <router-link to='/offlinesamples'>
+        <router-link to='/offlinepage'>
           <a-card :title="$t('Offline Sample')" :bordered="false">
             <h1>{{ offlineSampleCount }}</h1>
           </a-card>

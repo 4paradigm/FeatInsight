@@ -11,26 +11,18 @@
 
   <br/>
   <h1>
-    {{ $t('Online Data Tables') }}
-    &nbsp;&nbsp;<a-button type="primary" @click="showExcuteSqlFormModal">{{ $t('Execute Online SQL') }}</a-button>
-  </h1>
-
-  <br/>
-  <OnlineTables></OnlineTables>
-
-  <h1>
     {{ $t('Feature Services') }}
     &nbsp;&nbsp;<a-button type="primary" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>
   </h1>
 
   <br/>
-  <FeatureServicesPage></FeatureServicesPage>
+  <FeatureServicesData></FeatureServicesData>
  
 </div>
 </template>
   
 <script>
-import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue';
+import FeatureServicesData from '@/components/featureservice/FeatureServicesData.vue';
 import OnlineTables from '@/components/table/OnlineTables.vue';
 import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 import CreateFeatureServiceForm from '@/components/form/CreateFeatureServiceForm.vue';
@@ -38,7 +30,7 @@ import CreateFeatureServiceForm from '@/components/form/CreateFeatureServiceForm
 
 export default {
   components: {
-    FeatureServicesPage,
+    FeatureServicesData,
     OnlineTables,
     ExecuteSqlForm,
     CreateFeatureServiceForm

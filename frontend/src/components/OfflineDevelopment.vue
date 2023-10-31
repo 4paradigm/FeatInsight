@@ -11,33 +11,25 @@
 
   <br/>
   <h1>
-    {{ $t('Offline Data Tables') }}
-    &nbsp;&nbsp;<a-button type="primary" @click="showExecuteSqlFormModal">{{ $t('Execute Offline SQL') }}</a-button>
-  </h1>
-  
-  <br/>
-  <OfflineTables></OfflineTables>
-
-  <h1>
     {{ $t('Offline Sample') }}
     &nbsp;&nbsp;&nbsp;<a-button type="primary" @click="showCreateOfflineSampleFormModal">{{ $t('Create Offline Sample') }}</a-button>
   </h1>
   
   <br/>
-  <OfflineSamplesPage></OfflineSamplesPage>
+  <OfflineSamplesData></OfflineSamplesData>
  
 </div>
 </template>
   
 <script>
-import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue';
+import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue';
 import OfflineTables from '@/components/table/OfflineTables.vue';
 import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 import CreateOfflineSampleForm from '@/components/form/CreateOfflineSampleForm.vue';
 
 export default {
   components: {
-    OfflineSamplesPage,
+    OfflineSamplesData,
     OfflineTables,
     ExecuteSqlForm,
     CreateOfflineSampleForm

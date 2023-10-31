@@ -1,6 +1,7 @@
 <template>
-
 <div>
+
+  <br/>
   <h1>{{ $t('All Databases') }}</h1>
   <br/>
   <DatabasesTable></DatabasesTable>
