@@ -1,6 +1,10 @@
 <template>
 
   <div>
+    <a-modal v-model:visible="isShowDagPageModal" width="1000px" :title="$t('Visual SQL Tool')" @ok="clickModalOk">
+      <DagPage ref="DagPage" @updateSql="updateOutputSql"></DagPage>
+    </a-modal>
+
     <a-typography-paragraph>
       <pre>{{ $t("Text of introduce create feature view") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
     </a-typography-paragraph>
@@ -34,16 +38,10 @@
         <a-form-item
           :label="$t('SQL')"
           :rules="[{ required: true, message: 'Please input SQL!' }]">
-          
-          
-          <a-button>
-            <router-link to='/dag'> {{ $t('Visual SQL Tool') }}</router-link>
-          </a-button>
-          <br/><br/>
-          
 
-          <a-textarea v-model:value="formState.sql" :rows="5" @blur="updateInputSQL"
-            placeholder="select * from t1">
+          <a-button type="primary" @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
+          <br/><br/>
+          <a-textarea v-model:value="formState.sql" :rows="5" placeholder="select * from t1">
           </a-textarea>
         </a-form-item>
 
@@ -82,10 +80,14 @@
   <script>
   import axios from 'axios'
   import { message } from 'ant-design-vue';
-  import { SQLStore} from '@/pinia/store';
   import { computed } from 'vue';
+  import DagPage from '@/components/DAG/DagPage.vue';
 
   export default {
+    components: {
+      DagPage
+    },
+
     data() {
       return {
         databases: [],
@@ -93,9 +95,7 @@
         validatedFeatureNames: [],
 
         isDisplayAddFeatureDescription: false,
-
-        sharedSQL: '',
-        SQLStore: '',
+        isShowDagPageModal: false,
   
         formState: {
           name: '',
@@ -122,10 +122,6 @@
             message.error(error.message);
           })
           .finally(() => {});
-
-        this.SQLStore = SQLStore();
-        this.sharedSQL = computed(() => this.SQLStore.sharedSQL);  
-        this.formState.sql = this.sharedSQL;
       },
   
       validateForm() {
@@ -175,9 +171,19 @@
         this.isDisplayAddFeatureDescription = true;
       },
 
-      updateInputSQL(){
-        this.SQLStore.setSharedVariable(this.formState.sql);
+      clickDagPage() {
+        this.isShowDagPageModal = true;
       },
+
+      updateOutputSql(outSql){
+        this.isShowDagPageModal = false;
+        this.formState.sql = outSql;
+      },
+
+      clickModalOk() {
+        this.isShowDagPageModal = false;
+        this.$refs.DagPage.updateValue();
+    },
   
     },
   };

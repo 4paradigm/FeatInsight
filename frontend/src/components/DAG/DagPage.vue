@@ -8,22 +8,14 @@
 </div>
 <br />
 <div>
-  <a-button type="primary" @click="runGraph">{{$t('Generate SQL')}}</a-button>
-  &nbsp;&nbsp;
-  <a-button type="primary"><router-link to='/features/create'> {{ $t('Return')}}</router-link></a-button>
+  <a-button type="primary" @click="runGraph">{{$t('Preview SQL')}}</a-button>
+</div>
+<div v-if='showRes'>
+  <a-textarea readonly v-model:value=this.outSql ></a-textarea>
 </div>
 <div>
   <right-drawer v-if="showRight" @updateVisable="updateVisableFn" :node-data="filterFn(nodeData)" :select-cell="selectCell"></right-drawer>
 </div>
-<div>
-  <right-drawer-res v-if="showRes" :out_SQL="out_SQL"></right-drawer-res>
-</div>
-<br />
-<!-- div>
-  <a-button type="primary" @click="exportjson"> export json </a-button>
-  <a-button type="primary" @click="loadGraphFromJson"> load json</a-button>
-  <a-button type="primary" @click="loadSampleGraphFromJson"> load sample json</a-button>
-</div-->
 
 </template>
 
@@ -40,19 +32,16 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import insertCss from 'insert-css'
-import RightDrawer from './DAG/RightDrawer.vue'
-import RightDrawerRes from './DAG/RightDrawerRes.vue'
-import TaskNode from './DAG/TaskNode.vue'
+import RightDrawer from '@/components/DAG/RightDrawer.vue'
+import TaskNode from '@/components/DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
 import { message } from 'ant-design-vue'
-import { SQLStore} from '../pinia/store'
 import { computed } from 'vue'
 import { DagreLayout } from '@antv/layout'
 
 export default {
   components: {
     RightDrawer,
-    RightDrawerRes,
   },
 
   data() {
@@ -65,9 +54,11 @@ export default {
       savedNodeData:[],
       nodeId: '',
       templateLists: [],
-      out_SQL: '',
+      inSql: '',
+      outSql: '',
       sharedSQL: '',
-      SQLStore: '',
+      showInputSql: false,
+      showOutputSql: false,
       showRes: false,
       savedJson: '',
       sampleJson:'{"cells":[{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge1","zIndex":0,"source":{"cell":"nodeA","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"shape":"edge","attrs":{"line":{"stroke":"#A2B1C3","targetMarker":{"name":"block","width":12,"height":8}}},"id":"edge2","zIndex":0,"source":{"cell":"nodeC","port":"port_bottom"},"target":{"cell":"nodeB","port":"port_top"}},{"position":{"x":220,"y":200},"attrs":{"text":{"text":"Node"},"label":{"text":"A"}},"visible":true,"shape":"vue-rect","id":"nodeA","data":{"name":"A","desc":"123"},"zIndex":1,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":300,"y":370},"attrs":{"text":{"text":"Node"},"label":{"text":"B"}},"visible":true,"shape":"vue-rect","id":"nodeB","data":{"name":"B","desc":"456"},"zIndex":2,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}},{"position":{"x":340,"y":236},"attrs":{"text":{"text":"Node"},"label":{"text":"C"}},"visible":true,"shape":"vue-rect","id":"nodeC","data":{"name":"C","desc":"789"},"zIndex":3,"ports":{"groups":{"top":{"position":"top","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}},"bottom":{"position":"bottom","attrs":{"circle":{"r":4,"magnet":true,"stroke":"#5F95FF","strokeWidth":1,"fill":"#fff","style":{"visibility":"hidden"}}}}},"items":[{"group":"top","id":"port_top"},{"group":"bottom","id":"port_bottom"}]}}]}',
@@ -90,9 +81,6 @@ export default {
         cols: 4,
       })
       this.dagreLayout = dagreLayout;
-      this.SQLStore=SQLStore();
-      this.sharedSQL = computed(() => this.SQLStore.sharedSQL);
-      console.log(this.sharedSQL);
 
       const graph = new Graph({
         container: this.$refs.container,
@@ -386,7 +374,6 @@ export default {
       this.graph.on('blank:click', () => {
         this.nodeId = ''
         this.showRight = false
-        this.showRes = false
       })
 
       // 连接线鼠标移入
@@ -519,14 +506,12 @@ export default {
     },
 
     runGraph() {
-      console.log(this.graph.toJSON()['cells']);
-      axios.post(`http://127.0.0.1:5000/sql`, this.graph.toJSON()['cells'])
+      axios.post(`/api/dag_conversion/forward`, this.graph.toJSON()['cells'])
       .then(response => {
         console.log(response.data);
         message.success(`Conversion Success`);
-        this.out_SQL=response.data;
+        this.outSql=response.data;
         this.showRes=true;
-        this.SQLStore.setSharedVariable(this.out_SQL);
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
@@ -535,6 +520,13 @@ export default {
           message.error(error.message);
         }
       });
+    },
+
+
+    updateValue() {
+      this.runGraph()
+      setTimeout(() => {
+      this.$emit('updateSql', this.outSql);}, 50); //Set time delay for axios post
     }
   },
 };
