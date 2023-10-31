@@ -121,7 +121,7 @@
     "Tasks": "Tasks",
     "Offline Jobs": "Offline Jobs",
     "Offline Job": "Offline Job",
-    "Generate SQL": "Generate SQL",
+    "Preview SQL": "Preview SQL",
     "Return": "Return",
     "Generated SQL": "Generated SQL",
     "Node Settings": "Node Settings",
@@ -191,6 +191,7 @@
     "Main Table Keys": "Join Keys",
     "Text of introduce join keys": "If the selected features come from multiple feature views, you must provide a concatenation key to achieve the concatenation. Fill in the primary key of the main table of the feature view SQL, for example, 'id' or 'name,' and you can specify a composite key as 'name,id'.",
     "Create Table": "Create Table",
+    "User Input SQL": "User Input SQL",
     "Text of introduce load data infile": "Users can load data, please infer to",
     "Create From CSV": "Create From CSV",
     "Output Table Name": "Ouput Table Name",
@@ -223,5 +224,5 @@
     "Text of introduce create table": "Users can create table with columns. Please refer to",
     "Add Column": "Add Column",
     "Columns": "Columns"
-    
+
 }
