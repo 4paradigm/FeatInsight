@@ -20,6 +20,7 @@
 <script>
 import axios from 'axios'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
+import { message } from 'ant-design-vue';
 
 export default {
   components: {

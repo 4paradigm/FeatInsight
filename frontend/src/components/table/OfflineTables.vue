@@ -97,9 +97,8 @@ export default {
       const sql = "SELECT * FROM " + db + "." + table + " LIMIT 10";
 
       axios
-        .post(`/api/sql/execute`, {
-          sql: sql,
-          isOnline: true
+        .post(`/api/sql/online`, {
+          sql: sql
         })
         .then((response) => {
           message.success(`Success to execute SQL: ${sql}`);

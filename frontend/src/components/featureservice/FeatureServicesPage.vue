@@ -1,12 +1,13 @@
 <template>
-  <div>
+<div>
   
-    <h1>{{ $t('All Feature Services') }}</h1>
-    <br/>
-    <FeatureServicesData></FeatureServicesData>
-  
-  </div>
-  </template>
+  <br/>
+  <h1>{{ $t('All Feature Services') }}</h1>
+  <br/>
+  <FeatureServicesData></FeatureServicesData>
+
+</div>
+</template>
     
   <script>
   import FeatureServicesData from '@/components/featureservice/FeatureServicesData.vue';

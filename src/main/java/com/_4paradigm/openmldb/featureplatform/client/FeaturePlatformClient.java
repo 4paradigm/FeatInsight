@@ -512,7 +512,7 @@ public class FeaturePlatformClient {
     }
 
     public String executeSql(String sql) throws IOException {
-        String endpoint = this.apiEndpoint + "sql/execute";
+        String endpoint = this.apiEndpoint + "sql/online";
         HttpPost postRequest = new HttpPost(endpoint);
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setEntity(new StringEntity(String.format("{\"sql\":\"%s\"}", sql), "UTF-8"));

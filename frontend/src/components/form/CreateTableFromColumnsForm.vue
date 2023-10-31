@@ -26,18 +26,45 @@
         placeholder="t1"/>
     </a-form-item>
 
-    <a-form-item
-      :label="$t('Path')"
-      :rules="[{ required: true, message: 'Please input path!' }]">
-      <a-input v-model:value="formState.path" 
-        placeholder="file:///tmp/t1_parquet/"/>
+    <p><span style="color:red;">* </span>{{ $t('Columns') }}</p>
+
+    <a-space
+      v-for="(column, index) in formState.columns"
+      :key="column.id"
+      style="display: flex; margin-bottom: 8px"
+      align="baseline"
+    >
+      <a-form-item
+        :name="['columns', index, 'name']"
+        :rules="{
+          required: true,
+          message: 'Missing column name',
+        }"
+      >
+        <a-input v-model:value="column.name" placeholder="Column Name" />
+      </a-form-item>
+
+      <a-form-item
+        :name="['columns', index, 'type']"
+        :rules="{
+          required: true,
+          message: 'Missing column type',
+        }"
+      >
+        <a-select v-model:value="column.type">
+          <option v-for="columnType in columnTypes" :key="columnType" :value="columnType">{{ columnType }}</option>
+        </a-select>
+      </a-form-item>
+      <MinusCircleOutlined @click="removeColumn(column)" />
+    </a-space>
+
+    <a-form-item>
+      <a-button type="dashed" block @click="addColumn">
+        <PlusOutlined />
+        {{ $t('Add Column') }}
+      </a-button>
     </a-form-item>
 
-
-    <!-- TODO: Add dynamic form -->
-
-
-    
   </a-form>
 
 </div>
@@ -46,8 +73,14 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import { ConsoleSqlOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
+  components: {
+    MinusCircleOutlined,
+    PlusOutlined
+  },
+
   data() {
     return {
       databases: [],
@@ -56,7 +89,15 @@ export default {
         db: '',
         table: '',
         path: '',
+        columns: [{
+          name: '',
+          type: 'Int32',
+          id: Date.now(),
+        }],
       },
+
+      columnTypes:["Int16", "Int32", "Int64", "Float", "Double", "Timestamp", "Date", "Bool", "String"],
+
     };
   },
 
@@ -77,15 +118,42 @@ export default {
     },
 
     submitForm() {
-      const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
+      const db = this.formState.db;
+      const table = this.formState.table;
+      const columns = this.formState.columns;
 
-      axios.post(`/api/sql/execute`, {
+      if (db === "") {
+        message.error("The database should not be empty");
+        return;
+      }
+
+      if (table === "") {
+        message.error("The table should not be empty");
+        return;
+      }
+
+      if (columns.length == 0) {
+        message.error("The columns should not be empty");
+        return;
+      }
+
+      var columnString = "";
+      for (var i = 0; i < columns.length; ++i) {
+        columnString += columns[i].name + " " + columns[i].type;
+        if (i != columns.length - 1) {
+          columnString += ", ";
+        }
+      }
+
+      const sql = `CREATE TABLE ${db}.${table} (${columnString})`;
+
+      axios.post(`/api/sql/online`, {
         "sql": sql
       })
       .then(response => {
         message.success(`Success to execute SQL: ${sql}`);
 
-        this.$router.push(`/tables/${this.formState.db}/${this.formState.table}/createresult`);
+        this.$emit('submitted');
       })
       .catch(error => {
         if (error.response.data) {
@@ -95,6 +163,22 @@ export default {
         }
       });
     },
+
+    removeColumn(item) {
+      const index = this.formState.columns.indexOf(item);
+      if (index !== -1) {
+        this.formState.columns.splice(index, 1);
+      }
+    },
+
+    addColumn() {
+      this.formState.columns.push({
+        name: '',
+        type: 'Int32',
+        id: Date.now(),
+      });
+    },
+
   }
 };
 </script>

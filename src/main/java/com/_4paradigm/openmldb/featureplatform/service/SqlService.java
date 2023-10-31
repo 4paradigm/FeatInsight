@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
@@ -7,7 +8,6 @@ import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -62,37 +62,45 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show");
     }
 
-    public String executeSql(String sql, boolean isOnline) throws SQLException {
+    public OfflineJobInfo executeOfflineSql(String sql) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='offline'");
 
-        if (isOnline) {
-            statement.execute("SET @@execute_mode='online'");
-        } else {
-            statement.execute("SET @@execute_mode='offline'");
-            // TODO: CREATE TABLE LIKE Parquet may not use sync_mode nor raise timeout exception
-            //statement.execute("SET @@sync_job=false");
-            //statement.execute("SET @@job_timeout=100");
-        }
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
+
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
+
+        OfflineJobInfo offlineJobInfo = OfflineJobService.resultSetToOfflineJobInfo(resultSet);
+
+        statement.close();
+        return offlineJobInfo;
+    }
+
+    /**
+     *
+     *
+     * @param sql
+     * @return the first element is schema(list of column name), other elements are row data(list of string value)
+     * @throws SQLException
+     */
+    public List<List<String>> executeOnlineSql(String sql) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
 
         statement.execute(sql);
 
-        String returnString = "";
-        if (isOnline) {
-            if (isDql(sql)) {
-                SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
-                returnString = ResultSetUtil.resultSetToString(resultSet);
-                resultSet.close();
-            }
-        } else {
+        List<List<String>> returnList = null;
+
+        // TODO: Check if has result set
+        if (isDql(sql)) {
             SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
-            ResultSetUtil.assertSizeIsOne(resultSet);
-            resultSet.next();
-            int jobId = resultSet.getInt(1);
-            returnString = String.valueOf(jobId);
+            returnList = ResultSetUtil.resultSetToStringArray(resultSet);
             resultSet.close();
         }
 
-        return returnString;
+        return returnList;
     }
 
     public int importData(String sql, boolean isOnline) throws SQLException {

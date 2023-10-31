@@ -73,7 +73,7 @@ export default {
     submitForm() {
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.outputTable} LIKE HIVE '${this.formState.hivePath}'`;
 
-      axios.post(`/api/sql/execute`, {
+      axios.post(`/api/sql/online`, {
         "sql": sql
       })
       .then(response => {

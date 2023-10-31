@@ -30,12 +30,13 @@ import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
 import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
-
+import ExecuteSql from '@/components/ExecuteSql.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
   routes: [
     { path: '/', component: BigScreenPage },
+    { path: '/sql', component: ExecuteSql, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    

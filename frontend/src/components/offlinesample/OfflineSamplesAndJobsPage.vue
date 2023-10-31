@@ -1,13 +1,15 @@
 <template>
-  <div>
+<div>
   
-    <h1>{{ $t('All Offline Samples') }}</h1>
-    <br/>
-    <OfflineSamplesData></OfflineSamplesData>
-  
-    <h1>{{ $t('All Offline Jobs') }}</h1>
-    <br/>
-    <OfflineJobsData></OfflineJobsData>
+  <br/>
+  <h1>{{ $t('All Offline Samples') }}</h1>
+  <br/>
+  <OfflineSamplesData></OfflineSamplesData>
+
+  <br/>
+  <h1>{{ $t('All Offline Jobs') }}</h1>
+  <br/>
+  <OfflineJobsData></OfflineJobsData>
 
   </div>
   </template>

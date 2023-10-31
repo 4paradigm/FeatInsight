@@ -73,7 +73,7 @@ export default {
     submitForm() {
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
-      axios.post(`/api/sql/execute`, {
+      axios.post(`/api/sql/online`, {
         "sql": sql
       })
       .then(response => {
