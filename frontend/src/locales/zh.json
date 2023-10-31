@@ -224,6 +224,7 @@
     "Execute SQL": "执行SQL",
     "Text of introduce create table": "用户可以选择列类型来创建表，请参考",
     "Add Column": "新增列",
-    "Columns": "列"
+    "Columns": "列",
+    "Preview Table Data": "预览表格数据"
 
 }

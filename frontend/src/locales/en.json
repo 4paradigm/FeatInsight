@@ -223,6 +223,7 @@
     "Exeucte SQL": "Execute SQL",
     "Text of introduce create table": "Users can create table with columns. Please refer to",
     "Add Column": "Add Column",
-    "Columns": "Columns"
+    "Columns": "Columns",
+    "Preview Table Data": "Preview Table Data"
 
 }

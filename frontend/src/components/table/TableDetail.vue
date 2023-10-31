@@ -1,5 +1,9 @@
 <template>
 <div>
+  <a-modal v-model:visible="isShowPreviewModal" width="1000px" @ok="handleOk" 
+    :title="$t('Preview Table Data') + ' (' + $t('Limit') + '10' + $t('Rows') + ')'" >
+    <OnlineSqlResult :sql="currentPreviewSql"></OnlineSqlResult>
+  </a-modal>
 
   <h2>{{ $t('Table') }}: {{ data.table }} </h2>
   <a-descriptions bordered>
@@ -9,15 +13,9 @@
   </a-descriptions>
 
   <br/>
-  <a-button type="primary" @click="click_preview_data()">{{ $t('Preview Data') }}</a-button>
+  <a-button type="primary" @click="clickPreviewButton()">{{ $t('Preview Data') }}</a-button>
 
-  <div v-if="isPreviewData">
-    <br/>
-    <h3>{{$t('Preview Data')}} ({{$t('Limit')}} 10 {{$t('Rows')}})</h3>
-    <p v-html="tableData"></p>
-  </div>
-
-  <br/><br/>
+  <br/><br/><br/>
   <h2>{{$t('Related Feature Views')}}</h2>
   <a-table :columns="featureViewColumns" :data-source="featureViews"></a-table>
 
@@ -31,8 +29,14 @@
 <script>
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import OnlineSqlResult from '@/components/OnlineSqlResult.vue'
+import { onMounted, ref } from 'vue';
 
 export default {
+  components: {
+    OnlineSqlResult
+  },
+
   props: {
     db: {
       type: String,
@@ -48,6 +52,9 @@ export default {
     return {
       isOpenFeatureViewDrawer: false,
       currentDrawerFeatureView: "",
+
+      isShowPreviewModal: false,
+      currentPreviewSql: "",
       
       data: "",
       isPreviewData: false,
@@ -96,16 +103,6 @@ export default {
         dataIndex: 'version',
         key: 'version',
         slots: { customRender: 'version' }
-      },
-      {
-        title: this.$t('Feature List'),
-        dataIndex: 'featureList',
-        key: 'featureList',
-      },
-      {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
       }],
 
     };
@@ -141,6 +138,13 @@ export default {
           message.error(error.message);
         });
     },
+
+    clickPreviewButton() {
+      this.isShowPreviewModal = true;
+
+      this.currentPreviewSql = "SELECT * FROM " + this.db + "." + this.name + " LIMIT 10";
+    },
+
     click_preview_data() {
       if (this.isPreviewData) {
         this.isPreviewData = false;
@@ -168,7 +172,12 @@ export default {
             message.error(error.message);
           }
         });
+    },
+
+    handleOk() {
+      this.isShowPreviewModal = false;
     }
+
   }
   
 };

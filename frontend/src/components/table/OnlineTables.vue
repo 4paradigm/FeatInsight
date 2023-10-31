@@ -26,20 +26,8 @@
     <template #table="{ text, record }">
       <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
     </template>
-    <template #action="{ text, record }">
-      <a-button type="default" @click="previewTableData(record.db, record.table)">{{ $t('Preview Data') }}</a-button>
-    </template>
   </a-table>
 
-  <div>
-    <a-modal v-model:visible="isOpenPreviewTableModal" width="1000px" :title="$t('Preview Data')" >
-      <template #footer>
-          <a-button @click="handleCancel">Cancel</a-button>
-      </template>
-      <h3>{{$t('Preview Data')}} ({{$t('Limit')}} 10 {{$t('Rows')}})</h3>
-      <p v-html="previewTableContent"></p>
-    </a-modal>
-  </div>
 </div>
 </template>
   
@@ -86,10 +74,6 @@ export default {
         title: this.$t('Schema'),
         dataIndex: 'schema',
         key: 'schema',
-      }, {
-        title: this.$t('Actions'),
-        key: 'actions',
-        slots: { customRender: 'action' },
       }]
     };
   },
