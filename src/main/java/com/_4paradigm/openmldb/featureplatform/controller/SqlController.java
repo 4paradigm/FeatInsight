@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,11 @@ public class SqlController {
         return ResponseEntity.ok(sqlService.executeOnlineSql(sqlRequest.getSql()));
     }
 
-    @PostMapping("/execute2")
-    public ResponseEntity<String> executeSql2(@RequestBody SqlRequest sqlRequest) {
-        try {
-            String responseMessage = sqlService.executeSql2(sqlRequest.getSql(), false);
-            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-        } catch (SQLException e) {
-            return new ResponseEntity<>("Fail to execute sql and get exception: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping("/offline")
+    public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody SqlRequest sqlRequest) throws SQLException {
+        System.out.println("----------------- tobe111");
+        return ResponseEntity.ok(sqlService.executeOfflineSql(sqlRequest.getSql()));
     }
-
 
     @PostMapping("/validate")
     public ResponseEntity<String> validateSql(@RequestBody SqlRequest sqlRequest) throws SQLException {

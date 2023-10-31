@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
@@ -61,37 +62,20 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show");
     }
 
-    public String executeSql2(String sql, boolean isOnline) throws SQLException {
+    public OfflineJobInfo executeOfflineSql(String sql) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
-
-        if (isOnline) {
-            statement.execute("SET @@execute_mode='online'");
-        } else {
-            statement.execute("SET @@execute_mode='offline'");
-            // TODO: CREATE TABLE LIKE Parquet may not use sync_mode nor raise timeout exception
-            //statement.execute("SET @@sync_job=false");
-            //statement.execute("SET @@job_timeout=100");
-        }
+        statement.execute("SET @@execute_mode='offline'");
 
         statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
 
-        String returnString = "";
-        if (isOnline) {
-            if (isDql(sql)) {
-                SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
-                returnString = ResultSetUtil.resultSetToString(resultSet);
-                resultSet.close();
-            }
-        } else {
-            SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
-            ResultSetUtil.assertSizeIsOne(resultSet);
-            resultSet.next();
-            int jobId = resultSet.getInt(1);
-            returnString = String.valueOf(jobId);
-            resultSet.close();
-        }
+        ResultSetUtil.assertSizeIsOne(resultSet);
+        resultSet.next();
 
-        return returnString;
+        OfflineJobInfo offlineJobInfo = OfflineJobService.resultSetToOfflineJobInfo(resultSet);
+
+        statement.close();
+        return offlineJobInfo;
     }
 
     /**
