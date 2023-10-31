@@ -72,7 +72,7 @@ export default {
   methods: {
     submitForm() {
       axios
-        .post(`/api/sql/execute`, {
+        .post(`/api/sql/online`, {
           sql: this.formState.sql,
           online: this.formState.isOnlineMode
         })

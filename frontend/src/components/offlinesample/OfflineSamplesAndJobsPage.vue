@@ -5,6 +5,7 @@
     <br/>
     <OfflineSamplesData></OfflineSamplesData>
   
+    <br/>
     <h1>{{ $t('All Offline Jobs') }}</h1>
     <br/>
     <OfflineJobsData></OfflineJobsData>

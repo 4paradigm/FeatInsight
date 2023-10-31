@@ -5,6 +5,7 @@
   <br/>
   <FeaturesData></FeaturesData>
 
+  <br/>
   <h1>{{ $t('All Feature Views') }}</h1>
   <br/>
   <FeatureViewsData></FeatureViewsData>

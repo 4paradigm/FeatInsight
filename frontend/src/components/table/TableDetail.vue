@@ -150,9 +150,8 @@ export default {
       const sql = "SELECT * FROM " + this.db + "." + this.name + " LIMIT 10";
 
       axios
-        .post(`/api/sql/execute`, {
-          sql: sql,
-          online: true
+        .post(`/api/sql/online`, {
+          sql: sql
         })
         .then((response) => {
           message.success(`Success to execute SQL: ${sql}`);

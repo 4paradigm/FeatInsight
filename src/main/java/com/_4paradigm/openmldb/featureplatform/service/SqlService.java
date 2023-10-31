@@ -5,10 +5,8 @@ import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

@@ -2,14 +2,10 @@ package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
-import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
-import com._4paradigm.openmldb.jdbc.SQLResultSet;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.SQLException;
 import java.util.List;
 

@@ -20,9 +20,10 @@
       <a-form-item
         :label="$t('SQL')"
         :rules="[{ required: true, message: 'Please input sql!' }]">
-        <a-input
+        <a-textarea
           v-model:value="formState.sql"
-          placeholder="Please input SQL" />
+          placeholder="Please input SQL" 
+          :rows="5" />
       </a-form-item>
 
       <a-form-item>
