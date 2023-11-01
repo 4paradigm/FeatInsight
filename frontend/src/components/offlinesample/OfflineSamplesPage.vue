@@ -1,7 +1,8 @@
 <template>
   <div>
   
-    <h1>{{ $t('Offline Samples') }}</h1>
+    <h1>{{ $t('All Offline Samples') }}</h1>
+
     <OfflineSamplesData></OfflineSamplesData>
   
   </div>

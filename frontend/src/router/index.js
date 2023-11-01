@@ -4,7 +4,6 @@ import BigScreenPage from '@/components/BigScreenPage.vue'
 import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
 import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
 import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue'
-import TutorialPage from '@/components/TutorialPage.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import FeatureDetail from '@/components/feature/FeatureDetail.vue'
@@ -65,7 +64,6 @@ const router = createRouter({
     { path: '/developprocess/online', component: OnlineDevelopment, props: true },
     { path: '/developprocess/offline', component: OfflineDevelopment, props: true },
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
-    { path: '/tutorial', component: TutorialPage},
     { path: '/offlinesamples', component: OfflineSamplesPage},
     { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },
     { path: '/offlinesamples/:id/result', component: CreateOfflineSampleResult, props: true },

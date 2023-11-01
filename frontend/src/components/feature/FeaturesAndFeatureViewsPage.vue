@@ -1,11 +1,11 @@
 <template>
 <div>
 
-  <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature View')" >
+  <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature')" >
     <template #footer>
       <a-button @click="handleCancel">Cancel</a-button>
     </template>
-    <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
+    <CreateFeatureForm @submitted="submittedCreateFeatureForm"></CreateFeatureForm>
   </a-modal>
 
   <br/>
@@ -27,13 +27,13 @@
 <script>
 import FeaturesData from '@/components/feature/FeaturesData.vue';
 import FeatureViewsData from '@/components/featureview/FeatureViewsData.vue'
-import CreateFeatureViewForm from '@/components/form/CreateFeatureViewForm.vue'
+import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 
 export default {
   components: {
     FeaturesData,
     FeatureViewsData,
-    CreateFeatureViewForm
+    CreateFeatureForm
   },
 
   data() {

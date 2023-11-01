@@ -2,58 +2,57 @@
 </script>
 
 <template>
+<div>
 
-  <div>
-    <br />
-    <h1 style="display: inline-block; vertical-align: middle; font-size: 30px;">
-      {{ $t('Feature Platform') }}
-    </h1>
+  <br/>
+  <a-typography>
+    <a-typography-title>{{ $t('Feature Platform') }}</a-typography-title>
+    <a-typography-paragraph>
+      <blockquote>
+        OpenMLDB 特征平台是基于特征数据库实现的 Feature Store 服务，用户使用 SQL 来定义特征，离线场景中选择特征生成离线样本，在线场景中选择特征实现实时特征计算。
+      </blockquote>
+    </a-typography-paragraph>
+  </a-typography>
 
-    <br/><br/> 
+  <br/>
+  <a-row :gutter="16">
 
-    <a-row :gutter="16">
+    <a-col :span="6">
+      <router-link to='/tables'>
+        <a-card :title="$t('Data Tables')" :bordered="false">
+          <h1>{{ tableCount }}</h1>
+        </a-card>
+      </router-link>
+    </a-col>
 
-      <a-col :span="6">
-        <router-link to='/tables'>
-          <a-card :title="$t('Data Tables')" :bordered="false">
-            <h1>{{ tableCount }}</h1>
-          </a-card>
-        </router-link>
-      </a-col>
+    <a-col :span="6">
+      <router-link to='/features'>
+        <a-card :title="$t('Features')" :bordered="false">
+          <h1>{{ featureCount }}</h1>
+        </a-card>
+      </router-link>
+    </a-col>
 
+    <a-col :span="6">
+      <router-link to='/offlinepage'>
+        <a-card :title="$t('Offline Sample')" :bordered="false">
+          <h1>{{ offlineSampleCount }}</h1>
+        </a-card>
+      </router-link>
+    </a-col>
 
-      <a-col :span="6">
-        <router-link to='/features'>
-          <a-card :title="$t('Features')" :bordered="false">
-            <h1>{{ featureCount }}</h1>
-          </a-card>
-        </router-link>
-      </a-col>
+    <a-col :span="6">
+      <router-link to='/featureservices'>
+        <a-card :title="$t('Feature Services')" :bordered="false">
+          <h1>{{ featureServiceCount }}</h1>
+        </a-card>
+      </router-link>
+    </a-col>
+  </a-row>
 
-      <a-col :span="6">
-        <router-link to='/offlinepage'>
-          <a-card :title="$t('Offline Sample')" :bordered="false">
-            <h1>{{ offlineSampleCount }}</h1>
-          </a-card>
-        </router-link>
-      </a-col>
-
-      <a-col :span="6">
-        <router-link to='/featureservices'>
-          <a-card :title="$t('Feature Services')" :bordered="false">
-            <h1>{{ featureServiceCount }}</h1>
-          </a-card>
-        </router-link>
-      </a-col>
-    </a-row>
-
-
-    <div>
-    <div ref="chartContainer" style="width: 100%; height: 600px"></div>
-  </div>
+  <div ref="chartContainer" style="width: 100%; height: 600px"></div>
   
-  </div>
-
+</div>
 </template>
 
 <script>

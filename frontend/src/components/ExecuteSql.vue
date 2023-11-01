@@ -12,6 +12,15 @@
     <pre>{{ $t("Text of introduce execute sql") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
   </a-typography-paragraph>
 
+  <a-typography>
+    <a-typography-title :level="2">{{ $t('SQL Scenario') }}</a-typography-title>
+    <a-typography-paragraph>
+      <blockquote>
+        。
+      </blockquote>
+    </a-typography-paragraph>
+  </a-typography>
+
   <!-- Create form -->
   <br/>
   <a-form

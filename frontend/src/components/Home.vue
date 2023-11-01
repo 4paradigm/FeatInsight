@@ -19,11 +19,11 @@
         </a-menu-item>
 
         <a-menu-item key="offline">
-          <router-link to='/developprocess/offline'>{{ $t('Offline')}}{{$t('Development')}}</router-link>
+          <router-link to='/developprocess/offline'>{{ $t('Offline Scenario')}}</router-link>
         </a-menu-item>
 
         <a-menu-item key="online">
-          <router-link to='/developprocess/online'>{{ $t('Online') }}{{ $t('Development') }}</router-link>
+          <router-link to='/developprocess/online'>{{ $t('Online Scenario') }}</router-link>
         </a-menu-item>
 
         <a-menu-item key="executesql">

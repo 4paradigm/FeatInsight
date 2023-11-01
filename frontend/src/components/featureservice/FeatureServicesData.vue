@@ -15,11 +15,8 @@
     <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
   </a-drawer>
 
-  <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" >
-    <template #footer>
-        <a-button @click="handleCancel">Cancel</a-button>
-    </template>
-    <TestFeatureService></TestFeatureService>
+  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
+    <TestFeatureService ref="TestFeatureService"></TestFeatureService>
   </a-modal>
 
   <!-- Data table -->
@@ -73,7 +70,7 @@ export default {
 
       featureServices: [],
 
-      isOpenTestFormModal: false,
+      isOpenTestModal: false,
       
       columns: [{
         title: this.$t('Name'),
@@ -145,11 +142,11 @@ export default {
     },
 
     handleCancel() {
-      this.isOpenTestFormModal = false;
+      this.isOpenTestModal = false;
     },
 
     showTestFormModal() {
-      this.isOpenTestFormModal = true;
+      this.isOpenTestModal = true;
     },
 
     openFeatureServiceDrawer(name) {
@@ -161,6 +158,10 @@ export default {
       this.isOpenFeatureServiceVersionDrawer = true;
       this.currentDrawerFeatureService = name;
       this.currentDrawerFeatureServiceVersion = version;
+    },
+
+    clickTestModalOk() {
+      this.$refs.TestFeatureService.submitForm();
     }
 
   }

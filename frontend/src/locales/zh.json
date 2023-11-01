@@ -13,10 +13,10 @@
     "Features": "特征",
     "Feature": "特征",
     "Feature List": "特征列表",
-    "Feature Views": "特征视图",
-    "Feature View": "特征视图",
-    "Feature View List": "特征视图列表",
-    "Feature View Name": "特征视图名",
+    "Feature Views": "特征组",
+    "Feature View": "特征组",
+    "Feature View List": "特征组列表",
+    "Feature View Name": "特征组名",
     "Feature Services": "特征服务",
     "Feature Service": "特征服务",
     "Feature Service List": "特征服务列表",
@@ -208,7 +208,7 @@
     "Success to submit import data job": "成功提交导入数据任务",
     "Write Mode": "写入模式",
     "All Features": "所有特征",
-    "All Feature Views": "所有特征视图",
+    "All Feature Views": "所有特征组",
     "All Databases": "所有数据库",
     "All Tables": "所有数据表",
     "All Offline Jobs": "所有离线任务",
@@ -225,6 +225,12 @@
     "Text of introduce create table": "用户可以选择列类型来创建表，请参考",
     "Add Column": "新增列",
     "Columns": "列",
-    "Preview Table Data": "预览表格数据"
+    "Preview Table Data": "预览表格数据",
+    "Online Scenario": "在线场景",
+    "Offline Scenario": "离线场景",
+    "Export Offline Sample": "导出离线样本",
+    "Analyze": "分析",
+    "Success to create feature view": "成功创建特征组",
+    "SQL Scenario": "SQL 场景"
 
 }

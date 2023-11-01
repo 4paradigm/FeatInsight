@@ -224,6 +224,12 @@
     "Text of introduce create table": "Users can create table with columns. Please refer to",
     "Add Column": "Add Column",
     "Columns": "Columns",
-    "Preview Table Data": "Preview Table Data"
+    "Preview Table Data": "Preview Table Data",
+    "Online Scenario": "Online Scenario",
+    "Offline Scenario": "Offline Scenario",
+    "Export Offline Sample": "Export Offline Sample",
+    "Analyze": "Analyze",
+    "Success to create feature view": "Success to create feature view",
+    "SQL Scenario": "SQL Scenario"
 
 }

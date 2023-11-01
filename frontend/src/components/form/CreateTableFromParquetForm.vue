@@ -71,6 +71,8 @@ export default {
     },
 
     submitForm() {
+      message.success(`Create table from parquet may take 1 minute, please wait`);
+
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
       axios.post(`/api/sql/online`, {

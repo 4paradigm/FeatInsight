@@ -11,8 +11,7 @@
     <!-- Test form -->
     <a-form
       :model="testFormState"
-      layout="vertical"
-      @submit="handleTestFormSubmit">
+      layout="vertical">
       <a-form-item
         :label='$t("Feature Service Name")'
         :rules="[{ required: true, message: 'Please input feature service name!' }]">
@@ -51,10 +50,6 @@
         :label='$t("Test Data")'
         :rules="[{ required: true, message: 'Please input test data!' }]">
         <a-textarea v-model:value="testFormState.testData" rows="5"></a-textarea>
-      </a-form-item>
-      
-      <a-form-item>
-        <a-button type="primary" html-type="submit">{{ $t('Test') }}</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -125,7 +120,6 @@ export default {
     },
 
     initData() {
-
       if (this.$route.query.featureservice != null) {
         // Url provides feature service name
         this.testFormState.name = this.$route.query.featureservice;
@@ -156,7 +150,7 @@ export default {
       });
     },
 
-    handleTestFormSubmit() {
+    submitForm() {
       axios.post(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request`,
         JSON.parse(this.testFormState.testData)
       )

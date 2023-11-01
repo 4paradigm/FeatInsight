@@ -1,8 +1,11 @@
 <template>
-
 <div>
-  <a-modal v-model:visible="isShowExecuteSqlModal" width="1000px" :title="$t('Execute Online SQL')" @ok="clickExecuteSqlOk" >
-    <ExecuteSqlForm :isOnline=true ref="ExecuteSqlForm"></ExecuteSqlForm>
+
+  <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature')" >
+    <template #footer>
+      <a-button @click="handleCancel">Cancel</a-button>
+    </template>
+    <CreateFeatureForm @submitted="submittedCreateFeatureForm"></CreateFeatureForm>
   </a-modal>
 
   <a-modal v-model:visible="isShowCreateFeatureServiceModal" width="1000px" :title="$t('Create Feature Service')" @ok="clickCreateFeatureServiceOk">
@@ -10,12 +13,19 @@
   </a-modal>
 
   <br/>
-  <h1>
-    {{ $t('Feature Services') }}
-    &nbsp;&nbsp;<a-button type="primary" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>
-  </h1>
+  <a-typography>
+    <a-typography-title :level="2">{{ $t('Online Scenario') }}</a-typography-title>
+    <a-typography-paragraph>
+      <blockquote>
+        在线场景是上线特征服务，使用在线数据提供硬实时的在线特征抽取接口，用户首先<a-button type="text" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="text" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>。
+      </blockquote>
+    </a-typography-paragraph>
+  </a-typography>
 
   <br/>
+  <h1>
+    {{ $t('All Feature Services') }}
+  </h1>
   <FeatureServicesData></FeatureServicesData>
  
 </div>
@@ -24,35 +34,35 @@
 <script>
 import FeatureServicesData from '@/components/featureservice/FeatureServicesData.vue';
 import OnlineTables from '@/components/table/OnlineTables.vue';
-import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
 import CreateFeatureServiceForm from '@/components/form/CreateFeatureServiceForm.vue';
-
+import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 
 export default {
   components: {
     FeatureServicesData,
     OnlineTables,
-    ExecuteSqlForm,
-    CreateFeatureServiceForm
+    CreateFeatureServiceForm,
+    CreateFeatureForm
   },
 
   data() {
     return {
-      isShowExecuteSqlModal: false,
-
+      isShowCreateFeatureModal: false,
       isShowCreateFeatureServiceModal: false
     }
   },
 
   methods: {
-    showExcuteSqlFormModal() {
-      this.isShowExecuteSqlModal = true;
+    clickCreateFeature() {
+      this.isShowCreateFeatureModal = true;
     },
 
-    clickExecuteSqlOk() {
-      this.isShowExecuteSqlModal = false;
+    handleCancel() {
+      this.isShowCreateFeatureModal = false;
+    },
 
-      this.$refs.ExecuteSqlForm.submitForm();
+    submittedCreateFeatureForm(newFeatureViewName) {
+      this.isShowCreateFeatureModal = false;
     },
 
     showCreateFeatureServiceFormModal() {

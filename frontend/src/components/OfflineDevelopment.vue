@@ -1,8 +1,11 @@
 <template>
-
 <div>
-  <a-modal v-model:visible="isShowExecuteSqlModal" width="1000px" :title="$t('Execute Offline SQL')" @ok="clickExecuteSqlOk">
-    <ExecuteSqlForm :isOnline=false ref="ExecuteSqlForm"></ExecuteSqlForm>
+
+  <a-modal v-model:visible="isShowCreateFeatureModal" width="1000px" :title="$t('Create Feature')" >
+    <template #footer>
+      <a-button @click="handleCancel">Cancel</a-button>
+    </template>
+    <CreateFeatureForm @submitted="submittedCreateFeatureForm"></CreateFeatureForm>
   </a-modal>
 
   <a-modal v-model:visible="isShowCreateOfflineSampleModal" width="1000px" :title="$t('Create Offline Sample')" @ok="clickCreateOfflineSampleOk">
@@ -10,48 +13,54 @@
   </a-modal>
 
   <br/>
-  <h1>
-    {{ $t('Offline Sample') }}
-    &nbsp;&nbsp;&nbsp;<a-button type="primary" @click="showCreateOfflineSampleFormModal">{{ $t('Create Offline Sample') }}</a-button>
-  </h1>
-  
+  <a-typography>
+    <a-typography-title :level="2">{{ $t('Offline Scenario') }}</a-typography-title>
+    <a-typography-paragraph>
+      <blockquote>
+        离线场景是使用分布式计算，对离线数据进行特征计算并导出机器学习所需的样本文件，用户首先<a-button type="text" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="text" @click="showCreateOfflineSampleFormModal">{{ $t('Export Offline Sample') }}</a-button>。
+      </blockquote>
+    </a-typography-paragraph>
+  </a-typography>
+
   <br/>
-  <OfflineSamplesData></OfflineSamplesData>
+  <OfflineSamplesPage></OfflineSamplesPage>
  
 </div>
 </template>
   
 <script>
-import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue';
-import OfflineTables from '@/components/table/OfflineTables.vue';
-import ExecuteSqlForm from '@/components/form/ExecuteSqlForm.vue'
-import CreateOfflineSampleForm from '@/components/form/CreateOfflineSampleForm.vue';
+import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
+import OfflineTables from '@/components/table/OfflineTables.vue'
+import CreateOfflineSampleForm from '@/components/form/CreateOfflineSampleForm.vue'
+import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 
 export default {
   components: {
-    OfflineSamplesData,
+    OfflineSamplesPage,
     OfflineTables,
-    ExecuteSqlForm,
-    CreateOfflineSampleForm
+    CreateOfflineSampleForm,
+    CreateFeatureForm
   },
 
   data() {
     return {
-      isShowExecuteSqlModal: false,
-
+      isShowCreateFeatureModal: false,
       isShowCreateOfflineSampleModal: false,
     }
   },
 
   methods: {
-    showExecuteSqlFormModal() {
-      this.isShowExecuteSqlModal = true;
-    },
-    
-    clickExecuteSqlOk() {
-      this.isShowExecuteSqlModal = false;
 
-      this.$refs.ExecuteSqlForm.submitForm();
+    clickCreateFeature() {
+      this.isShowCreateFeatureModal = true;
+    },
+
+    handleCancel() {
+      this.isShowCreateFeatureModal = false;
+    },
+
+    submittedCreateFeatureForm(newFeatureViewName) {
+      this.isShowCreateFeatureModal = false;
     },
 
     showCreateOfflineSampleFormModal() {
