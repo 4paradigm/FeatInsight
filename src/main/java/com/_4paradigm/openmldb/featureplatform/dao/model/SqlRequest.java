@@ -6,12 +6,14 @@ import lombok.Data;
 public class SqlRequest {
 
     private String sql;
+    private boolean online;
 
     public SqlRequest() {
     }
 
-    public SqlRequest(String sql) {
+    public SqlRequest(String sql, boolean online) {
         this.sql = sql;
+        this.online = online;
     }
 
 }

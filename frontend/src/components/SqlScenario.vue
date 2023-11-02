@@ -8,15 +8,20 @@
     <OfflineJobDetail :id="currentDrawerOfflineJob" :key="currentDrawerOfflineJob"></OfflineJobDetail>
   </a-drawer>
 
-  <a-typography-paragraph>
-    <pre>{{ $t("Text of introduce execute sql") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
-  </a-typography-paragraph>
+  <br/>
+  <a-typography>
+    <a-typography-title :level="2">{{ $t('SQL Scenario') }}</a-typography-title>
+    <a-typography-paragraph>
+      <blockquote>
+        用户可以执行任意的 OpenMLDB SQL 语句，在线模式下会请求在线数据库，可进行在线数据的增删改查；离线模式下会提交分布式执行的 SQL，可进行离线探索或样本生成。
+      </blockquote>
+    </a-typography-paragraph>
+  </a-typography>
 
   <!-- Create form -->
   <br/>
   <a-form
     :model="formState"
-    layout="vertical"
     @submit="handleSubmit">
 
     <a-form-item
@@ -39,7 +44,7 @@
   </a-form>
 
   <div v-if="isShowResult">
-    <h2>SQL Result: </h2>
+    <h2>{{ $t('SQL Result') }}</h2>
     <a-table :dataSource="resultData" :columns="resultColumns">
       <template #id="{ text, record }">
         <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>

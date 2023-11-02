@@ -15,11 +15,8 @@
     <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
   </a-drawer>
 
-  <a-modal v-model:visible="isOpenTestFormModal" width="1000px" :title="$t('Test Feature Service')" >
-    <template #footer>
-        <a-button @click="handleCancel">Cancel</a-button>
-    </template>
-    <TestFeatureService></TestFeatureService>
+  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
+    <TestFeatureServiceForm ref="TestFeatureServiceForm" :featureServiceName="chooseFeatureServiceName" :featureServiceVersion="chooseFeatureServiceVersion" ></TestFeatureServiceForm>
   </a-modal>
 
   <!-- Data table -->
@@ -37,8 +34,8 @@
     <template #version="{ text, record }">
       <a-button type="link" @click="openFeatureServiceVersionDrawer(record.name, record.version)">{{ record.version }}</a-button>
     </template>
-    <template v-slot:action="scope">
-      <a-button type="default" @click="showTestFormModal">{{ $t('Test Service') }}</a-button>
+    <template #action="{ text, record }">
+      <a-button type="default" @click="showTestFormModal(record.name, record.version)">{{ $t('Test Service') }}</a-button>
     </template>
   </a-table>
 
@@ -48,13 +45,13 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import TestFeatureService from '@/components/TestFeatureService.vue';
+import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
 
 export default {
   components: {
-    TestFeatureService,
+    TestFeatureServiceForm,
     FeatureServiceDetail,
     FeatureServiceVersionDetail
   },
@@ -73,7 +70,7 @@ export default {
 
       featureServices: [],
 
-      isOpenTestFormModal: false,
+      isOpenTestModal: false,
       
       columns: [{
         title: this.$t('Name'),
@@ -103,6 +100,9 @@ export default {
         slots: { customRender: 'action' },
       }],
 
+
+      chooseFeatureServiceName: "",
+      chooseFeatureServiceVersion: ""
     };
   },
 
@@ -144,12 +144,11 @@ export default {
       }
     },
 
-    handleCancel() {
-      this.isOpenTestFormModal = false;
-    },
+    showTestFormModal(name, version) {
+      this.chooseFeatureServiceName = name;
+      this.chooseFeatureServiceVersion = version;
 
-    showTestFormModal() {
-      this.isOpenTestFormModal = true;
+      this.isOpenTestModal = true;
     },
 
     openFeatureServiceDrawer(name) {
@@ -161,6 +160,10 @@ export default {
       this.isOpenFeatureServiceVersionDrawer = true;
       this.currentDrawerFeatureService = name;
       this.currentDrawerFeatureServiceVersion = version;
+    },
+
+    clickTestModalOk() {
+      this.$refs.TestFeatureServiceForm.submitForm();
     }
 
   }

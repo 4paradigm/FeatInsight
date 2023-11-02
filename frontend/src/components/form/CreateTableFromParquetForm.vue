@@ -14,7 +14,7 @@
     <a-form-item
       :label="$t('Database')"
       :rules="[{ required: true, message: 'Please select database!' }]">
-      <a-select v-model:value="formState.db">
+      <a-select show-search v-model:value="formState.db">
         <option v-for="database in databases" :value="database">{{ database }}</option>
       </a-select>
     </a-form-item>
@@ -71,6 +71,8 @@ export default {
     },
 
     submitForm() {
+      message.success(`Create table from parquet may take 1 minute, please wait`);
+
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
       axios.post(`/api/sql/online`, {

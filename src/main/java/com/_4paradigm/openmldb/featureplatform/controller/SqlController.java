@@ -1,8 +1,9 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
-import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
+import com._4paradigm.openmldb.featureplatform.service.SqlService;
+import com._4paradigm.openmldb.featureplatform.dao.model.SimpleSqlRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,18 @@ public class SqlController {
     }
 
     @PostMapping("/online")
-    public ResponseEntity<List<List<String>>> executeOnline(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        return ResponseEntity.ok(sqlService.executeOnlineSql(sqlRequest.getSql()));
+    public ResponseEntity<List<List<String>>> executeOnline(@RequestBody SimpleSqlRequest simpleSqlRequest) throws SQLException {
+        return ResponseEntity.ok(sqlService.executeOnlineSql(simpleSqlRequest.getSql()));
     }
 
     @PostMapping("/offline")
-    public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        return ResponseEntity.ok(sqlService.executeOfflineSql(sqlRequest.getSql()));
+    public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody SimpleSqlRequest simpleSqlRequest) throws SQLException {
+        return ResponseEntity.ok(sqlService.executeOfflineSql(simpleSqlRequest.getSql()));
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<String> validateSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        List<String> result = sqlService.validateSql(sqlRequest.getSql());
+    public ResponseEntity<String> validateSql(@RequestBody SimpleSqlRequest simpleSqlRequest) throws SQLException {
+        List<String> result = sqlService.validateSql(simpleSqlRequest.getSql());
         if (result.size() == 0) {
             return new ResponseEntity<>("Success to validate sql", HttpStatus.OK);
         } else {
@@ -44,7 +45,7 @@ public class SqlController {
 
     @PostMapping("/import")
     public int importSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
-        int jobId = sqlService.importData(sqlRequest.getSql(), false);
+        int jobId = sqlService.importData(sqlRequest.getSql(), sqlRequest.isOnline());
         return jobId;
     }
 

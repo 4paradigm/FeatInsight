@@ -6,7 +6,7 @@
       <template #footer>
         <a-button @click="handleCancel">Cancel</a-button>
       </template>
-      <CreateFeatureViewForm @submitted="submittedCreateFeatureForm"></CreateFeatureViewForm>
+      <CreateFeatureForm @submitted="submittedCreateFeatureForm"></CreateFeatureForm>
     </a-modal>
 
     <a-typography-paragraph>
@@ -24,11 +24,22 @@
       <a-form-item
         :label="$t('Choose Features')"
         :rules="[{ required: true, message: 'Please input feature list!' }]">
-        <a-button type="primary" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>
+
+        <a-select mode="multiple" v-model:value="formState.featureSet"
+          :options="featureOptions.map(featureOption => ({ value: featureOption }))">
         
-        <br/><br/>
-        <a-select mode="multiple" v-model:value="formState.featureSet">
-          <option v-for="featureOption in featureOptions" :value="featureOption">{{ featureOption }}</option>
+          <template #dropdownRender="{ menuNode: menu }">
+            <VNodes :vnodes="menu" />
+            <a-divider style="margin: 4px 0" />
+            <a-space style="padding: 4px 8px">
+              <a-button type="text" @click="clickCreateFeature">
+                <template #icon>
+                  <PlusOutlined />
+                </template>
+                {{ $t('Create Feature') }}
+              </a-button>
+            </a-space>
+          </template>
         </a-select>
       </a-form-item>
 
@@ -43,7 +54,7 @@
       <a-form-item
           :label="$t('File Format')"
           :rules="[{ required: true, message: 'Please choose file format!' }]">
-          <a-select v-model:value="formState.format">
+          <a-select show-search v-model:value="formState.format">
             <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
           </a-select>
       </a-form-item>
@@ -71,11 +82,15 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import CreateFeatureViewForm from '@/components/form/CreateFeatureViewForm.vue'
+import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
+import VNodes from '@/components/VNodes.vue'
+import { PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {
-    CreateFeatureViewForm
+    CreateFeatureForm,
+    VNodes,
+    PlusOutlined
   },
 
   data() {
@@ -95,7 +110,7 @@ export default {
         format: 'CSV',
         path: '',
         options: '',
-      },
+      }
 
     };
   },
@@ -110,6 +125,8 @@ export default {
     },
 
     updateSelectFeatureOptions() {
+      this.featureOptions = [];
+
       axios.get(`/api/featureviews`)
         .then(response => {
           response.data.forEach(featureView => {
@@ -172,7 +189,6 @@ export default {
     submittedCreateFeatureForm(newFeatureViewName) {
       this.isShowCreateFeatureModal = false;
       this.updateSelectFeatureOptions();
-      this.formState.featureSet = [newFeatureViewName]
     }
   },
 };

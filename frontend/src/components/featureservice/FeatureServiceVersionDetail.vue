@@ -1,6 +1,10 @@
 <template>
 <div>
 
+  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
+    <TestFeatureServiceForm ref="TestFeatureServiceForm" :featureServiceName="name" :featureServiceVersion="version" ></TestFeatureServiceForm>
+  </a-modal>
+
   <a-drawer
     v-model:visible="isOpenFeatureViewDrawer"
     size="large"
@@ -29,10 +33,8 @@
     <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerTable"></TableDetail>
   </a-drawer>
 
-  <h2>
-    {{ $t('Feature Service') }}: {{ data.name }} {{ $t('Version') }}: {{ data.version }}
-    &nbsp;&nbsp;<a-button type="primary"><router-link :to="`/featureservices/test?featureservice=${data.name}&version=${data.version}`">{{ $t('Test Service') }}</router-link></a-button>
-  </h2>
+  <h2>{{ $t('Feature Service') }}: {{ data.name }}</h2>
+  <h2>{{ $t('Service Version') }}: {{ data.version }}</h2>
 
   <br/>
   <a-descriptions bordered>
@@ -46,6 +48,10 @@
     <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
   </a-descriptions>
+
+  <br/>
+  <a-button type="default" @click="showTestFormModal()">{{ $t('Test Service Version') }}</a-button>
+    
 
   <br/><br/>
   <h2>{{ $t('Features') }}</h2>
@@ -78,13 +84,15 @@ import TableDetail from '@/components/table/TableDetail.vue'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureDetail from '@/components/feature/FeatureDetail.vue'
+import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 
 export default {
   components: {
     FeatureViewDetail,
     FeatureDetail,
     DatabaseDetail,
-    TableDetail
+    TableDetail,
+    TestFeatureServiceForm
   },
 
   props: {
@@ -112,6 +120,8 @@ export default {
       currentDrawerDatabase: "",
       isOpenTableDrawer: false,
       currentDrawerTable: "",
+
+      isOpenTestModal: false,
 
       data: {},
       features: [],
@@ -227,8 +237,26 @@ export default {
       this.isOpenTableDrawer = true;
       this.currentDrawerDatabase = db;
       this.currentDrawerTable = table;
-    }
+    },
 
+    showTestFormModal(name, version) {
+      this.chooseFeatureServiceName = name;
+      this.chooseFeatureServiceVersion = version;
+
+      this.isOpenTestModal = true;
+    },
+
+    clickTestModalOk() {
+      this.$refs.TestFeatureServiceForm.submitForm();
+    },
+
+    showTestFormModal() {
+      this.isOpenTestModal = true;
+    },
+
+    clickTestModalOk() {
+      this.$refs.TestFeatureServiceForm.submitForm();
+    }
 
   }
 }

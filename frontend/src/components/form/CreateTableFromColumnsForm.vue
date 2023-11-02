@@ -14,7 +14,7 @@
     <a-form-item
       :label="$t('Database')"
       :rules="[{ required: true, message: 'Please select database!' }]">
-      <a-select v-model:value="formState.db">
+      <a-select show-search v-model:value="formState.db">
         <option v-for="database in databases" :value="database">{{ database }}</option>
       </a-select>
     </a-form-item>
@@ -51,7 +51,7 @@
           message: 'Missing column type',
         }"
       >
-        <a-select v-model:value="column.type">
+        <a-select show-search v-model:value="column.type">
           <option v-for="columnType in columnTypes" :key="columnType" :value="columnType">{{ columnType }}</option>
         </a-select>
       </a-form-item>
@@ -73,7 +73,7 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import { ConsoleSqlOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {

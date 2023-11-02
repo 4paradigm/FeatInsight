@@ -7,6 +7,10 @@
     <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
   </a-drawer>
 
+  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
+    <TestFeatureServiceForm ref="TestFeatureServiceForm" :featureServiceName="currentDrawerFeatureService" :featureServiceVersion="currentDrawerFeatureServiceVersion" ></TestFeatureServiceForm>
+  </a-modal>
+
   <h2>{{ $t('Feature Service') }}: {{ data.name }} </h2>
 
   <a-table :columns="columns" :data-source="featureServiceVersionList">
@@ -26,18 +30,20 @@
     </template>
 
     <template v-slot:action="scope">
-      <a-button><router-link :to="`/featureservices/test?featureservice=${scope.record.name}&version=${scope.record.version}`">{{ $t('Test Service') }}</router-link></a-button>
+      <a-button type="default" @click="showTestFormModal(scope.record.name, scope.record.version)">{{ $t('Test Service Version') }}</a-button>
+    
       <br/>
       <a-popconfirm
           title="Sure to update as latest version?"
           @confirm="handleUpdteLatestVersion(scope.record.name, scope.record.version)">
-        <a-button>{{ $t('Update Version') }}</a-button>
+        <a-button>{{ $t('Set Latest Version') }}</a-button>
       </a-popconfirm>
+
       <br/>
       <a-popconfirm
           title="Sure to delete?"
           @confirm="handleDelete(scope.record.name, scope.record.version)">
-        <a-button danger>{{ $t('Delete Service') }}</a-button>
+        <a-button danger>{{ $t('Delete Service Version') }}</a-button>
       </a-popconfirm>
     </template>
   </a-table>
@@ -49,10 +55,12 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
+import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 
 export default {
   components: {
-    FeatureServiceVersionDetail
+    FeatureServiceVersionDetail,
+    TestFeatureServiceForm
   },
 
   props: {
@@ -67,6 +75,8 @@ export default {
       isOpenFeatureServiceVersionDrawer: false,
       currentDrawerFeatureService: "",
       currentDrawerFeatureServiceVersion: "",
+
+      isOpenTestModal: false,
 
       data: {},
 
@@ -155,6 +165,18 @@ export default {
       this.isOpenFeatureServiceVersionDrawer = true;
       this.currentDrawerFeatureService = name;
       this.currentDrawerFeatureServiceVersion = version;
+    },
+
+
+    showTestFormModal(name, version) {
+      this.currentDrawerFeatureService = name;
+      this.currentDrawerFeatureServiceVersion = version;
+
+      this.isOpenTestModal = true;
+    },
+
+    clickTestModalOk() {
+      this.$refs.TestFeatureServiceForm.submitForm();
     }
 
   }

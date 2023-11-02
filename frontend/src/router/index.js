@@ -4,23 +4,20 @@ import BigScreenPage from '@/components/BigScreenPage.vue'
 import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
 import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
 import FeatureServicesPage from '@/components/featureservice/FeatureServicesPage.vue'
-import TutorialPage from '@/components/TutorialPage.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
-import TestFeatureService from '@/components/TestFeatureService.vue'
 import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
 import OfflineJobLog from '@/components/offlinejob/OfflineJobLog.vue'
-import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
-import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
+import OnlineScenario from '@/components/OnlineScenario.vue'
+import OfflineScenario from '@/components/OfflineScenario.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
-import OfflineSamplesAndJobsPage from '@/components/offlinesample/OfflineSamplesAndJobsPage.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
 import CreateTableResult from '@/components/result/CreateTableResult.vue'
@@ -30,13 +27,13 @@ import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
 import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
-import ExecuteSql from '@/components/ExecuteSql.vue'
+import SqlScenario from '@/components/SqlScenario.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
   routes: [
     { path: '/', component: BigScreenPage },
-    { path: '/sql', component: ExecuteSql, props: true },
+    { path: '/sql', component: SqlScenario, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
@@ -45,11 +42,9 @@ const router = createRouter({
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
-    { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
-    { path: '/offlinepage', component: OfflineSamplesAndJobsPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },
@@ -62,15 +57,14 @@ const router = createRouter({
         { path: 'offline', component: ImportDataOffline, props: true }
       ]
     },
-    { path: '/developprocess/online', component: OnlineDevelopment, props: true },
-    { path: '/developprocess/offline', component: OfflineDevelopment, props: true },
+    { path: '/developprocess/online', component: OnlineScenario, props: true },
+    { path: '/developprocess/offline', component: OfflineScenario, props: true },
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
-    { path: '/tutorial', component: TutorialPage},
     { path: '/offlinesamples', component: OfflineSamplesPage},
     { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },
     { path: '/offlinesamples/:id/result', component: CreateOfflineSampleResult, props: true },
     { path: '/404', redirect: "/" },
-    //{ path: '/:pathMatch(.*)*', redirect: "/404" }
+    { path: '/:pathMatch(.*)*', redirect: "/404" }
   ]
 })
 
