@@ -28,7 +28,7 @@
     <a-form-item
       :label="$t('Database')"
       :rules="[{ required: true, message: 'Please select database!' }]">
-      <a-select v-model:value="formState.db">
+      <a-select show-search v-model:value="formState.db">
         <option v-for="database in databases" :value="database">{{ database }}</option>
       </a-select>
     </a-form-item>

@@ -10,7 +10,6 @@ import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
-import TestFeatureService from '@/components/TestFeatureService.vue'
 import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
@@ -43,7 +42,6 @@ const router = createRouter({
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
-    { path: '/featureservices/test', component: TestFeatureService},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
@@ -66,7 +64,7 @@ const router = createRouter({
     { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },
     { path: '/offlinesamples/:id/result', component: CreateOfflineSampleResult, props: true },
     { path: '/404', redirect: "/" },
-    //{ path: '/:pathMatch(.*)*', redirect: "/404" }
+    { path: '/:pathMatch(.*)*', redirect: "/404" }
   ]
 })
 

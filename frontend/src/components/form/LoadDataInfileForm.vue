@@ -19,7 +19,7 @@
     <a-form-item
       :label="$t('Table Name')"
       :rules="[{ required: true, message: 'Please input table name!' }]">
-      <a-select v-model:value="formState.tableName">
+      <a-select show-search v-model:value="formState.tableName">
         <option v-for="tableName in tableNames" :value="tableName">{{ tableName }}</option>
       </a-select>
     </a-form-item>
@@ -34,7 +34,7 @@
     <a-form-item
         :label="$t('File Format')"
         :rules="[{ required: true, message: 'Please choose file format!' }]">
-        <a-select v-model:value="formState.format">
+        <a-select show-search v-model:value="formState.format">
           <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
         </a-select>
     </a-form-item>
@@ -42,7 +42,7 @@
     <a-form-item
         :label="$t('Write Mode')"
         :rules="[{ required: true, message: 'Please choose write mode!' }]">
-        <a-select v-model:value="formState.mode">
+        <a-select show-search v-model:value="formState.mode">
           <option v-for="mode in writeModeOptions" :key="mode.id" :value="mode.name">{{ mode.name}}</option>
         </a-select>
     </a-form-item>

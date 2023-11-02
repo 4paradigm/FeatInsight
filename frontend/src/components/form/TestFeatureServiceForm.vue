@@ -15,7 +15,7 @@
       <a-form-item
         :label='$t("Feature Service Name")'
         :rules="[{ required: true, message: 'Please input feature service name!' }]">
-        <a-select id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
+        <a-select show-search id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
           <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
         </a-select>
       </a-form-item>
@@ -23,7 +23,7 @@
       <a-form-item
         :label='$t("Version")'
         :rules="[{ required: false, message: 'Please input feature service version!' }]">
-        <a-select id="itemSelect" v-model:value="testFormState.version" @change="updateSelectedService">
+        <a-select show-search id="itemSelect" v-model:value="testFormState.version" @change="updateSelectedService">
           <option v-for="version in featureServiceVersions" :value="version">{{ version }}</option>
         </a-select>
       </a-form-item>
@@ -49,7 +49,7 @@
       <a-form-item
         :label='$t("Test Data")'
         :rules="[{ required: true, message: 'Please input test data!' }]">
-        <a-textarea v-model:value="testFormState.testData" rows="5"></a-textarea>
+        <a-textarea v-model:value="testFormState.testData" :rows="5"></a-textarea>
       </a-form-item>
     </a-form>
   </div>
@@ -64,6 +64,17 @@ import { Modal } from 'ant-design-vue';
 import { h } from 'vue';
 
 export default {
+  props: {
+    featureServiceName: {
+      type: String,
+      default: "",
+    },
+    featureServiceVersion: {
+      type: String,
+      default: "",
+    }
+  },
+  
   data() {
     return {
       featureServices: [],
@@ -120,12 +131,13 @@ export default {
     },
 
     initData() {
-      if (this.$route.query.featureservice != null) {
-        // Url provides feature service name
-        this.testFormState.name = this.$route.query.featureservice;
-        if (this.$route.query.version != null) {
-          this.testFormState.version = this.$route.query.version;
+      if (this.featureServiceName) {
+        this.testFormState.name = this.featureServiceName;
+
+        if (this.featureServiceVersion) {
+          this.testFormState.version = this.featureServiceVersion;
         }
+
         this.updateSelectedService();
       }
 

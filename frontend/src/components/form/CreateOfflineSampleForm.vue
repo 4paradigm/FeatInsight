@@ -54,7 +54,7 @@
       <a-form-item
           :label="$t('File Format')"
           :rules="[{ required: true, message: 'Please choose file format!' }]">
-          <a-select v-model:value="formState.format">
+          <a-select show-search v-model:value="formState.format">
             <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
           </a-select>
       </a-form-item>

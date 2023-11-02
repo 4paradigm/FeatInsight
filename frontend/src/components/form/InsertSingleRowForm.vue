@@ -19,7 +19,7 @@
     <a-form-item
       :label="$t('Table Name')"
       :rules="[{ required: true, message: 'Please input table name!' }]">
-      <a-select v-model:value="formState.tableName" @change="updateSchema()">
+      <a-select show-search v-model:value="formState.tableName" @change="updateSchema()">
         <option v-for="tableName in tableNames" :value="tableName">{{ tableName }}</option>
       </a-select>
     </a-form-item>
