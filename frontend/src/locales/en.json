@@ -55,7 +55,7 @@
     "Create New Feature": "Create New Feature",
     "Create Service": "Create Service",
     "Create Entity": "Create Entity",
-    "Test Service": "Test Service",
+    "Test Service Version": "Test Service Version",
     "Develop Feature": "Develop Feature",
     "Delete Service": "Delete Service",
     "Feature Service Name": "Feature Service Name",
@@ -87,6 +87,7 @@
     "Version": "Version",
     "Search": "Search",
     "Latest Version": "Latest Version",
+    "Set Latest Version": "Set Latest Version",
     "Features Service Versions": "Features Service Versions",
     "Update Version": "Update Version",
     "Latest": "Latest",
@@ -233,6 +234,7 @@
     "SQL Scenario": "SQL Scenario",
     "SQL Result": "SQL Result",
     "Insert Single Row": "Insert Single Row",
-    "Row Data": "Row Data"
+    "Row Data": "Row Data",
+    "Delete Service Version": "Delete Version"
 
 }

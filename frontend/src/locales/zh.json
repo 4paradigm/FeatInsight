@@ -55,7 +55,7 @@
     "Create New Feature": "创建新特征",
     "Create Service": "创建服务",
     "Create Entity": "创建拼接主键",
-    "Test Service": "测试服务",
+    "Test Service Version": "测试服务版本",
     "Develop Feature": "特征开发",
     "Delete Service": "删除服务",
     "Feature Service Name": "服务名称",
@@ -87,6 +87,7 @@
     "Version": "版本",
     "Search": "搜索",
     "Latest Version": "最新版本",
+    "Set Latest Version": "设置最新版本",
     "Features Service Versions": "特征服务版本",
     "Update Version": "更新版本",
     "Latest": "最新", 
@@ -234,6 +235,7 @@
     "SQL Scenario": "SQL 场景",
     "SQL Result": "SQL 结果",
     "Insert Single Row": "插入单行数据",
-    "Row Data": "行数据"
+    "Row Data": "行数据",
+    "Delete Service Version": "删除服务版本"
 
 }

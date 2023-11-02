@@ -15,8 +15,8 @@ import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
 import OfflineJobLog from '@/components/offlinejob/OfflineJobLog.vue'
-import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
-import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
+import OnlineScenario from '@/components/OnlineScenario.vue'
+import OfflineScenario from '@/components/OfflineScenario.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
@@ -59,8 +59,8 @@ const router = createRouter({
         { path: 'offline', component: ImportDataOffline, props: true }
       ]
     },
-    { path: '/developprocess/online', component: OnlineDevelopment, props: true },
-    { path: '/developprocess/offline', component: OfflineDevelopment, props: true },
+    { path: '/developprocess/online', component: OnlineScenario, props: true },
+    { path: '/developprocess/offline', component: OfflineScenario, props: true },
     { path: '/dag', name: 'DagPage', component: DagPage, props: true},
     { path: '/offlinesamples', component: OfflineSamplesPage},
     { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },

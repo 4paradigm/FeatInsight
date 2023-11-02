@@ -17,15 +17,13 @@
     <a-typography-title :level="2">{{ $t('Online Scenario') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        在线场景是上线特征服务，使用在线数据提供硬实时的在线特征抽取接口，用户首先<a-button type="text" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="text" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>。
+        在线场景是上线特征服务，使用在线数据提供硬实时的在线特征抽取接口，用户首先<a-button type="link" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="link" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>。
       </blockquote>
     </a-typography-paragraph>
   </a-typography>
 
   <br/>
-  <h1>
-    {{ $t('All Feature Services') }}
-  </h1>
+  <h1>{{ $t('Feature Services') }}</h1>
   <FeatureServicesData></FeatureServicesData>
  
 </div>

@@ -9,12 +9,12 @@
 </div>
 </template>
     
-  <script>
-  import FeatureServicesData from '@/components/featureservice/FeatureServicesData.vue';
+<script>
+import FeatureServicesData from '@/components/featureservice/FeatureServicesData.vue';
 
-  export default {
-    components: {
-      FeatureServicesData
-    }
-  };
-  </script>
+export default {
+  components: {
+    FeatureServicesData
+  }
+};
+</script>

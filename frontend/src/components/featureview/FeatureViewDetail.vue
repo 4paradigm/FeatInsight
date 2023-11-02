@@ -30,10 +30,7 @@
       <a-button type="link" @click="openDatabaseDrawer(data.db)">{{ data.db }}</a-button>
     </a-descriptions-item>
     <a-descriptions-item :span="24" :label='$t("SQL")'>{{ data.sql }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label='$t("Features")'>
-      <!-- TODO: use a-button for each feature -->
-      <router-link v-for="feature in features" :to="`/features/${feature.featureViewName}/${feature.featureName}`" :key="feature.featureName">{{ feature.featureName }}, </router-link>
-    </a-descriptions-item>
+    <a-descriptions-item :span="24" :label='$t("Features")'>{{ data.featureNames }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
   </a-descriptions>
 

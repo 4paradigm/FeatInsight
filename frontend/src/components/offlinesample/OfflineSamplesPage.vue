@@ -9,12 +9,12 @@
 </div>
 </template>
     
-  <script>
-  import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue';
+<script>
+import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue';
 
-  export default {
-    components: {
-      OfflineSamplesData
-    }
-  };
-  </script>
+export default {
+  components: {
+    OfflineSamplesData
+  }
+};
+</script>

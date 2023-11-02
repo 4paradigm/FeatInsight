@@ -26,18 +26,18 @@
     </template>
 
     <template v-slot:action="scope">
-      <a-button><router-link :to="`/featureservices/test?featureservice=${scope.record.name}&version=${scope.record.version}`">{{ $t('Test Service') }}</router-link></a-button>
+      <a-button><router-link :to="`/featureservices/test?featureservice=${scope.record.name}&version=${scope.record.version}`">{{ $t('Test Service Version') }}</router-link></a-button>
       <br/>
       <a-popconfirm
           title="Sure to update as latest version?"
           @confirm="handleUpdteLatestVersion(scope.record.name, scope.record.version)">
-        <a-button>{{ $t('Update Version') }}</a-button>
+        <a-button>{{ $t('Set Latest Version') }}</a-button>
       </a-popconfirm>
       <br/>
       <a-popconfirm
           title="Sure to delete?"
           @confirm="handleDelete(scope.record.name, scope.record.version)">
-        <a-button danger>{{ $t('Delete Service') }}</a-button>
+        <a-button danger>{{ $t('Delete Service Version') }}</a-button>
       </a-popconfirm>
     </template>
   </a-table>
