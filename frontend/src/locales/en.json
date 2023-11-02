@@ -235,6 +235,7 @@
     "SQL Result": "SQL Result",
     "Insert Single Row": "Insert Single Row",
     "Row Data": "Row Data",
-    "Delete Service Version": "Delete Version"
+    "Delete Service Version": "Delete Version",
+    "Success to insert data": "Success to insert data"
 
 }

@@ -236,6 +236,7 @@
     "SQL Result": "SQL 结果",
     "Insert Single Row": "插入单行数据",
     "Row Data": "行数据",
-    "Delete Service Version": "删除服务版本"
+    "Delete Service Version": "删除服务版本",
+    "Success to insert data": "成功插入数据"
 
 }

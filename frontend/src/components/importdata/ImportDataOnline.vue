@@ -95,7 +95,7 @@ export default {
 
     clickSingleRowModalOk() {
       this.isShowSingleRowModal = false;
-      this.$refs.CreateTableFromSingleRowForm.submitForm();
+      this.$refs.InsertSingleRowForm.submitForm();
     },
 
     clickParquetModalOk() {

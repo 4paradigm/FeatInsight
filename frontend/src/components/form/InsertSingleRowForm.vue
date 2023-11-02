@@ -24,47 +24,23 @@
       </a-select>
     </a-form-item>
 
-
-    <a-form-item
-      :label='$t("Schema")'>
-      <a-typography>
-        <a-typography-paragraph>
-          <pre>{{ schemaString }}</pre>
-        </a-typography-paragraph>
-      </a-typography>
-    </a-form-item>
-
     <p><span style="color:red;">* </span>{{ $t('Row Data') }}</p>
 
     <a-space
       v-for="(column, index) in columns"
-      :key="column.id"
-      style="display: flex; margin-bottom: 8px"
-      align="baseline"
+      :key="column.name"
+      style="display: flex; margin-bottom: 0px"
     >
-      <a-form-item
-        :name="['columns', index, 'name']"
-        :rules="{
-          required: true,
-          message: 'Missing column name',
-        }"
-      >
-        <a-input v-model:value="column.name" placeholder="Column Name" />
-      </a-form-item>
 
-      <a-form-item
-        :name="['columns', index, 'type']"
-        :rules="{
-          required: true,
-          message: 'Missing column type',
-        }"
-      >
-        <a-select v-model:value="column.type">
-          <option v-for="columnType in columnTypes" :key="columnType" :value="columnType">{{ columnType }}</option>
-        </a-select>
-      </a-form-item>
-      <MinusCircleOutlined @click="removeColumn(column)" />
-    </a-space>
+    <p>{{ column.name }} ({{ column.type }}):</p>
+    
+    <a-form-item
+        :name="['columns', index, 'name']"
+    >
+      <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
+    </a-form-item>
+
+  </a-space>
 
 
   </a-form>
@@ -75,6 +51,7 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 
 export default {
   props: {
@@ -92,17 +69,13 @@ export default {
     return {
       tableNames: [],
 
-      schemaString: "",
-
       formState: {
-        tableName: "SYSTEM_FEATURE_PLATFORM.features",
+        tableName: "",
         columnDataList: []
       },
 
-      columns: [{
-        name: '',
-        type: ''
-      }],
+      // Example: [{"name": "", "type": ""}]
+      columns: [],
 
     };
   },
@@ -122,9 +95,6 @@ export default {
           response.data.forEach((table) => {
             this.tableNames.push(`${table.db}.${table.table}`);
           });
-
-          // tobe
-          this.updateSchema();
         })
         .catch(error => {
           message.error(error.message);
@@ -133,47 +103,53 @@ export default {
     },
 
     updateSchema() {
-
-      console.log("---------- tobe");
-      console.log(this.formState.tableName);
-
       const db = this.formState.tableName.split(".")[0];
       const table = this.formState.tableName.split(".")[1];
 
       axios.get(`/api/tables/${db}/${table}/schema`)
         .then(response => {
-          this.columns = [];
-          this.schemaString = response.data;
+          const columnList = response.data.split(",").map(obj => {
+            return {
+              "name": obj.split(":")[0],
+              "type": obj.split(":")[1]
+            }
+          })
 
-          const schemaItems = response.data.split(",");
-
-          for (var i=0; i < schemaItems.length; ++i) {
-            const schemaItem = schemaItems[i].split(":");
-            this.columns.push({"name": schemaItem[0], "type": schemaItem[1]});
-          }
-
+          this.columns = [...columnList]
         })
         .catch(error => {
           message.error(error.message);
         })
         .finally(() => {});
-      
-
     },
 
     submitForm() {
-      // TODO: merge options
-      const sql = `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} OPTIONS (format='${this.formState.format}', mode='${this.formState.mode}')`;
+      var valueString = ``;
 
-      axios.post(`/api/sql/import`, {
-        "sql": sql,
-        "online": this.formState.isOnlineMode
+      for (var i=0; i < this.formState.columnDataList.length; ++i) {
+        const columnValue = this.formState.columnDataList[i];
+
+        if (this.columns[i].type === "string") {
+          valueString += `'${columnValue}'`;
+        } else {
+          valueString += columnValue
+        }
+
+        if (i != this.formState.columnDataList.length-1) {
+          valueString += ", "
+        }
+
+      }
+
+      const sql = `INSERT INTO ${this.formState.tableName} VALUES (${valueString})`;
+
+      axios.post(`/api/sql/online`, {
+        "sql": sql
       })
       .then(response => {
-        message.success(`Success to execute SQL: ${sql}`);
-
-        const jobId = response.data;
-        this.$router.push(`/offlinejobs/${jobId}/result`);
+        notification["success"]({message: 
+          `${this.$t('Success to insert data')}: ${this.formState.columnDataList}`
+        });
       })
       .catch(error => {
         if (error.response.data) {
