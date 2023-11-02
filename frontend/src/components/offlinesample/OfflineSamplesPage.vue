@@ -1,12 +1,13 @@
 <template>
-  <div>
+<div>
   
-    <h1>{{ $t('All Offline Samples') }}</h1>
-
-    <OfflineSamplesData></OfflineSamplesData>
+  <br/>
+  <h1>{{ $t('All Offline Samples') }}</h1>
+  <br/>
+  <OfflineSamplesData></OfflineSamplesData>
   
-  </div>
-  </template>
+</div>
+</template>
     
   <script>
   import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue';

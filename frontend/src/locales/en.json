@@ -230,6 +230,9 @@
     "Export Offline Sample": "Export Offline Sample",
     "Analyze": "Analyze",
     "Success to create feature view": "Success to create feature view",
-    "SQL Scenario": "SQL Scenario"
+    "SQL Scenario": "SQL Scenario",
+    "SQL Result": "SQL Result",
+    "Insert Single Row": "Insert Single Row",
+    "Row Data": "Row Data"
 
 }

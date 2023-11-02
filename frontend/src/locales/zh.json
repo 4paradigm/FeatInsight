@@ -231,6 +231,9 @@
     "Export Offline Sample": "导出离线样本",
     "Analyze": "分析",
     "Success to create feature view": "成功创建特征组",
-    "SQL Scenario": "SQL 场景"
+    "SQL Scenario": "SQL 场景",
+    "SQL Result": "SQL 结果",
+    "Insert Single Row": "插入单行数据",
+    "Row Data": "行数据"
 
 }

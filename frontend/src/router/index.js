@@ -19,7 +19,6 @@ import OnlineDevelopment from '@/components/OnlineDevelopment.vue'
 import OfflineDevelopment from '@/components/OfflineDevelopment.vue'
 import OfflineSamplesPage from '@/components/offlinesample/OfflineSamplesPage.vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
-import OfflineSamplesAndJobsPage from '@/components/offlinesample/OfflineSamplesAndJobsPage.vue'
 import CreateOfflineSampleResult from '@/components/result/CreateOfflineSampleResult.vue'
 import CreateFeatureServiceResult from '@/components/result/CreateFeatureServiceResult.vue'
 import CreateTableResult from '@/components/result/CreateTableResult.vue'
@@ -29,13 +28,13 @@ import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
 import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
-import ExecuteSql from '@/components/ExecuteSql.vue'
+import SqlScenario from '@/components/SqlScenario.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
   routes: [
     { path: '/', component: BigScreenPage },
-    { path: '/sql', component: ExecuteSql, props: true },
+    { path: '/sql', component: SqlScenario, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
     { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
@@ -48,7 +47,6 @@ const router = createRouter({
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
-    { path: '/offlinepage', component: OfflineSamplesAndJobsPage},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },

@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.featureplatform.service.TableService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
+import com._4paradigm.openmldb.sdk.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,11 @@ public class TableController {
     @GetMapping("/{db}/{table}")
     public SimpleTableInfo getTable(@PathVariable String db, @PathVariable String table) throws SQLException {
         return tableService.getTable(db, table);
+    }
+
+    @GetMapping("/{db}/{table}/schema")
+    public String getTableSchema(@PathVariable String db, @PathVariable String table) throws SQLException {
+        return tableService.getTableSchema(db, table);
     }
 
     @GetMapping("/{db}/{table}/featureservices")

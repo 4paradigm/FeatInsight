@@ -73,7 +73,7 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import { ConsoleSqlOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {

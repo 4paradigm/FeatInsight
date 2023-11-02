@@ -49,6 +49,11 @@ public class TableService {
         return simpleTableInfo;
     }
 
+    public String getTableSchema(String db, String table) throws SQLException {
+        Schema schema = sqlExecutor.getTableSchema(db, table);
+        return schema.toString();
+    }
+
     public List<FeatureService> getRelatedFeatureServices(String db, String table) {
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
