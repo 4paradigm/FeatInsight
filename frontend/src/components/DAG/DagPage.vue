@@ -1,11 +1,18 @@
 <template>
 
+<a-typography-paragraph>
+  <pre>用户可以使用可视化 SQL 工具，通过拖拽 SQL 算子来生成复杂 SQL 语句。
+注意，WITH ALIAS 的 query, ALIAS NAME 都得是 `in0, in1` 这样的格式, 所以在写 SQL 的时候也得用 in0, in1 表示。</pre>
+</a-typography-paragraph>
+
+<br/>
 <div class="content">
   <div class="app-stencil" ref="stencilContainer">
   </div>
   <div class="app-content" ref="container">
   </div>
 </div>
+
 <br />
 <div>
   <a-button type="primary" @click="runGraph">{{$t('Preview SQL')}}</a-button>

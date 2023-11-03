@@ -26,12 +26,12 @@
         placeholder="t1"/>
     </a-form-item>
 
-    <p><span style="color:red;">* </span>{{ $t('Columns') }}</p>
+    <p><span style="color:red;">* </span>{{ $t('Data Columns') }}</p>
 
     <a-space
       v-for="(column, index) in formState.columns"
       :key="column.id"
-      style="display: flex; margin-bottom: 8px"
+      style="display: flex; margin-bottom: 0px"
       align="baseline"
     >
       <a-form-item
@@ -51,7 +51,7 @@
           message: 'Missing column type',
         }"
       >
-        <a-select show-search v-model:value="column.type">
+        <a-select show-search style="width: 200px" v-model:value="column.type">
           <option v-for="columnType in columnTypes" :key="columnType" :value="columnType">{{ columnType }}</option>
         </a-select>
       </a-form-item>

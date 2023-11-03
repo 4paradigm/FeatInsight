@@ -34,8 +34,8 @@
     <template #version="{ text, record }">
       <a-button type="link" @click="openFeatureServiceVersionDrawer(record.name, record.version)">{{ record.version }}</a-button>
     </template>
-    <template #action="{ text, record }">
-      <a-button type="default" @click="showTestFormModal(record.name, record.version)">{{ $t('Test Service') }}</a-button>
+    <template v-slot:action="scope">
+      <a-button type="default" @click="showTestFormModal(scope.record.name, scope.record.version)">{{ $t('Test Service') }}</a-button>
     </template>
   </a-table>
 
@@ -130,9 +130,8 @@ export default {
 
     matchSearch(item) {
         return item.name.toLowerCase().includes(this.searchText.toLowerCase())
-          || item.db.toLowerCase().includes(this.searchText.toLowerCase())
-          || item.featureList.toLowerCase().includes(this.searchText.toLowerCase())
-          || item.deployment.toLowerCase().includes(this.searchText.toLowerCase())
+          || item.version.toLowerCase().includes(this.searchText.toLowerCase())
+          || item.featureNames.toLowerCase().includes(this.searchText.toLowerCase())
           || item.description.toLowerCase().includes(this.searchText.toLowerCase());
     },
 

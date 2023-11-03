@@ -34,7 +34,7 @@ public class FeatureViewController {
 
     @PostMapping
     public FeatureView addFeatureView(@RequestBody FeatureView featureView) throws SQLException {
-        return featureViewService.addFeatureView(featureView);
+        return featureViewService.createFeatureView(featureView);
     }
 
     @PostMapping("/validate")

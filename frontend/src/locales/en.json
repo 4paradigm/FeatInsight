@@ -238,6 +238,11 @@
     "Delete Service Version": "Delete Version",
     "Success to insert data": "Success to insert data",
     "Test Service": "Test Service",
-    "Service Version": "Service Version"
-
+    "Service Version": "Service Version",
+    "Data Columns": "Data Columns",
+    "Request Data": "Request Data",
+    "Switch Json Data": "Switch Json Data",
+    "Request Fail": "Request Fail",
+    "Exeucte Fail": "Exeucte Fail"
+    
 }

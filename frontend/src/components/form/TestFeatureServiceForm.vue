@@ -28,6 +28,7 @@
         </a-select>
       </a-form-item>
 
+
       <a-form-item
         :label='$t("Request Schema")'>
         <a-typography>
@@ -37,20 +38,46 @@
         </a-typography>
       </a-form-item>
 
-      <a-form-item
-        :label='$t("Request Demo Data")'>
-        <a-typography>
-          <a-typography-paragraph>
-            <pre>{{ requestDemoData }}</pre>
-          </a-typography-paragraph>
-        </a-typography>
-      </a-form-item>
+      <p>
+        <span style="color:red;">* </span>{{ $t('Request Data') }}
+        &nbsp;&nbsp;<a-button size="small" @click="switchJsonTestData">{{ $t('Switch Json Data') }}</a-button>
+      </p>
 
-      <a-form-item
-        :label='$t("Test Data")'
-        :rules="[{ required: true, message: 'Please input test data!' }]">
-        <a-textarea v-model:value="testFormState.testData" :rows="5"></a-textarea>
-      </a-form-item>
+      <!-- Use json to request -->
+      <div v-if="isUseJsonTestData"> 
+        <a-form-item
+          :label='$t("Request Demo Data")'>
+          <a-typography>
+            <a-typography-paragraph>
+              <pre>{{ requestDemoData }}</pre>
+            </a-typography-paragraph>
+          </a-typography>
+        </a-form-item>
+
+        <a-form-item
+          :label='$t("Test Data")'
+          :rules="[{ required: true, message: 'Please input test data!' }]">
+          <a-textarea v-model:value="testFormState.jsonTestData" :rows="5"></a-textarea>
+        </a-form-item>
+      </div>
+
+      <!-- Use normal form to construct request data -->
+      <div v-else>
+        <a-space
+        v-for="(column, index) in columns"
+        :key="column.name"
+        style="display: flex; margin-bottom: 0px"
+        align="baseline"
+      >
+        <p style="min-width: 200px">{{ column.name }} ({{ column.type }}):</p>
+
+        <a-form-item
+          :name="['columns', index, 'name']">
+          <a-input v-model:value="testFormState.columnDataList[index]" placeholder="" />
+        </a-form-item>
+      </a-space>
+      </div>
+
     </a-form>
   </div>
 
@@ -62,6 +89,7 @@ import axios from 'axios'
 import { message } from 'ant-design-vue';
 import { Modal } from 'ant-design-vue';
 import { h } from 'vue';
+import { notification } from 'ant-design-vue';
 
 export default {
   props: {
@@ -81,18 +109,30 @@ export default {
 
       featureServiceVersions: [],
 
+      isUseJsonTestData: false,
+
       testFormState: {
         name: "",
         version: "",
-        testData: "",
+        jsonTestData: "",
+        columnDataList: []
       },
 
       requestSchema: "",
       requestDemoData: "",
+
+      // Example: [{"name": "", "type": ""}]
+      columns: [],
+
     };
   },
 
   mounted() {
+    this.initData();
+  },
+
+  // Use updated() instead mounted() for using latest feature service and version
+  updated() {
     this.initData();
   },
 
@@ -103,7 +143,6 @@ export default {
         axios.get(`/api/featureservices/${this.testFormState.name}/versions`)
           .then(response => {
             this.featureServiceVersions = response.data;
-            this.featureServiceVersions.push("");
           })
           .catch(error => {
             message.error(error.message);
@@ -113,11 +152,20 @@ export default {
           .then(response => {
             this.requestSchema = response.data;
 
+            const columnList = response.data.split(",").map(obj => {
+              return {
+                "name": obj.split(":")[0],
+                "type": obj.split(":")[1]
+              }
+            })
+
+            this.columns = [...columnList]
           })
           .catch(error => {
             message.error(error.message);
           });
 
+          
         axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/demo`)
           .then(response => {
             this.requestDemoData = response.data;
@@ -125,7 +173,7 @@ export default {
           .catch(error => {
             message.error(error.message);
           });   
-
+          
           
       }
     },
@@ -163,8 +211,56 @@ export default {
     },
 
     submitForm() {
+      var requestJson = {}
+
+      if (this.isUseJsonTestData) {
+        try {
+          requestJson = JSON.parse(this.testFormState.jsonTestData);
+        } catch (e) {
+          notification["error"]({
+            message: this.$t('Request Fail'),
+            description: e.message
+          });
+        }
+
+      } else {
+        // Construct single row data, example: {input: [ ["foo"] ]}
+        requestJson = {"input": []};
+        requestJson["input"][0] = [];
+
+        const columnStringList = this.requestSchema.split(",")
+        for (var i=0; i< columnStringList.length; ++i) {
+          const type = columnStringList[i].split(":")[1];
+
+          const columnDataString = this.testFormState.columnDataList[i];
+          var columnData = columnDataString;
+
+          if (type === "int16") {
+            columnData = parseInt(columnDataString);
+          } else if (type === "int32") {
+            columnData = parseInt(columnDataString);
+          } else if (type == "int64") {
+            columnData = parseInt(columnDataString);
+          } else if (type === "float") {
+            columnData = parseFloat(columnDataString);
+          } else if (type === "double") {
+            columnData = parseDouble(columnDataString);
+          } else if (type === "bool") {
+            columnData = parseBoolean(columnDataString);
+          } else if (type === "date") {
+            columnData = Date.parse(dateString);
+          }
+          // TODO: handle timestamp, date and other types
+
+          console.log("type: " + type);
+          console.log("column data: " + columnData);
+
+          requestJson["input"][0].push(columnData);
+        }
+      }
+
       axios.post(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request`,
-        JSON.parse(this.testFormState.testData)
+        requestJson
       )
       .then(response => {
         message.success(`Success to request feature service ${this.testFormState.name}`);
@@ -186,6 +282,15 @@ export default {
       });
     },
 
-  },
+    switchJsonTestData() {
+      if (this.isUseJsonTestData) {
+        this.isUseJsonTestData = false;
+      } else {
+        this.isUseJsonTestData = true;
+      }
+      
+    }
+
+  }
 };
 </script>

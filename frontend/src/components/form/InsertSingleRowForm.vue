@@ -30,18 +30,15 @@
       v-for="(column, index) in columns"
       :key="column.name"
       style="display: flex; margin-bottom: 0px"
+      align="baseline"
     >
-
-    <p>{{ column.name }} ({{ column.type }}):</p>
+      <p style="min-width: 200px">{{ column.name }} ({{ column.type }}):</p>
     
-    <a-form-item
-        :name="['columns', index, 'name']"
-    >
-      <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
-    </a-form-item>
-
-  </a-space>
-
+      <a-form-item
+        :name="['columns', index, 'name']">
+        <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
+      </a-form-item>
+    </a-space>
 
   </a-form>
 

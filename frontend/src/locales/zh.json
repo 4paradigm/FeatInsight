@@ -191,14 +191,14 @@
     "Visual SQL Tool": "可视化SQL工具",
     "Add Feature Description": "添加特征描述",
     "Main Table Keys": "主表主键",
-    "Text of introduce join keys": "如果选择特征来自多个特征视图，必须提供拼接主键实现拼接。填写特征视图SQL的主表的主键，例如'id'或'name'，联合主键可填写'name,id'。",
+    "Text of introduce join keys": "如果选择特征来自多个特征视图，必须提供拼接主键实现拼接。填写特征视图SQL的主表的主键，例如'id'或'name'，联合主键可填写'name,id'",
     "Create Table": "创建表",
     "User Input SQL": "用户输入SQL",
     "Text of introduce load data infile": "用户可以导入数据，请参考",
     "Create From CSV": "使用 CSV 创建表",
     "Output Table Name": "输出表名",
     "Hive Path": "Hive表路径",
-    "Text of introduce create table from parquet": "用户可以使用 Parquet 文件创建新的数据表，请参考",
+    "Text of introduce create table from parquet": "用户可以使用 Parquet 文件创建新的数据表，注意如果需要导入 Parquet 数据需要在创建表后启动导入任务，请参考",
     "Text of introduce create table from hive": "用户可以使用 Hive 数据表创建新的数据表，请参考",
     "Other Import Methods": "其他导入方法",
     "Text of introduce import table from sql": "用户可以使用 SQL 来导入数据，请参考",
@@ -239,6 +239,13 @@
     "Delete Service Version": "删除服务版本",
     "Success to insert data": "成功插入数据",
     "Test Service": "测试服务",
-    "Service Version": "服务版本"
+    "Service Version": "服务版本",
+    "Data Columns": "数据列",
+    "Text of introduce path": "用户可以指定 OpenMLDB 服务的本地路径，需要加上'file://'，也可以使用'hdfs://'或'hive://'等路径",
+    "Request Data": "请求数据",
+    "Switch Json Data": "切换 JSON 数据",
+    "Request Fail": "请求失败",
+    "Exeucte Fail": "执行失败"
+
 
 }

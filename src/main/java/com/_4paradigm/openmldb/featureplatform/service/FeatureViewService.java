@@ -107,6 +107,26 @@ public class FeatureViewService {
         return featureView;
     }
 
+    public boolean checkIfFeatureViewExists(String name) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        FeaturesService featureService = new FeaturesService(sqlExecutor);
+
+        String sql = String.format("SELECT name, db, sql, description, feature_names " +
+                "FROM SYSTEM_FEATURE_PLATFORM.feature_views WHERE name='%s'", name);
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
+        int resultSize = resultSet.getFetchSize();
+        statement.close();
+
+        if (resultSize == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void assertFeatureViewValid(FeatureView featureView) throws SQLException {
         if (featureView.getName() == "") {
             throw new SQLException("The feature view name is empty");
@@ -138,10 +158,14 @@ public class FeatureViewService {
         return outputFeatureNames;
     }
 
-    public FeatureView addFeatureView(FeatureView featureView) throws SQLException {
+    public FeatureView createFeatureView(FeatureView featureView) throws SQLException {
         assertFeatureViewValid(featureView);
         if (featureView.getFeatureNames().size() == 0) {
             throw new SQLException("The number of features in feature view is 0");
+        }
+
+        if(checkIfFeatureViewExists(featureView.getName())) {
+            throw new SQLException("The feature view exists, abort creating");
         }
 
         Statement statement = sqlExecutor.getStatement();

@@ -62,8 +62,11 @@
       <a-form-item 
           :label="$t('Export Path')" 
           :rules="[{ required: true, message: 'Please input export path!' }]">
-
-          <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
+          <a-tooltip>
+            <template #title>{{$t('Text of introduce path')}}</template>
+            <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
+          </a-tooltip>
+          
       </a-form-item>
 
       <a-form-item 

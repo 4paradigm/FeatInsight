@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +92,7 @@ public class SqlService {
 
         statement.execute(sql);
 
-        List<List<String>> returnList = null;
+        List<List<String>> returnList = new ArrayList<>();
 
         // TODO: Check if has result set
         if (isDql(sql)) {
