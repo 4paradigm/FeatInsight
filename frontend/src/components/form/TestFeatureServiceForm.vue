@@ -252,9 +252,6 @@ export default {
           }
           // TODO: handle timestamp, date and other types
 
-          console.log("type: " + type);
-          console.log("column data: " + columnData);
-
           requestJson["input"][0].push(columnData);
         }
       }

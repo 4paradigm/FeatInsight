@@ -42,6 +42,7 @@
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
       <a-select mode="multiple" v-model:value="formState.featureSet"
+          @change="handleFeatureSet"
           :options="featureOptions.map(featureOption => ({ value: featureOption }))">
         
           <template #dropdownRender="{ menuNode: menu }">
@@ -59,7 +60,8 @@
         </a-select>
       </a-form-item>
 
-    <a-form-item 
+    <a-form-item
+      v-if="isShowMainTableKeys"
       :label="$t('Main Table Keys')">
       <a-tooltip>
         <template #title>{{$t('Text of introduce join keys')}}</template>
@@ -93,6 +95,8 @@ export default {
   data() {
     return {
       isShowCreateFeatureModal: false,
+
+      isShowMainTableKeys: false,
 
       featureOptions: [],
 
@@ -218,8 +222,28 @@ export default {
     submittedCreateFeatureForm(newFeatureViewName) {
       this.isShowCreateFeatureModal = false;
       this.formState.featureSet = [newFeatureViewName]
+    },
+
+    handleFeatureSet() {
+      // Check if we have two different feature views
+      var firstFeatureViewName = "";
+
+      for (var i=0; i < this.formState.featureSet.length; ++i) {
+        const featureViewName = this.formState.featureSet[i].split(":")[0];
+        if (firstFeatureViewName === "") {
+          firstFeatureViewName = featureViewName;
+
+        } else {
+          if (firstFeatureViewName !== featureViewName) {
+            this.isShowMainTableKeys = true;
+            return;
+          }
+        }
+      }
+
+      this.isShowMainTableKeys = false;
     }
 
-  },
+  }
 };
 </script>

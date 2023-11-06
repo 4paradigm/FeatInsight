@@ -11,7 +11,7 @@
     <a-descriptions-item :span="24" :label="$t('State')">
       {{ data.state }} &nbsp;
       <!-- TODO: Size does not work -->
-      <a-progress type="circle" :percent="statePercent" :status="stateStatus" size="small" />
+      <a-progress type="circle" :percent="statePercent" :status="stateStatus" :show-info="false" size="small" />
     </a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Start Time')"> {{ data.startTime }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('End Time')"> {{ data.endTime }}</a-descriptions-item>

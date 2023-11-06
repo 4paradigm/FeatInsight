@@ -191,7 +191,7 @@
     "Visual SQL Tool": "可视化SQL工具",
     "Add Feature Description": "添加特征描述",
     "Main Table Keys": "主表主键",
-    "Text of introduce join keys": "如果选择特征来自多个特征视图，必须提供拼接主键实现拼接。填写特征视图SQL的主表的主键，例如'id'或'name'，联合主键可填写'name,id'",
+    "Text of introduce join keys": "单特征组不需要配置，如果选择特征来自多个特征组，需要填写特征SQL的主表的主键，例如'id'，联合主键可填写'name,id'",
     "Create Table": "创建表",
     "User Input SQL": "用户输入SQL",
     "Text of introduce load data infile": "用户可以导入数据，请参考",
