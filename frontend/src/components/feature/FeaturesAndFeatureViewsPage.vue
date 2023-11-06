@@ -17,11 +17,13 @@
 <script>
 import FeaturesData from '@/components/feature/FeaturesData.vue';
 import FeatureViewsData from '@/components/featureview/FeatureViewsData.vue'
+import { PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {
     FeaturesData,
     FeatureViewsData,
+    PlusOutlined
   }
 };
 </script>

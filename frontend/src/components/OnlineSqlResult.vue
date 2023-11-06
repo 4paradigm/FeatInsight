@@ -36,8 +36,6 @@ export default {
           sql: this.sql
         })
         .then((response) => {
-          message.success(`Success to execute SQL: ${this.sql}`);
-
           if (response.data.length > 0) {
             const columnCount = response.data[0].length;
 

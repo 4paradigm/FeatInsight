@@ -26,6 +26,7 @@
         :rules="[{ required: true, message: 'Please input feature list!' }]">
 
         <a-select mode="multiple" v-model:value="formState.featureSet"
+          @change="handleFeatureSet"
           :options="featureOptions.map(featureOption => ({ value: featureOption }))">
         
           <template #dropdownRender="{ menuNode: menu }">
@@ -43,8 +44,10 @@
         </a-select>
       </a-form-item>
 
-      <a-form-item 
-          :label="$t('Main Table Keys')">
+      <a-form-item
+          v-if="isShowMainTableKeys"
+          :label="$t('Main Table Keys')"
+          :rules="[{ required: true, message: 'Please input main table keys' }]">
           <a-tooltip>
             <template #title>{{$t('Text of introduce join keys')}}</template>
             <a-input id="mainTableKeys" v-model:value="formState.mainTableKeys"></a-input>
@@ -62,8 +65,11 @@
       <a-form-item 
           :label="$t('Export Path')" 
           :rules="[{ required: true, message: 'Please input export path!' }]">
-
-          <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
+          <a-tooltip>
+            <template #title>{{$t('Text of introduce path')}}</template>
+            <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
+          </a-tooltip>
+          
       </a-form-item>
 
       <a-form-item 
@@ -96,6 +102,8 @@ export default {
   data() {
     return {
       isShowCreateFeatureModal: false,
+
+      isShowMainTableKeys: false,
 
       featureOptions: [],
 
@@ -189,7 +197,28 @@ export default {
     submittedCreateFeatureForm(newFeatureViewName) {
       this.isShowCreateFeatureModal = false;
       this.updateSelectFeatureOptions();
+    },
+
+    handleFeatureSet() {
+      // Check if we have two different feature views
+      var firstFeatureViewName = "";
+
+      for (var i=0; i < this.formState.featureSet.length; ++i) {
+        const featureViewName = this.formState.featureSet[i].split(":")[0];
+        if (firstFeatureViewName === "") {
+          firstFeatureViewName = featureViewName;
+
+        } else {
+          if (firstFeatureViewName !== featureViewName) {
+            this.isShowMainTableKeys = true;
+            return;
+          }
+        }
+      }
+
+      this.isShowMainTableKeys = false;
     }
-  },
+
+  }
 };
 </script>

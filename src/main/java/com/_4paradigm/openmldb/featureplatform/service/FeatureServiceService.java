@@ -23,8 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Repository
 public class FeatureServiceService {
@@ -145,6 +143,22 @@ public class FeatureServiceService {
         return featureService;
     }
 
+    public boolean checkIfFeatureServiceExists(String name, String version) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        String sql = String.format("SELECT name, version, feature_names, description, db, sql, deployment FROM SYSTEM_FEATURE_PLATFORM.feature_services WHERE name='%s' AND version='%s'", name, version);
+        statement.execute(sql);
+        ResultSet resultSet = statement.getResultSet();
+        int resultSize = resultSet.getFetchSize();
+        statement.close();
+
+        if (resultSize == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public void assertServiceNotExist(FeatureService newFeatureService) throws SQLException {
         List<FeatureService> allFeatureServices = getFeatureServices();
@@ -159,6 +173,10 @@ public class FeatureServiceService {
 
     public FeatureService createFeatureService(FeatureService featureService) throws SQLException {
         assertServiceNotExist(featureService);
+
+        if(checkIfFeatureServiceExists(featureService.getName(), featureService.getVersion())) {
+            throw new SQLException("The feature service exists, abort creating");
+        }
 
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
@@ -491,9 +509,6 @@ public class FeatureServiceService {
                 , serviceName);
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
-
-
-
 
         ResultSetUtil.assertSizeIsOne(resultSet);
         resultSet.next();

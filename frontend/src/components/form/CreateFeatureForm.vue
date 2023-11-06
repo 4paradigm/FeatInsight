@@ -40,6 +40,7 @@
 
     <a-form-item
       :label="$t('SQL')"
+      @change="changeSql"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
 
       <a-button @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
@@ -48,11 +49,8 @@
       </a-textarea>
     </a-form-item>
 
-    <div v-if="validatedFeatureNames.length > 0">
-      <h3>
-        {{ $t('Feature List') }}:
-        &nbsp;<a-button @click="displayAddFeatureDescription()">{{ $t('Add Feature Description') }}</a-button>
-      </h3>
+    <div v-if="!isShowAnalyseButton">
+      <h3>{{ $t('Feature List') }}</h3>
 
       <ul>
         <li v-for="(featureName, index) in validatedFeatureNames" :key="featureName">
@@ -60,10 +58,10 @@
             <a-col :span="6">
               {{ $t('Feature') }}{{index + 1}}: {{ featureName }}
             </a-col>
-            <a-col v-if="isDisplayAddFeatureDescription" :span="2">
+            <a-col :span="2">
               {{ $t('Feature Description') }}:
             </a-col>
-            <a-col v-if="isDisplayAddFeatureDescription" :span="8">
+            <a-col :span="8">
               <a-input v-model:value="formState.featureDescriptionMap[featureName]" />
             </a-col>
           </a-row>
@@ -72,7 +70,7 @@
     </div>
 
     <a-form-item>
-        <a-button v-if="validatedFeatureNames.length == 0" type="primary" @click="validateForm()">{{ $t('Analyze') }} {{ $t('SQL') }}</a-button>
+        <a-button v-if="isShowAnalyseButton" type="primary" @click="validateForm()">{{ $t('Analyze') }} {{ $t('SQL') }}</a-button>
         <a-button v-else type="primary" @click="handleSubmit()">{{ $t('Submit') }}</a-button>
     </a-form-item>
   </a-form>
@@ -98,7 +96,7 @@ export default {
 
       validatedFeatureNames: [],
 
-      isDisplayAddFeatureDescription: false,
+      isShowAnalyseButton: true,
       isShowDagPageModal: false,
 
       formState: {
@@ -135,7 +133,9 @@ export default {
       })
       .then(response => {
         message.success(`Success to validate feature view ${this.formState.name}`);
+        
         this.validatedFeatureNames = response.data.split(",").map(str => str.trim());
+        this.isShowAnalyseButton = false;
       })
       .catch(error => {
         if (error.response.data) {
@@ -173,10 +173,6 @@ export default {
       });
     },
 
-    displayAddFeatureDescription() {
-      this.isDisplayAddFeatureDescription = true;
-    },
-
     clickDagPage() {
       this.isShowDagPageModal = true;
     },
@@ -189,7 +185,11 @@ export default {
     clickModalOk() {
       this.isShowDagPageModal = false;
       this.$refs.DagPage.updateValue();
-  },
+    },
+
+    changeSql() {      
+      this.isShowAnalyseButton = true;
+    }
 
   },
 };

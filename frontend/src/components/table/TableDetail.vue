@@ -2,14 +2,20 @@
 <div>
   <a-modal v-model:visible="isShowPreviewModal" width="1000px" @ok="handleOk" 
     :title="$t('Preview Table Data') + ' (' + $t('Limit') + '10' + $t('Rows') + ')'" >
-    <OnlineSqlResult :sql="currentPreviewSql"></OnlineSqlResult>
+    <OnlineSqlResult :sql="currentPreviewSql" :key="refreshDataKey"></OnlineSqlResult>
   </a-modal>
 
   <h2>{{ $t('Table') }}: {{ data.table }} </h2>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Database')">{{ data.db }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Table Name')">{{ data.table }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Schema')">{{ data.schema}}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Schema')">
+      <a-list size="small" item-layout="horizontal" :data-source="tableSchemaList">
+        <template #renderItem="{ item }">
+          <a-list-item>{{ item }}</a-list-item>
+        </template>
+      </a-list>
+    </a-descriptions-item>
   </a-descriptions>
 
   <br/>
@@ -30,7 +36,6 @@
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import OnlineSqlResult from '@/components/OnlineSqlResult.vue'
-import { onMounted, ref } from 'vue';
 
 export default {
   components: {
@@ -50,15 +55,18 @@ export default {
 
   data() {
     return {
+      refreshDataKey: 0,
+
       isOpenFeatureViewDrawer: false,
       currentDrawerFeatureView: "",
 
       isShowPreviewModal: false,
       currentPreviewSql: "",
-      
-      data: "",
       isPreviewData: false,
+
+      data: "",
       tableData: "",
+      tableSchemaList: [],
 
       featureViews: [],
 
@@ -117,6 +125,8 @@ export default {
       axios.get(`/api/tables/${this.db}/${this.name}`)
         .then((response) => {
           this.data = response.data;
+
+          this.tableSchemaList = response.data.schema.split(",");
         })
         .catch((error) => {
           message.error(error.message);
@@ -140,9 +150,11 @@ export default {
     },
 
     clickPreviewButton() {
-      this.isShowPreviewModal = true;
+      this.refreshDataKey++;
 
       this.currentPreviewSql = "SELECT * FROM " + this.db + "." + this.name + " LIMIT 10";
+
+      this.isShowPreviewModal = true;
     },
 
     click_preview_data() {

@@ -1,5 +1,4 @@
 <template>
-
 <div>
 
   <a-typography-paragraph>
@@ -31,6 +30,7 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 
 export default {
   props: {
@@ -55,24 +55,49 @@ export default {
 
   methods: {
     submitForm() {
-      axios.post(`/api/sql/import`, {
-        "sql": this.formState.sql,
-        "online": this.formState.isOnlineMode
-      })
-      .then(response => {
-        message.success(`Success to execute SQL: ${this.formState.sql}`);
+      console.log(this.formState.sql);
+      if (this.formState.sql.toLowerCase().startsWith("insert")) {
+        axios.post(`/api/sql/online`, {
+          "sql": this.formState.sql,
+        })
+        .then(response => {
+          message.success(`Success to execute SQL: ${this.formState.sql}`);
+        })
+        .catch(error => {
+          if (error.response.data) {
+              message.error(error.response.data);
+          } else {
+              message.error(error.message);
+          }
+        });
 
-        const jobId = response.data;
-        this.$router.push(`/offlinejobs/${jobId}/result`);
-      })
-      .catch(error => {
-        if (error.response.data) {
-            message.error(error.response.data);
-        } else {
-            message.error(error.message);
-        }
-      });
-    },
+      } else if (this.formState.sql.toLowerCase().startsWith("load")) {
+        axios.post(`/api/sql/import`, {
+          "sql": this.formState.sql,
+          "online": this.formState.isOnlineMode
+        })
+        .then(response => {
+          message.success(`Success to execute SQL: ${this.formState.sql}`);
+
+          const jobId = response.data;
+          this.$router.push(`/offlinejobs/${jobId}/result`);
+        })
+        .catch(error => {
+          if (error.response.data) {
+              message.error(error.response.data);
+          } else {
+              message.error(error.message);
+          }
+        });
+
+      } else {
+        notification["error"]({
+            message: this.$t('Exeucte Fail'),
+            description: "Only support SQL like 'INSERT' or 'LOAD DATA'"
+          });
+      }
+    }
+
   }
 };
 </script>
