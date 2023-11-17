@@ -244,17 +244,25 @@ export default {
           } else if (type === "float") {
             columnData = parseFloat(columnDataString);
           } else if (type === "double") {
-            columnData = parseDouble(columnDataString);
-          } else if (type === "bool") {
-            columnData = parseBoolean(columnDataString);
+            columnData = parseFloat(columnDataString);
+          } else if (type === "timestamp") {
+            columnData = new Date(columnDataString).getTime();
           } else if (type === "date") {
-            columnData = Date.parse(dateString);
+            // Use string date to request OpenMLDB api server
+          } else if (type == "bool") {
+            columnData = Boolean(columnDataString);
+          } else if (type == "string") {
+
+          } else {
+            message.error("Get unsupport type: " + type);
           }
-          // TODO: handle timestamp, date and other types
+
 
           requestJson["input"][0].push(columnData);
         }
       }
+
+
 
       axios.post(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request`,
         requestJson
@@ -271,10 +279,14 @@ export default {
             onOk() {},
           });
         } else {
+          console.log("Fail and the request json: ")
+          console.log(requestJson);
           message.error(response.data.msg);
         }
       })
       .catch(error => {
+        console.log("Fail and the request json: ")
+        console.log(requestJson);
         message.error(error.message);
       });
     },
