@@ -139,9 +139,15 @@ export default {
       })
       .catch(error => {
         if (error.response.data) {
-          message.error(error.response.data);
+          notification["error"]({
+            message: this.$t('Validate Fail'),
+            description: error.response.data
+          });
         } else {
-          message.error(error.message);
+          notification["error"]({
+            message: this.$t('Validate Fail'),
+            description: error.message
+          });
         }
       });      
     },
@@ -166,9 +172,15 @@ export default {
       })
       .catch(error => {
         if (error.response.data) {
-          message.error(error.response.data);
+          notification["error"]({
+            message: this.$t('Validate Fail'),
+            description: error.response.data
+          });
         } else {
-          message.error(error.message);
+          notification["error"]({
+            message: this.$t('Validate Fail'),
+            description: error.message
+          });
         }
       });
     },
