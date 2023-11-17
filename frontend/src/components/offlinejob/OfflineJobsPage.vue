@@ -3,7 +3,6 @@
 
   <br/>
   <h1>{{ $t('All Offline Jobs') }}</h1>
-  <br/>
   <OfflineJobsData></OfflineJobsData>
 
 </div>
