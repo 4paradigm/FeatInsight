@@ -1,0 +1,7 @@
+server:
+  port: 8888
+ 
+openmldb:
+  zk_cluster: openmldb-zk:2181
+  zk_path: /openmldb
+  apiserver: openmldb-api:9527
