@@ -168,6 +168,8 @@ public class FeatureViewService {
             throw new SQLException("The feature view exists, abort creating");
         }
 
+        String trimSql = featureView.getSql().trim().replaceAll("\\s+", " ");
+
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -175,7 +177,7 @@ public class FeatureViewService {
 
         Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
 
-        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(featureView.getSql(), featureView.getDb(),
+        List<Column> outputSchemaColumns = SqlClusterExecutor.genOutputSchema(trimSql, featureView.getDb(),
                 schemaMaps).getColumnList();
 
         for (Column outputSchemaColumn : outputSchemaColumns) {
@@ -198,7 +200,7 @@ public class FeatureViewService {
         String featureNamesString = String.join(",", featureView.getFeatureNames());
         String insertSql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.feature_views (name, db, " +
                 "sql, description, feature_names) values ('%s', '%s', '%s', '%s', '%s')",
-                featureView.getName(), featureView.getDb(), featureView.getSql(), featureView.getDescription(),
+                featureView.getName(), featureView.getDb(), trimSql, featureView.getDescription(),
                 featureNamesString);
         statement.execute(insertSql);
 
