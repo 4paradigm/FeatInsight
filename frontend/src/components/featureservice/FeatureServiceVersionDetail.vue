@@ -33,8 +33,7 @@
     <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerTable"></TableDetail>
   </a-drawer>
 
-  <h2>{{ $t('Feature Service') }}: {{ data.name }}</h2>
-  <h2>{{ $t('Service Version') }}: {{ data.version }}</h2>
+  <h2>{{ $t('Feature Service') }}: {{ data.name }} ({{ data.version }})</h2>
 
   <br/>
   <a-descriptions bordered>
@@ -51,7 +50,6 @@
 
   <br/>
   <a-button type="default" @click="showTestFormModal()">{{ $t('Test Service Version') }}</a-button>
-    
 
   <br/><br/>
   <h2>{{ $t('Features') }}</h2>
