@@ -191,8 +191,12 @@ public class FeatureServiceService {
         String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService, featureSetString, joinKeys);
         String db = FeatureSetUtil.getDbFromFeatureSet(featureViewService, featureSetString);
 
-        // TODO: Skip index check for compatibility of old OpenMLDB cluster
-        String deploySql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, mergedSql);
+        boolean isSkipIndexCheck = env.getProperty("openmldb.skip_index_check", Boolean.class, false);
+        String deploySql = String.format("DEPLOY %s %s", deploymentName, mergedSql);
+        if (isSkipIndexCheck) {
+            deploySql = String.format("DEPLOY %s OPTIONS (SKIP_INDEX_CHECK=\"TRUE\") %s", deploymentName, mergedSql);
+        }
+
         statement.execute(String.format("USE %s", db));
         statement.execute(deploySql);
 
