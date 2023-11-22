@@ -31,4 +31,9 @@ public class DatabaseController {
         return ResponseEntity.ok(databaseService.getDatabaseTables(db));
     }
 
+    @DeleteMapping("/{db}")
+    public void deleteDatabase(@PathVariable String db) throws SQLException {
+        databaseService.deleteDatabase(db);
+    }
+
 }

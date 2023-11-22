@@ -34,11 +34,11 @@ public class SqlService {
         statement.execute(sql);
 
         sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.features (feature_view_name String, " +
-                "feature_name string, type string, description string)";
+                "feature_name string, type string, description string, INDEX(KEY=(feature_view_name, feature_name)))";
         statement.execute(sql);
 
         sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.feature_views (name string, db string, sql string, " +
-                "description string, feature_names string)";
+                "description string, feature_names string, INDEX(KEY=name))";
         statement.execute(sql);
 
         sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.feature_services (name string, version string, " +
@@ -51,7 +51,7 @@ public class SqlService {
         statement.execute(sql);
 
         sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.offline_samples (feature_names string, path string, " +
-                "options string, job_id int, db string, sql string)";
+                "options string, job_id int, db string, sql string, INDEX(KEY=job_id))";
         statement.execute(sql);
 
         statement.close();

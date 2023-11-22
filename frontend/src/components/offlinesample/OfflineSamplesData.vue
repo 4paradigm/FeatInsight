@@ -16,6 +16,13 @@
     <template #jobId="{ text, record }">
       <a-button type="link" @click="openOfflineSampleDrawer(record.jobId)">{{ record.jobId }}</a-button>
     </template>
+    <template v-slot:custom="scope">
+      <a-popconfirm
+          title="Sure to delete?"
+          @confirm="handleDelete(scope.record.jobId)">
+        <a>{{ $t('Delete') }}</a>
+      </a-popconfirm>
+    </template>
   </a-table>
 
 </div>
@@ -60,6 +67,11 @@ export default {
         title: this.$t('Options'),
         dataIndex: 'options',
         key: 'options',
+      },
+      {
+        title: this.$t('Actions'),
+        key: 'actions',
+        slots: { customRender: 'custom' },
       }],
 
     };
@@ -104,7 +116,18 @@ export default {
     openOfflineSampleDrawer(id) {
       this.isOpenOfflineSampleDrawer = true;
       this.currentDrawerOfflineSample = id;
-    }
+    },
+
+    handleDelete(id) {
+      axios.delete(`/api/offlinesamples/${id}`)
+      .then(response => {
+        message.success(`Success to delete offline sample: ${id}`);
+        this.initData();
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+    },
 
   }
 };

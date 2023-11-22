@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,16 @@ public class DatabaseService {
         }
 
         return simpleTableInfos;
+    }
+
+    public void deleteDatabase(String db) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        String sql = String.format("DROP DATABASE %s", db);
+        statement.execute(sql);
+
+        statement.close();
     }
 
 }

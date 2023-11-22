@@ -26,6 +26,13 @@
     <template #table="{ text, record }">
       <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
     </template>
+    <template v-slot:custom="scope">
+      <a-popconfirm
+          title="Sure to delete?"
+          @confirm="handleDelete(scope.record.db, scope.record.table)">
+        <a>{{ $t('Delete') }}</a>
+      </a-popconfirm>
+    </template>
   </a-table>
 
 </div>
@@ -36,6 +43,7 @@ import axios from 'axios'
 import { message } from 'ant-design-vue';
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
+import { notification } from 'ant-design-vue';
 
 export default {
   components: {
@@ -74,6 +82,11 @@ export default {
         title: this.$t('Schema'),
         dataIndex: 'schema',
         key: 'schema',
+      },
+      {
+        title: this.$t('Actions'),
+        key: 'actions',
+        slots: { customRender: 'custom' },
       }]
     };
   },
@@ -145,7 +158,26 @@ export default {
       this.isOpenTableDrawer = true;
       this.currentDrawerDatabase = db;
       this.currentDrawerTable = table;
-    }
+    },
+
+    handleDelete(db, table) {
+      if (db === "SYSTEM_FEATURE_PLATFORM") {
+        notification["error"]({
+            message: this.$t('Delete Fail'),
+            description: "The tables in system database are not allowed to delete"
+          });
+          return;
+      }
+
+      axios.delete(`/api/tables/${db}/${table}`)
+      .then(response => {
+        message.success(`Success to delete table: ${table}`);
+        this.initData();
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+    },
 
   }
 };
