@@ -15,6 +15,13 @@
     <template #id="{ text, record }">
       <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>
     </template>
+    <template v-slot:custom="scope">
+      <a-popconfirm
+          title="Sure to delete?"
+          @confirm="handleDelete(scope.record.id)">
+        <a>{{ $t('Delete') }}</a>
+      </a-popconfirm>
+    </template>
   </a-table>
 
 </div>
@@ -55,6 +62,11 @@ export default {
         key: 'state',
       },
       {
+        title: this.$t('Job Type'),
+        dataIndex: 'jobType',
+        key: 'jobType',
+      },
+      {
         title: this.$t('Start Time'),
         dataIndex: 'startTime',
         key: 'startTime',
@@ -65,14 +77,14 @@ export default {
         key: 'endTime',
       },
       {
-        title: this.$t('Parameter'),
-        dataIndex: 'parameter',
-        key: 'parameter',
-      },
-      {
         title: this.$t('Application ID'),
         dataIndex: 'applicationId',
         key: 'applicationId',
+      },
+      {
+        title: this.$t('Actions'),
+        key: 'actions',
+        slots: { customRender: 'custom' },
       }],
     };
   },
@@ -123,7 +135,18 @@ export default {
     openOfflineJobDrawer(id) {
       this.isOpenOfflineJobDrawer = true;
       this.currentDrawerOfflineJob = id;
-    }
+    },
+
+    handleDelete(id) {
+      axios.delete(`/api/offlinejobs/${id}`)
+      .then(response => {
+        message.success(`Success to delete offline job: ${id}`);
+        this.initData();
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+    },
 
   }
 };

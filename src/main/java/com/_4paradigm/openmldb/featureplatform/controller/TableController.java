@@ -48,4 +48,9 @@ public class TableController {
         return tableService.getRelatedFeatureViews(db, table);
     }
 
+    @DeleteMapping("/{db}/{table}")
+    public void deleteTable(@PathVariable String db, @PathVariable String table) throws SQLException {
+        tableService.deleteTable(db, table);
+    }
+
 }

@@ -81,7 +81,6 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
-import { computed } from 'vue';
 import DagPage from '@/components/DAG/DagPage.vue';
 import { notification } from 'ant-design-vue';
 

@@ -84,4 +84,14 @@ public class OfflineJobService {
         return log;
     }
 
+    public void deleteOfflineJob(int id) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        String sql = String.format("DELETE FROM __INTERNAL_DB.JOB_INFO WHERE id = %d", id);
+        statement.execute(sql);
+
+        statement.close();
+    }
+
 }

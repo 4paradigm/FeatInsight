@@ -88,7 +88,7 @@ export default {
         key: 'description',
       },
       {
-        title: 'Actions',
+        title: this.$t('Actions'),
         key: 'actions',
         slots: { customRender: 'custom' },
       }],

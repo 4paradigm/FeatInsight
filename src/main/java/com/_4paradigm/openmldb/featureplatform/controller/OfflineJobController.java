@@ -36,6 +36,9 @@ public class OfflineJobController {
         return offlineJobService.getOfflineJobLog(id);
     }
 
-
+    @DeleteMapping("/{id}")
+    public void deleteFeatureService(@PathVariable int id) throws SQLException {
+        offlineJobService.deleteOfflineJob(id);
+    }
 
 }

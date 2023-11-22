@@ -71,29 +71,29 @@ export default {
       featureViews: [],
 
       featureViewColumns: [{
-        title: 'Name',
+        title: this.$t('Name'),
         dataIndex: 'name',
         key: 'name',
         slots: { customRender: 'name' }
       },
       {
-        title: 'Database',
+        title: this.$t('Database'),
         dataIndex: 'db',
         key: 'db',
         slots: { customRender: 'db' }
       },
       {
-        title: 'SQL',
+        title: this.$t('SQL'),
         dataIndex: 'sql',
         key: 'sql',
       },
       {
-        title: 'Features',
+        title: this.$t('Features'),
         dataIndex: 'featureNames',
         key: 'featureNames',
       },
       {
-        title: 'Description',
+        title: this.$t('Description'),
         dataIndex: 'description',
         key: 'description',
       }],

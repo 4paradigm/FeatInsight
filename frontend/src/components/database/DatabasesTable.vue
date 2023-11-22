@@ -12,6 +12,13 @@
     <template #database="{ text, record }">
       <a-button type="link" @click="openDatabaseDrawer(text)">{{ text }}</a-button>
     </template>
+    <template v-slot:custom="scope">
+      <a-popconfirm
+          title="Sure to delete?"
+          @confirm="handleDelete(scope.record)">
+        <a>{{ $t('Delete') }}</a>
+      </a-popconfirm>
+    </template>
   </a-table>
 
 </div>
@@ -21,6 +28,7 @@
 import axios from 'axios'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 
 export default {
   components: {
@@ -37,6 +45,11 @@ export default {
       databaseColumns: [{
         title: this.$t('Database'),
         slots: { customRender: 'database' }
+      },
+      {
+        title: this.$t('Actions'),
+        key: 'actions',
+        slots: { customRender: 'custom' },
       }],
     };
   },
@@ -60,7 +73,26 @@ export default {
     openDatabaseDrawer(db) {
       this.isOpenDatabaseDrawer = true;
       this.currentDrawerDatabase = db;
-    }
+    },
+
+    handleDelete(database) {
+      if (database === "SYSTEM_FEATURE_PLATFORM") {
+        notification["error"]({
+            message: this.$t('Delete Fail'),
+            description: "The system database is not allowed to delete"
+          });
+          return;
+      }
+      
+      axios.delete(`/api/databases/${database}`)
+      .then(response => {
+        message.success(`Success to delete database: ${database}`);
+        this.initData();
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+    },
 
   }
 };

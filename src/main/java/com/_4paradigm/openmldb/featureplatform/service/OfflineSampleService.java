@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSample;
 import com._4paradigm.openmldb.featureplatform.utils.FeatureSetUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
@@ -116,6 +117,16 @@ public class OfflineSampleService {
 
         statement.close();
         return newOfflineSample;
+    }
+
+    public void deleteOfflineSample(int id) throws SQLException {
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+
+        String sql = String.format("DELETE FROM SYSTEM_FEATURE_PLATFORM.offline_samples WHERE job_id = %d", id);
+        statement.execute(sql);
+
+        statement.close();
     }
 
 }
