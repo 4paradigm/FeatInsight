@@ -9,6 +9,7 @@
 <script>
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 
 export default {
   props: {

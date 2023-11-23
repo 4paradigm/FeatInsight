@@ -165,7 +165,7 @@
     "Test Feature Service": "Test Feature Service",
     "Text of introduce test feature service": "Users can test the functionality and performance of the feature service by inputting test data. Please refer to the test data format in",
     "Execute Online SQL": "Execute Online SQL",
-    "Execute Offline SQL": "Exeucte Offline SQL",
+    "Execute Offline SQL": "Execute Offline SQL",
     "Text of introduce execute sql": "Users can input SQL to execute online or offline SQL, and the execution results will be displayed below. Please refer to the SQL syntax for guidance in",
     "Execute Mode": "Execute Mode",
     "Import Databases": "Import Databases",
@@ -243,6 +243,11 @@
     "Request Data": "Request Data",
     "Switch Json Data": "Switch Json Data",
     "Request Fail": "Request Fail",
-    "Exeucte Fail": "Exeucte Fail"
-    
+    "Request Success": "Request Success",
+    "Execute Fail": "Execute Fail",
+    "Execute Success": "Execute Success",
+    "Delete Fail": "Delete Fail",
+    "Delete Success": "Delete Success",
+    "SQL Usage Document": "SQL Usage Document"
+
 }

@@ -92,7 +92,7 @@ export default {
 
       } else {
         notification["error"]({
-            message: this.$t('Exeucte Fail'),
+            message: this.$t('Execute Fail'),
             description: "Only support SQL like 'INSERT' or 'LOAD DATA'"
           });
       }

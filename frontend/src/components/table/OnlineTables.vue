@@ -165,8 +165,8 @@ export default {
         notification["error"]({
             message: this.$t('Delete Fail'),
             description: "The tables in system database are not allowed to delete"
-          });
-          return;
+        });
+        return;
       }
 
       axios.delete(`/api/tables/${db}/${table}`)

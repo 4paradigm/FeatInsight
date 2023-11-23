@@ -80,18 +80,18 @@ export default {
         notification["error"]({
             message: this.$t('Delete Fail'),
             description: "The system database is not allowed to delete"
-          });
-          return;
+        });
+        return;
       }
       
       axios.delete(`/api/databases/${database}`)
-      .then(response => {
-        message.success(`Success to delete database: ${database}`);
-        this.initData();
-      })
-      .catch(error => {
-        message.error(error.message);
-      });
+        .then(response => {
+          message.success(`Success to delete database: ${database}`);
+          this.initData();
+        })
+        .catch(error => {
+          message.error(error.message);
+        });
     },
 
   }
