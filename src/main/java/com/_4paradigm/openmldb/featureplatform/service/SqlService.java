@@ -60,7 +60,7 @@ public class SqlService {
     private boolean isDql(String sqlString) {
         // TODO: Use better methods to check
         String sql = sqlString.toLowerCase();
-        return sql.startsWith("select") || sql.startsWith("show");
+        return sql.startsWith("select") || sql.startsWith("show") || sql.startsWith("with");
     }
 
     public OfflineJobInfo executeOfflineSql(String sql) throws SQLException {
@@ -68,6 +68,7 @@ public class SqlService {
         statement.execute("SET @@execute_mode='offline'");
 
         statement.execute(sql);
+
         ResultSet resultSet = statement.getResultSet();
 
         ResultSetUtil.assertSizeIsOne(resultSet);
@@ -90,12 +91,22 @@ public class SqlService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        statement.execute(sql);
+        String[] sqls = sql.split(";");
+        for (String singleLineSql: sqls) {
+            if (!singleLineSql.trim().isEmpty()) {
+                statement.execute(singleLineSql.trim());
+            }
+        }
 
         List<List<String>> returnList = new ArrayList<>();
 
+        String lastSql = sqls[sqls.length - 1].trim();
+        if (lastSql.isEmpty()) {
+            lastSql = sqls[sqls.length - 2].trim();
+        }
+
         // TODO: Check if has result set
-        if (isDql(sql)) {
+        if (isDql(lastSql)) {
             SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
             returnList = ResultSetUtil.resultSetToStringArray(resultSet);
             resultSet.close();

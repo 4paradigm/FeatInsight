@@ -190,7 +190,6 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),
@@ -222,7 +221,6 @@ export default {
           this.resultData = [response.data];
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),

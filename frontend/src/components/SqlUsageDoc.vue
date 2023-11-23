@@ -61,6 +61,10 @@ export default {
             sql: "CREATE DATABASE db1",
           },
           {
+            function: "使用数据库",
+            sql: "USE db1",
+          },
+          {
             function: "删除数据库",
             sql: "DROP DATABASE db1",
           },
@@ -75,6 +79,13 @@ export default {
           {
             function: "创建数据表",
             sql: "CREATE TABLE db1.t1 (name string, age int)",
+          },
+          {
+            function: "查看数据库所有表",
+            sql: `
+            USE db1;
+            SHOW TABLES;
+            `,
           },
           {
             function: "创建表指定时间列和索引",
@@ -142,7 +153,7 @@ export default {
             sql: "SELECT * FROM db1.t1",
           },
           {
-            function: "按条件查询数据表",
+            function: "使用 Where",
             sql: "SELECT * FROM db1.t1 WHERE id = 1",
           },
           {
@@ -159,7 +170,7 @@ export default {
           },
           {
             function: "使用 LeftJoin",
-            sql: "ELECT * from t1 LEFT JOIN t2 ON t1.col1 = t2.col1",
+            sql: "SELECT * from t1 LEFT JOIN t2 ON t1.col1 = t2.col1",
           },
           {
             function: "使用 Window",
@@ -255,6 +266,65 @@ FROM
             function: "导出数据到在线表",
             sql: "SELECT col1, col2, col3 FROM t1 INTO OUTFILE 'openmldb://db1.t1'",
           },
+          {
+            function: "修改表离线路径",
+            sql: "ALTER TABLE t1 ADD offline_path 'hdfs://foo/bar', DROP offline_path 'hdfs://foo/bar2'",
+          }, 
+          {
+            function: "创建索引",
+            sql: "CREATE INDEX index3 ON t5 (col3) OPTIONS (ts=ts1, ttl_type=absolute, ttl=30d)",
+          },
+          {
+            function: "删除索引",
+            sql: "DROP INDEX t5.index2",
+          }, 
+          {
+            function: "查看所有 Deployment",
+            sql: "SHOW DEPLOYMENTS",
+          },
+          {
+            function: "查看所有自定义函数",
+            sql: "SHOW FUNCTIONS",
+          },
+          {
+            function: "查看所有任务",
+            sql: "SHOW JOBS",
+          },
+          {
+            function: "查看任务日志",
+            sql: "SHOW JOBLOG 1",
+          },
+          {
+            function: "使用数学计算函数",
+            sql: `
+            SELECT ABS(-32);
+            SELECT ACOS(1);
+            SELECT add(1, 2);
+            SELECT avg(value) OVER w;
+            SELECT avg_cate(value, catagory) OVER w;
+            SELECT avg_cate_where(value, condition, category) OVER w;
+            `,
+          },
+          {
+            function: "使用日期相关函数",
+            sql: `
+            SELECT add_months('2016-08-31', 1);
+            SELECT date(timestamp(1590115420000));
+            SELECT date("2020-05-22");
+            SELECT date_format(date(timestamp(1590115420000)),"%Y-%m-%d");
+            SELECT datediff("2021-05-10", "2021-05-01");
+            SELECT dayofmonth(timestamp(1590115420000));
+            SELECT day(timestamp(1590115420000));
+            SELECT dayofweek(timestamp(1590115420000));
+            SELECT dayofyear(date("2020-05-22"));
+            `,
+          },
+          {
+            function: "使用地理相关函数",
+            sql: `
+            SELECT earth_distance(40, 73, 41, 74);
+            `,
+          },
         ],
 
         searchFilteredDataSource: [],
@@ -280,7 +350,8 @@ FROM
     },
 
     matchSearch(item) {
-        return item.function.toString().toLowerCase().includes(this.searchText.toLowerCase());
+        return item.function.toString().toLowerCase().includes(this.searchText.toLowerCase()) ||
+          item.sql.toString().toLowerCase().includes(this.searchText.toLowerCase());
     },
 
     handleSearch() {

@@ -62,13 +62,11 @@ export default {
 
               this.resultData.push(rowDataMap);
             }
-            
           } else {
-            console.log("No result")
+
           }
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),

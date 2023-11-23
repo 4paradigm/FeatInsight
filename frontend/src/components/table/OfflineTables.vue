@@ -113,7 +113,6 @@ export default {
           this.previewTableContent = response.data.replace(/\n/g, '<br>');
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),

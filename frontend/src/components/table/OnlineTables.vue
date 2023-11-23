@@ -78,11 +78,6 @@ export default {
         slots: { customRender: 'table' }
       },
       {
-        title: this.$t('Schema'),
-        dataIndex: 'schema',
-        key: 'schema',
-      },
-      {
         title: this.$t('Actions'),
         key: 'actions',
         slots: { customRender: 'custom' },
@@ -140,7 +135,6 @@ export default {
           this.previewTableContent = response.data.replace(/\n/g, '<br>');
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),

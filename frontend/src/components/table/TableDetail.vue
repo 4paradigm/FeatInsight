@@ -183,13 +183,11 @@ export default {
               message: this.$t('Execute Success'),
               description: `Success to preview table data (limit 10 rows)`
             });
-          console.log(response.data);
 
           this.isPreviewData = true;
           this.tableData = response.data.replace(/\n/g, '<br>');
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
             notification["error"]({
               message: this.$t('Execute Fail'),
