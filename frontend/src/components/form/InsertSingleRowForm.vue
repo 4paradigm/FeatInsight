@@ -47,8 +47,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
-import { notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   props: {
@@ -94,7 +93,10 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -115,7 +117,10 @@ export default {
           this.columns = [...columnList]
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -150,9 +155,15 @@ export default {
       })
       .catch(error => {
         if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
         } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         }
       });
     },

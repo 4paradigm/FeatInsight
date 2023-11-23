@@ -77,7 +77,7 @@
     
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import TableDetail from '@/components/table/TableDetail.vue'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
@@ -179,11 +179,17 @@ export default {
               this.features = response.data;
             })
             .catch(error => {
-              message.error(error.message);
+              notification["error"]({
+                message: this.$t('Execute Fail'),
+                description: error.message
+              });
             });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/tables`)
@@ -194,16 +200,21 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
         .then(response => {
           this.requestSchema = response.data;
-
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/request/demo`)
@@ -211,7 +222,10 @@ export default {
           this.requestDemoData = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });  
     },
 

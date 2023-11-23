@@ -80,9 +80,9 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
-import DagPage from '@/components/DAG/DagPage.vue';
-import { notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
+import DagPage from '@/components/DAG/DagPage.vue'
+import { notification } from 'ant-design-vue'
 
 export default {
   components: {
@@ -119,7 +119,10 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -132,7 +135,11 @@ export default {
       })
       .then(response => {
         message.success(`Success to validate feature view ${this.formState.name}`);
-        
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
+
         this.validatedFeatureNames = response.data.split(",").map(str => str.trim());
         this.isShowAnalyseButton = false;
       })
@@ -161,10 +168,9 @@ export default {
         "featureDescriptionMap": this.formState.featureDescriptionMap
       })
       .then(response => {
-        //message.success(`Success to add feature view ${this.formState.name}`);
-
-        notification["success"]({message: 
-          `${this.$t('Success to create feature view')}: ${this.formState.name}`
+        notification["success"]({
+          message: this.$t('Execute Fail'),
+          description: `${this.$t('Success to create feature view')}: ${this.formState.name}`
         });
 
         this.$emit('submitted', this.formState.name);

@@ -61,7 +61,7 @@
     
 <script>
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
 import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 import TableDetail from '@/components/table/TableDetail.vue'
@@ -147,9 +147,15 @@ export default {
         })
         .catch((error) => {
           if (error.response != null) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
 
@@ -161,9 +167,15 @@ export default {
         })
         .catch((error) => {
           if (error.response != null) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
 
@@ -177,9 +189,15 @@ export default {
         })
         .catch((error) => {
           if (error.response != null) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
 

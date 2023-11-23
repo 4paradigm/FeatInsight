@@ -29,7 +29,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
 
 export default {
@@ -105,7 +105,10 @@ export default {
           this.searchFilteredOfflineJobInfos = this.offlineJobInfos;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {
           this.loading = false;
@@ -139,11 +142,18 @@ export default {
     handleDelete(id) {
       axios.delete(`/api/offlinejobs/${id}`)
       .then(response => {
-        message.success(`Success to delete offline job: ${id}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to delete offline job: ${id}`
+            });
+
         this.initData();
       })
       .catch(error => {
-        message.error(error.message);
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
       });
     },
 

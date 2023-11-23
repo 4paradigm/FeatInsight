@@ -87,10 +87,10 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 import VNodes from '@/components/VNodes.vue'
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined } from '@ant-design/icons-vue'
 
 export default {
   components: {
@@ -143,7 +143,10 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
 
@@ -156,7 +159,10 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -169,19 +175,26 @@ export default {
         "mainTableKeys": this.formState.mainTableKeys,
       })
       .then(response => {
-        //message.success(`Success to export offline sample for feature list ${this.formState.featureSet}`);
+        notification["success"]({
+          message: this.$t('Execute Success'),
+          description: `Success to export offline sample for feature list ${this.formState.featureSet}`
+        });
 
-        console.log(response.data)
         const jobId = response.data.jobId;
-
         // Redirect to result page
         this.$router.push(`/offlinesamples/${jobId}/result`);
       })
       .catch(error => {
           if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
       });
     },

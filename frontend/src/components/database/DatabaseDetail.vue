@@ -22,7 +22,7 @@
 
 <script>
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 import TableDetail from '@/components/table/TableDetail.vue'
 
 export default {
@@ -70,7 +70,10 @@ export default {
           this.tables = response.data;
         })
         .catch((error) => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {
           // You can perform any additional logic here after the request completes.

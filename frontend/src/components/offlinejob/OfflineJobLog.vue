@@ -10,7 +10,7 @@
 
 <script>
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   props: {
@@ -38,7 +38,11 @@ export default {
           this.jobLog = response.data;
         })
         .catch((error) => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
+
         })
         .finally(() => {});
     }

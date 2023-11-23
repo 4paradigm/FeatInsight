@@ -80,10 +80,10 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 import VNodes from '@/components/VNodes.vue'
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined } from '@ant-design/icons-vue'
 
 export default {
   components: {
@@ -125,7 +125,10 @@ export default {
           this.featureServices = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
 
@@ -143,7 +146,10 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
 
@@ -156,7 +162,10 @@ export default {
           });
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
 
@@ -171,16 +180,25 @@ export default {
         "mainTableKeys": this.formState.mainTableKeys
       })
       .then(response => {
-        message.success(`Success to add feature service ${this.formState.name} and version ${this.formState.version}`);
+        notification["success"]({
+              message: this.$t('Success Fail'),
+              description: `Success to add feature service ${this.formState.name} and version ${this.formState.version}`
+            });
 
         // Redirect to FeatureView detail page
         this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}/result`);
       })
       .catch(error => {
           if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
       });
     },
@@ -193,7 +211,10 @@ export default {
             this.featureServiceVersions.push("");
           })
           .catch(error => {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });  
       }
     },
@@ -206,7 +227,11 @@ export default {
 
     checkServiceVersion(){
       if (this.test.includes(this.formState.version)){
-         message.error("Service version already exists, please rename.");
+         notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: "Service version already exists, please rename."
+            });
+
          this.formState.version = ''
       } 
     },

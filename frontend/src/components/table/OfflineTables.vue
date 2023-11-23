@@ -27,7 +27,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   components: { 
@@ -75,7 +75,10 @@ export default {
           this.searchFilteredTables = this.tables;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -101,7 +104,10 @@ export default {
           sql: sql
         })
         .then((response) => {
-          message.success(`Success to execute SQL: ${sql}`);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: "Success to preview table (limit 10 rows)"
+            });
 
           this.isOpenPreviewTableModal = true;
           this.previewTableContent = response.data.replace(/\n/g, '<br>');
@@ -109,9 +115,15 @@ export default {
         .catch((error) => {
           console.log(error);
           if ('response' in error && 'data' in error.response) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
 

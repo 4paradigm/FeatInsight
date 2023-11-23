@@ -72,7 +72,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
 export default {
@@ -112,7 +112,10 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -123,17 +126,26 @@ export default {
       const columns = this.formState.columns;
 
       if (db === "") {
-        message.error("The database should not be empty");
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: "The database should not be empty"
+            });
         return;
       }
 
       if (table === "") {
-        message.error("The table should not be empty");
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: "The table should not be empty"
+            });
         return;
       }
 
       if (columns.length == 0) {
-        message.error("The columns should not be empty");
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: "The columns should not be empty"
+            });
         return;
       }
 
@@ -151,15 +163,24 @@ export default {
         "sql": sql
       })
       .then(response => {
-        message.success(`Success to execute SQL: ${sql}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to create table, create sql: ${sql}`
+            });
 
         this.$emit('submitted');
       })
       .catch(error => {
         if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
         } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         }
       });
     },

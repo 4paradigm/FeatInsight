@@ -53,7 +53,7 @@
     
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
 import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 
@@ -142,22 +142,36 @@ export default {
           "version": version
         })
         .then(response => {
-          message.success(`Success to update latest version: ${version}`);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to update latest version: ${version}`
+            });
+
           this.initData();
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
     },
 
     handleDelete(name, version) {
       axios.delete(`/api/featureservices/${name}/${version}`)
       .then(response => {
-        message.success(`Success to delete feature service: ${name} and version: ${version}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to delete feature service: ${name} and version: ${version}`
+            });
+
         this.initData();
       })
       .catch(error => {
-        message.error(error.message);
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
       });
     },
 

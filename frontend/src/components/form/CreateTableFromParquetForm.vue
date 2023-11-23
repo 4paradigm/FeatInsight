@@ -39,7 +39,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   data() {
@@ -65,13 +65,19 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
 
     submitForm() {
-      message.success(`Create table from parquet may take 1 minute, please wait`);
+      notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Create table from parquet may take 1 minute, please wait`
+            });
 
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
@@ -79,15 +85,24 @@ export default {
         "sql": sql
       })
       .then(response => {
-        message.success(`Success to execute SQL: ${sql}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to submit create table job, create sql: ${sql}`
+            });
 
         this.$router.push(`/tables/${this.formState.db}/${this.formState.table}/createresult`);
       })
       .catch(error => {
         if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
         } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         }
       });
     },

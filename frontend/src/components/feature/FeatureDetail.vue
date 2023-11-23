@@ -13,8 +13,8 @@
   
 <script>
 import axios from 'axios';
-import { message } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { notification } from 'ant-design-vue'
+import { onMounted, ref } from 'vue'
 
 export default {
   props: {
@@ -41,7 +41,10 @@ export default {
           this.feature = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {
 
