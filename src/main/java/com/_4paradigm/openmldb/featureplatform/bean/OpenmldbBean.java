@@ -33,5 +33,4 @@ public class OpenmldbBean {
         return sqlExecutor;
     }
 
-
 }

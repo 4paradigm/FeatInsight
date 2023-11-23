@@ -4,7 +4,6 @@ import com._4paradigm.openmldb.featureplatform.service.FeaturesService;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class FeatureController {
             }
         }
     }
-
 
     @GetMapping("/{feature_view_name}")
     public List<Feature> getFeaturesByFeatureView(@PathVariable String feature_view_name) throws SQLException {

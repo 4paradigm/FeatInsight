@@ -4,7 +4,6 @@ import com._4paradigm.openmldb.featureplatform.service.OfflineJobService;
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class OfflineJobController {
     public List<OfflineJobInfo> getOfflineJobInfos() throws SQLException {
         return offlineJobService.getOfflineJobInfos();
     }
-
 
     @GetMapping("/{id}")
     public OfflineJobInfo getOfflineJobInfo(@PathVariable int id) throws SQLException {
