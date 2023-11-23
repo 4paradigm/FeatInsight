@@ -513,6 +513,10 @@ export default {
     },
 
     runGraph() {
+      
+      if (this.graph.toJSON()['cells']==""){
+         message.error("No graph to convert");
+      } else {
       axios.post(`/api/dag_conversion/forward`, this.graph.toJSON()['cells'])
       .then(response => {
         console.log(response.data);
@@ -527,6 +531,7 @@ export default {
           message.error(error.message);
         }
       });
+     }
     },
 
 
