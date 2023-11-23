@@ -38,12 +38,10 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
-import insertCss from 'insert-css'
 import RightDrawer from '@/components/DAG/RightDrawer.vue'
 import TaskNode from '@/components/DAG/TaskNode.vue'
 import '@antv/x6-vue-shape'
-import { message } from 'ant-design-vue'
-import { computed } from 'vue'
+import { notification } from 'ant-design-vue'
 import { DagreLayout } from '@antv/layout'
 
 export default {
@@ -515,16 +513,26 @@ export default {
     runGraph() {
       axios.post(`/api/dag_conversion/forward`, this.graph.toJSON()['cells'])
       .then(response => {
-        console.log(response.data);
-        message.success(`Conversion Success`);
+        // console.log(response.data);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Conversion Success`
+            });
+
         this.outSql=response.data;
         this.showRes=true;
       })
       .catch(error => {
         if ("response" in error && "data" in error.response) {
-          message.error(error.response.data);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
         } else {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         }
       });
     },

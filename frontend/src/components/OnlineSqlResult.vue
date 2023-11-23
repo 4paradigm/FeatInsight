@@ -8,7 +8,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   props: {
@@ -62,17 +62,21 @@ export default {
 
               this.resultData.push(rowDataMap);
             }
-            
           } else {
-            console.log("No result")
+
           }
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
     }

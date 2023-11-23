@@ -27,8 +27,7 @@
 <script>
 import axios from 'axios'
 import DatabaseDetail from '@/components/database/DatabaseDetail.vue'
-import { message } from 'ant-design-vue';
-import { notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   components: {
@@ -65,7 +64,10 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -80,18 +82,25 @@ export default {
         notification["error"]({
             message: this.$t('Delete Fail'),
             description: "The system database is not allowed to delete"
-          });
-          return;
+        });
+        return;
       }
       
       axios.delete(`/api/databases/${database}`)
-      .then(response => {
-        message.success(`Success to delete database: ${database}`);
-        this.initData();
-      })
-      .catch(error => {
-        message.error(error.message);
-      });
+        .then(response => {
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to delete database: ${database}`
+            });
+
+          this.initData();
+        })
+        .catch(error => {
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
+        });
     },
 
   }

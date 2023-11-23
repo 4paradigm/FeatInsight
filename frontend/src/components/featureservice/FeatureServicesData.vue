@@ -44,7 +44,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
@@ -123,7 +123,10 @@ export default {
           this.searchFilteredFeatureServices = this.featureServices;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },

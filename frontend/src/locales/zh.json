@@ -245,7 +245,11 @@
     "Request Data": "请求数据",
     "Switch Json Data": "切换 JSON 数据",
     "Request Fail": "请求失败",
-    "Exeucte Fail": "执行失败"
-
+    "Request Success": "请求成功",
+    "Execute Fail": "执行失败",
+    "Execute Success": "执行成功",
+    "Delete Fail": "删除失败",
+    "Delete Success": "删除成功",
+    "SQL Usage Document": "SQL 使用文档"
 
 }

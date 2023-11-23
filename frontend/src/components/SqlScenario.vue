@@ -8,6 +8,13 @@
     <OfflineJobDetail :id="currentDrawerOfflineJob" :key="currentDrawerOfflineJob"></OfflineJobDetail>
   </a-drawer>
 
+  <a-drawer
+    v-model:visible="isOpenSqlUsageDocDrawer"
+    width="80%"
+    :title="$t('SQL Usage Document')">
+    <SqlUsageDoc @clickCopy="handleClickCopy"/>
+  </a-drawer>
+
   <br/>
   <a-typography>
     <a-typography-title :level="2">{{ $t('SQL Scenario') }}</a-typography-title>
@@ -17,6 +24,7 @@
       </blockquote>
     </a-typography-paragraph>
   </a-typography>
+
 
   <!-- Create form -->
   <br/>
@@ -32,10 +40,14 @@
     <a-form-item
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input sql!' }]">
+      
+      <a-button type="dashed" @click="openSqlUsageDocDrawer">{{ $t('SQL Usage Document') }}</a-button>
+      <br/><br/>
+
       <a-textarea
         v-model:value="formState.sql"
         placeholder="SELECT * FROM db1.t1" 
-        :rows="5" />
+        :rows="10" />
     </a-form-item>
 
     <a-form-item>
@@ -58,12 +70,14 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
+import SqlUsageDoc from '@/components/SqlUsageDoc.vue'
+import { notification } from 'ant-design-vue';
 
 export default {
   components: {
-    OfflineJobDetail
+    OfflineJobDetail,
+    SqlUsageDoc
   },
   
   data() {
@@ -71,7 +85,11 @@ export default {
       isOpenOfflineJobDrawer: false,
       currentDrawerOfflineJob: -1,
 
+      isOpenSqlUsageDocDrawer: false,
+
       isShowResult: false,
+
+      isOpenDrawer: false,
 
       formState: {
         sql: '',
@@ -132,7 +150,11 @@ export default {
           sql: this.formState.sql
         })
         .then((response) => {
-          message.success(`Success to execute SQL: ${this.formState.sql}`);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to execute SQL: ${this.formState.sql}`
+            });
+
           this.isShowResult = true;
 
           if (response.data.length > 0) {
@@ -163,15 +185,21 @@ export default {
             }
             
           } else {
-            console.log("No result")
+            this.resultColumns = [];
+            this.resultData = [];
           }
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
     },
@@ -182,18 +210,27 @@ export default {
           sql: this.formState.sql
         })
         .then((response) => {
-          message.success(`Success to execute SQL: ${this.formState.sql}`);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to execute SQL: ${this.formState.sql}`
+            });
+
           this.isShowResult = true;
 
           this.resultColumns = this.offlineJobInfoColumns;
           this.resultData = [response.data];
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
     },
@@ -201,6 +238,21 @@ export default {
     openOfflineJobDrawer(id) {
       this.isOpenOfflineJobDrawer = true;
       this.currentDrawerOfflineJob = id;
+    },
+    
+    openSqlUsageDocDrawer() {
+      this.isOpenSqlUsageDocDrawer = true;
+    },
+
+    handleClickCopy(sql) {
+      this.isOpenSqlUsageDocDrawer = false;
+
+      notification["success"]({
+        message: this.$t('Execute Success'),
+        description: `Success to copy SQL: ${sql}`
+      });
+
+      this.formState.sql = sql;
     }
 
   }

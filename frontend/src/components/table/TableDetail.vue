@@ -34,7 +34,7 @@
 
 <script>
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import OnlineSqlResult from '@/components/OnlineSqlResult.vue'
 
 export default {
@@ -129,7 +129,10 @@ export default {
           this.tableSchemaList = response.data.schema.split(",");
         })
         .catch((error) => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
 
       axios.get(`/api/tables/${this.db}/${this.name}/featureviews`)
@@ -137,7 +140,10 @@ export default {
           this.featureViews = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
 
       axios.get(`/api/tables/${this.db}/${this.name}/featureservices`)
@@ -145,7 +151,10 @@ export default {
           this.featureServices = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         });
     },
 
@@ -170,18 +179,25 @@ export default {
           sql: sql
         })
         .then((response) => {
-          message.success(`Success to execute SQL: ${sql}`);
-          console.log(response.data);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to preview table data (limit 10 rows)`
+            });
 
           this.isPreviewData = true;
           this.tableData = response.data.replace(/\n/g, '<br>');
         })
         .catch((error) => {
-          console.log(error);
           if ('response' in error && 'data' in error.response) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
           } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           }
         });
     },

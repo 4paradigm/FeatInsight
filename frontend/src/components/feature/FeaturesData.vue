@@ -33,7 +33,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 
@@ -99,7 +99,10 @@ export default {
           this.searchFilteredFeatures = this.features;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {
           this.loading = false;

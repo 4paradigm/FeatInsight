@@ -20,7 +20,7 @@
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
       <a-input v-model:value="formState.sql" 
-        placeholder="LOAD DATA INFILE 'file:///data/' INTO TABLE db1.t1 OPTIONS (format='parquet', mode='append')"/>
+        placeholder="'INSERT INTO db1.t1 VALUES (1)' or 'LOAD DATA INFILE 'file:///data/' INTO TABLE db1.t1'"/>
     </a-form-item>
   </a-form>
 
@@ -29,8 +29,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
-import { notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   props: {
@@ -54,20 +53,29 @@ export default {
   },
 
   methods: {
+
     submitForm() {
-      console.log(this.formState.sql);
       if (this.formState.sql.toLowerCase().startsWith("insert")) {
         axios.post(`/api/sql/online`, {
           "sql": this.formState.sql,
         })
         .then(response => {
-          message.success(`Success to execute SQL: ${this.formState.sql}`);
+          notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to execute SQL: ${this.formState.sql}`
+            });
         })
         .catch(error => {
           if (error.response.data) {
-              message.error(error.response.data);
+              notification["error"]({
+                message: this.$t('Execute Fail'),
+                description: error.response.data
+              });
           } else {
-              message.error(error.message);
+              notification["error"]({
+                message: this.$t('Execute Fail'),
+                description: message
+              });
           }
         });
 
@@ -77,24 +85,33 @@ export default {
           "online": this.formState.isOnlineMode
         })
         .then(response => {
-          message.success(`Success to execute SQL: ${this.formState.sql}`);
+          notification["success"]({
+                message: this.$t('Success Fail'),
+                description: `Success to execute SQL: ${this.formState.sql}`
+              });
 
           const jobId = response.data;
           this.$router.push(`/offlinejobs/${jobId}/result`);
         })
         .catch(error => {
           if (error.response.data) {
-              message.error(error.response.data);
+              notification["error"]({
+                message: this.$t('Execute Fail'),
+                description: error.response.data
+              });
           } else {
-              message.error(error.message);
+              notification["error"]({
+                message: this.$t('Execute Fail'),
+                description: error.message
+              });
           }
         });
 
       } else {
         notification["error"]({
-            message: this.$t('Exeucte Fail'),
-            description: "Only support SQL like 'INSERT' or 'LOAD DATA'"
-          });
+          message: this.$t('Execute Fail'),
+          description: "Only support SQL like 'INSERT' or 'LOAD DATA'"
+        });
       }
     }
 

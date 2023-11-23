@@ -24,7 +24,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 
 export default {
   data() {
@@ -41,15 +41,24 @@ export default {
         "sql": this.formState.sql
       })
       .then(response => {
-        message.success(`Success to execute SQL: ${this.formState.sql}`);
+        notification["success"]({
+          message: this.$t('Execute Success'),
+          description: `Success to execute SQL: ${this.formState.sql}`
+        });
 
         this.$emit('submitted');
       })
       .catch(error => {
         if (error.response.data) {
-            message.error(error.response.data);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.response.data
+            });
         } else {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         }
       });
     },

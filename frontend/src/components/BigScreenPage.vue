@@ -145,7 +145,10 @@ export default {
             this.tableCount = this.tables.length;
           })
           .catch(error => {
-            console.log(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
           await axios.get(`/api/features`)
@@ -154,7 +157,10 @@ export default {
             this.featureCount = this.features.length;
           })
           .catch(error => {
-            console.log(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
           await axios.get(`/api/offlinesamples`)
@@ -163,7 +169,10 @@ export default {
             this.offlineSampleCount = this.offlineSamples.length;
           })
           .catch(error => {
-            console.log(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
           await axios.get(`/api/featureservices`)
@@ -172,7 +181,10 @@ export default {
             this.featureServiceCount = this.featureservices.length;
           })
           .catch(error => {
-            console.log(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
 

@@ -30,7 +30,7 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
 import OfflineSampleDetail from '@/components/offlinesample/OfflineSampleDetail.vue'
 
 export default {
@@ -89,7 +89,10 @@ export default {
           this.searchFilteredOfflineSamples = this.offlineSamples;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {});
     },
@@ -121,11 +124,18 @@ export default {
     handleDelete(id) {
       axios.delete(`/api/offlinesamples/${id}`)
       .then(response => {
-        message.success(`Success to delete offline sample: ${id}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to delete offline sample: ${id}`
+            });
+
         this.initData();
       })
       .catch(error => {
-        message.error(error.message);
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
       });
     },
 

@@ -86,10 +86,9 @@
   
 <script>
 import axios from 'axios'
-import { message } from 'ant-design-vue';
-import { Modal } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
+import { Modal } from 'ant-design-vue'
 import { h } from 'vue';
-import { notification } from 'ant-design-vue';
 
 export default {
   props: {
@@ -145,7 +144,10 @@ export default {
             this.featureServiceVersions = response.data;
           })
           .catch(error => {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
         axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/schema`)
@@ -162,7 +164,10 @@ export default {
             this.columns = [...columnList]
           })
           .catch(error => {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });
 
           
@@ -171,7 +176,10 @@ export default {
             this.requestDemoData = response.data;
           })
           .catch(error => {
-            message.error(error.message);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
           });   
           
           
@@ -194,7 +202,10 @@ export default {
           this.featureServices = response.data;
         })
         .catch(error => {
-          message.error(error.message);
+          notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
         })
         .finally(() => {}); 
     },
@@ -202,11 +213,18 @@ export default {
     handleDelete(name) {
       axios.delete(`/api/featureservices/${name}`)
       .then(response => {
-        message.success(`Success to delete feature service: ${name}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to delete feature service: ${name}`
+            });
+
         this.initData();
       })
       .catch(error => {
-        message.error(error.message);
+        notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: error.message
+            });
       });
     },
 
@@ -254,7 +272,10 @@ export default {
           } else if (type == "string") {
 
           } else {
-            message.error("Get unsupport type: " + type);
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: "Get unsupport type: " + type
+            });
           }
 
 
@@ -266,7 +287,10 @@ export default {
         requestJson
       )
       .then(response => {
-        message.success(`Success to request feature service ${this.testFormState.name}`);
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to request feature service ${this.testFormState.name}`
+            });
 
         if (response.data.code == 0) {
           Modal.success({
@@ -277,15 +301,17 @@ export default {
             onOk() {},
           });
         } else {
-          console.log("Fail and the request json: ")
-          console.log(requestJson);
-          message.error(response.data.msg);
+          notification["error"]({
+              message: this.$t('Request Fail'),
+              description: `Error message: ${response.data.msg}, request json: ${requestJson}`
+            });
         }
       })
       .catch(error => {
-        console.log("Fail and the request json: ")
-        console.log(requestJson);
-        message.error(error.message);
+        notification["error"]({
+          message: this.$t('Request Fail'),
+          description: `Error message: ${error.message}, request json: ${requestJson}`
+        });
       });
     },
 
