@@ -12,13 +12,14 @@ public class OfflineSample {
     private int jobId;
     private String db;
     private String sql;
+    private String sparkConfig;
 
     public OfflineSample() {
 
     }
 
     public OfflineSample(String featureNames, String path, String options, String mainTableKeys, int jobId, String db,
-                         String sql) {
+                         String sql, String sparkConfig) {
         this.featureNames = featureNames;
         this.path = path;
         this.options = options;
@@ -26,14 +27,15 @@ public class OfflineSample {
         this.jobId = jobId;
         this.db = db;
         this.sql = sql;
+        this.sparkConfig = sparkConfig;
     }
 
-    public OfflineSample(String featureNames, String path, String options, String mainTableKeys) {
-       this(featureNames, path, options, mainTableKeys, -1, "", "");
+    public OfflineSample(String featureNames, String path, String options, String mainTableKeys, String sparkConfig) {
+       this(featureNames, path, options, mainTableKeys, -1, "", "", sparkConfig);
     }
 
     public OfflineSample(String featureNames, String path, String options, int jobId, String db, String sql) {
-        this(featureNames, path, options, "", jobId, db, sql);
+        this(featureNames, path, options, "", jobId, db, sql, "");
     }
 
 }

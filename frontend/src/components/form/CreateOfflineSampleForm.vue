@@ -69,12 +69,18 @@
             <template #title>{{$t('Text of introduce path')}}</template>
             <a-input id="exportPath" v-model:value="formState.path" :placeholder="$t('Path Hint')"></a-input>
           </a-tooltip>
-          
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Spark Config')">
+          <a-tooltip>
+            <template #title>Spark config like 'spark.executor.memory=2g;spark.executor.cores=2'</template>
+            <a-input v-model:value="formState.sparkConfig"></a-input>
+          </a-tooltip>
       </a-form-item>
 
       <a-form-item 
           :label="$t('Export Options')">
-
           <a-tooltip>
             <template #title><a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/SELECT_INTO_STATEMENT.html">{{$t('Reference document of options')}}</a></template>
             <a-input id="exportOptions" v-model:value="formState.options"></a-input>
@@ -117,6 +123,7 @@ export default {
         mainTableKeys: "",
         format: 'CSV',
         path: '',
+        sparkConfig: '',
         options: '',
       }
 
@@ -173,6 +180,7 @@ export default {
         "path": this.formState.path,
         "options": this.formState.options,
         "mainTableKeys": this.formState.mainTableKeys,
+        "sparkConfig": this.formState.sparkConfig
       })
       .then(response => {
         notification["success"]({
