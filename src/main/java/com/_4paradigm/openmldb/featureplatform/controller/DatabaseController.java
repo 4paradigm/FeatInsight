@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/databases")
 public class DatabaseController {
-
     private static final Logger logger = LoggerFactory.getLogger(DatabaseController.class);
 
     private final DatabaseService databaseService;

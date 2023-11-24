@@ -9,7 +9,6 @@ import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -55,36 +54,30 @@ public class TableService {
         return schema.toString();
     }
 
-    public List<FeatureService> getRelatedFeatureServices(String db, String table) {
+    public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
-        try {
-            // Get all feature services
-            FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
-            List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
+        // Get all feature services
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
-            for (FeatureService featureService : allFeatureServices) {
+        for (FeatureService featureService : allFeatureServices) {
 
-                String selectSql = FeatureServiceService.removeDeploySubstring(featureService.getSql());
+            String selectSql = FeatureServiceService.removeDeploySubstring(featureService.getSql());
 
-                List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(selectSql,
-                        featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+            List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(selectSql,
+                    featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
-                for (Pair<String, String> tableItem : dependentTables) {
-                    String currentDb = tableItem.getKey();
-                    String currentTable = tableItem.getValue();
+            for (Pair<String, String> tableItem : dependentTables) {
+                String currentDb = tableItem.getKey();
+                String currentTable = tableItem.getValue();
 
-                    if (db.equals(currentDb) && table.equals(currentTable)) {
-                        // Add to result if equal
-                        relatedFeatureServices.add(featureService);
-                    }
+                if (db.equals(currentDb) && table.equals(currentTable)) {
+                    // Add to result if equal
+                    relatedFeatureServices.add(featureService);
                 }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
 
         return relatedFeatureServices;
     }

@@ -47,8 +47,7 @@ public class FeaturesService {
         statement.close();
         return features;
     }
-
-
+    
     public Feature getFeature(String featureViewName, String featureName) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");

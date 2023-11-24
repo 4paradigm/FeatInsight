@@ -2,6 +2,8 @@ package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.service.OfflineJobService;
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
@@ -11,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/offlinejobs")
 public class OfflineJobController {
+    private static final Logger logger = LoggerFactory.getLogger(FeatureController.class);
 
     private final OfflineJobService offlineJobService;
 
@@ -21,22 +24,42 @@ public class OfflineJobController {
 
     @GetMapping
     public List<OfflineJobInfo> getOfflineJobInfos() throws SQLException {
-        return offlineJobService.getOfflineJobInfos();
+        try {
+            return offlineJobService.getOfflineJobInfos();
+        } catch (SQLException e) {
+            logger.info(String.format("Call getOfflineJobInfos but get exception: %s", e.getMessage()));
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
     public OfflineJobInfo getOfflineJobInfo(@PathVariable int id) throws SQLException {
-        return offlineJobService.getOfflineJobInfo(id);
+        try {
+            return offlineJobService.getOfflineJobInfo(id);
+        } catch (SQLException e) {
+            logger.info(String.format("Call getOfflineJobInfo with %d but get exception: %s", id, e.getMessage()));
+            throw e;
+        }
     }
 
     @GetMapping("/{id}/log")
     public String getOfflineJobLog(@PathVariable int id) throws SQLException {
-        return offlineJobService.getOfflineJobLog(id);
+        try {
+            return offlineJobService.getOfflineJobLog(id);
+        } catch (SQLException e) {
+            logger.info(String.format("Call getOfflineJobLog with %d but get exception: %s", id, e.getMessage()));
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
     public void deleteFeatureService(@PathVariable int id) throws SQLException {
-        offlineJobService.deleteOfflineJob(id);
+        try {
+            offlineJobService.deleteOfflineJob(id);
+        } catch (SQLException e) {
+            logger.info(String.format("Call deleteFeatureService with %d but get exception: %s", id, e.getMessage()));
+            throw e;
+        }
     }
 
 }
