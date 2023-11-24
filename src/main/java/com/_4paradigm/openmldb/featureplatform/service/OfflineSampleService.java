@@ -87,6 +87,11 @@ public class OfflineSampleService {
         String db = FeatureSetUtil.getDbFromFeatureSet(featureViewService, offlineSample.getFeatureNames());
         statement.execute("SET @@execute_mode='offline'");
         statement.execute(String.format("USE %s", db));
+
+        if (!offlineSample.getSparkConfig().equals("")) {
+            statement.execute(String.format("SET @@spark_config='%s'", offlineSample.getSparkConfig()));
+        }
+        
         statement.execute(outfileSql);
 
         ResultSet resultSet = statement.getResultSet();

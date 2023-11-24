@@ -250,6 +250,7 @@
     "Execute Success": "执行成功",
     "Delete Fail": "删除失败",
     "Delete Success": "删除成功",
-    "SQL Usage Document": "SQL 使用文档"
+    "SQL Usage Document": "SQL 使用文档",
+    "Spark Config": "Spark配置"
 
 }

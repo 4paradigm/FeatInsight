@@ -67,7 +67,12 @@ public class SqlService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='offline'");
 
-        statement.execute(sql);
+        String[] sqls = sql.split(";");
+        for (String singleLineSql: sqls) {
+            if (!singleLineSql.trim().isEmpty()) {
+                statement.execute(singleLineSql.trim());
+            }
+        }
 
         ResultSet resultSet = statement.getResultSet();
 
@@ -98,13 +103,12 @@ public class SqlService {
             }
         }
 
-        List<List<String>> returnList = new ArrayList<>();
-
         String lastSql = sqls[sqls.length - 1].trim();
         if (lastSql.isEmpty()) {
             lastSql = sqls[sqls.length - 2].trim();
         }
 
+        List<List<String>> returnList = new ArrayList<>();
         // TODO: Check if has result set
         if (isDql(lastSql)) {
             SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();

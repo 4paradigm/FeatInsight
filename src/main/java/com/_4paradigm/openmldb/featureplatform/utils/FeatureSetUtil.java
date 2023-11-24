@@ -3,7 +3,8 @@ package com._4paradigm.openmldb.featureplatform.utils;
 import com._4paradigm.openmldb.featureplatform.service.FeatureViewService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
  * Handle the feature set string which may contain feature view and single feature. For example: "v1,v2:c1,v2:c2".
  */
 public class FeatureSetUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeatureSetUtil.class);
 
     /**
      * Convert the feature set to SQL text.

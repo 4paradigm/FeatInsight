@@ -47,6 +47,14 @@
         </a-select>
     </a-form-item>
 
+    <a-form-item 
+          :label="$t('Spark Config')">
+          <a-tooltip>
+            <template #title>Spark config like 'spark.executor.memory=2g;spark.executor.cores=2'</template>
+            <a-input v-model:value="formState.sparkConfig"></a-input>
+          </a-tooltip>
+      </a-form-item>
+
     <a-form-item
       :label="$t('Options')">
       <a-input v-model:value="formState.options" 
@@ -96,6 +104,7 @@ export default {
         path: "",
         format: "",
         mode: "",
+        sparkConfig: "",
         options: ""
       },
     };
@@ -127,8 +136,12 @@ export default {
     },
 
     submitForm() {
+      var sql = "";
       // TODO: merge options
-      const sql = `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} OPTIONS (format='${this.formState.format}', mode='${this.formState.mode}')`;
+      if (this.formState.sparkConfig !== "") {
+        sql = `SET @@spark_config='${this.formState.sparkConfig}';`
+      }
+      sql += `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} OPTIONS (format='${this.formState.format}', mode='${this.formState.mode}')`;
 
       axios.post(`/api/sql/import`, {
         "sql": sql,
