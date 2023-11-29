@@ -10,11 +10,11 @@
   </a-modal>
 
   <a-modal v-model:visible="isShowParquetModal" width="1000px" :title="$t('Import From Parquet')" @ok="clickParquetModalOk">
-    <LoadDataInfileForm ref="CreateTableFromParquetForm" :isOnline=true format="Parquet"></LoadDataInfileForm>
+    <LoadDataInfileForm ref="CreateTableFromParquetForm" :isOnline=true format="parquet"></LoadDataInfileForm>
   </a-modal>
 
   <a-modal v-model:visible="isShowCsvModal" width="1000px" :title="$t('Import From CSV')" @ok="clickCsvModalOk">
-    <LoadDataInfileForm ref="CreateTableFromCsvForm" :isOnline=true format="CSV"></LoadDataInfileForm>
+    <LoadDataInfileForm ref="CreateTableFromCsvForm" :isOnline=true format="csv"></LoadDataInfileForm>
   </a-modal>
 
   <a-modal v-model:visible="isShowHiveModal" width="1000px" :title="$t('Import From Hive')" @ok="clickHiveModalOk">

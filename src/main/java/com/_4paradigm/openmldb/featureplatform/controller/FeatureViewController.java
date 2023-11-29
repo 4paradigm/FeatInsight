@@ -58,6 +58,7 @@ public class FeatureViewController {
         try {
             List<String> featureNames = featureViewService.getOutputFeatureNames(featureView);
             String featureNamesString = String.join(",", featureNames);
+
             return new ResponseEntity<>(featureNamesString, HttpStatus.OK);
         } catch (SQLException e) {
             logger.info(String.format("Call validateFeatureView with %s but get exception: %s", featureView, e.getMessage()));

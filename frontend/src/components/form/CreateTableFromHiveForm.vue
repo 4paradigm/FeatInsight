@@ -30,7 +30,7 @@
       :label="$t('Hive Path')"
       :rules="[{ required: true, message: 'Please input hive path!' }]">
       <a-input v-model:value="formState.hivePath" 
-        placeholder="hive:///db1/t1"/>
+        placeholder="hive://db1.t1"/>
     </a-form-item>
   </a-form>
 
@@ -65,12 +65,15 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     submitForm() {
@@ -80,27 +83,26 @@ export default {
         "sql": sql
       })
       .then(response => {
-        notification["success"]({
-          message: this.$t('Execute Success'),
-          description: `Success to create table: create sql: ${sql}`
-        });
-
-        this.$router.push(`/tables/${this.formState.db}/${this.formState.outputTable}/createresult`);
       })
       .catch(error => {
-        if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-        } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
+
+      notification["success"]({
+        message: this.$t('Execute Success'),
+        description: `Success to submit create table job, create sql: ${sql}`
+      });
+
+      this.$router.push(`/tables/${this.formState.db}/${this.formState.outputTable}/createresult`);
     },
+
   }
 };
 </script>

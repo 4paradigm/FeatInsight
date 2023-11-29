@@ -36,7 +36,7 @@ const router = createRouter({
     { path: '/sql', component: SqlScenario, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
-    { path: '/tables/:name/:version/createresult', component: CreateTableResult, props: true },    
+    { path: '/tables/:db/:table/createresult', component: CreateTableResult, props: true },    
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
     { path: '/features', component: FeaturesAndFeatureViewsPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },

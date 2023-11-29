@@ -5,6 +5,14 @@
     <DagPage ref="DagPage" @updateSql="updateOutputSql"></DagPage>
   </a-modal>
 
+  <a-drawer
+    v-model:visible="isOpenSqlUsageDocDrawer"
+    width="80%"
+    :title="$t('SQL Usage Examples')">
+    <SqlUsageDoc @clickCopy="handleClickCopy" defaultSearchText="select"/>
+  </a-drawer>
+
+
   <a-typography-paragraph>
     <!--
     <pre>{{ $t("Text of introduce create feature view") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/openmldb_sql/dql/index.html">{{$t('OpenMLDB documents')}}</a></pre>
@@ -43,8 +51,10 @@
       @change="changeSql"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
 
-      <a-button @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
+      <a-button type="dashed" @click="clickDagPage"> {{ $t('Visual SQL Tool') }}</a-button>
+      &nbsp; <a-button type="dashed" @click="openSqlUsageDocDrawer">{{ $t('SQL Usage Examples') }}</a-button>
       <br/><br/>
+
       <a-textarea v-model:value="formState.sql" :rows="5" placeholder="select * from t1">
       </a-textarea>
     </a-form-item>
@@ -82,10 +92,12 @@
 import axios from 'axios'
 import { notification } from 'ant-design-vue'
 import DagPage from '@/components/DAG/DagPage.vue'
+import SqlUsageDoc from '@/components/SqlUsageDoc.vue'
 
 export default {
   components: {
-    DagPage
+    DagPage,
+    SqlUsageDoc
   },
 
   data() {
@@ -96,6 +108,8 @@ export default {
 
       isShowAnalyseButton: true,
       isShowDagPageModal: false,
+
+      isOpenSqlUsageDocDrawer: false,
 
       formState: {
         name: '',
@@ -118,42 +132,44 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     validateForm() {
+
+      console.log("Try to validate sql")
+
       axios.post(`/api/featureviews/validate`, {
         "name": this.formState.name,
         "db": this.formState.db,
         "sql": this.formState.sql
       })
       .then(response => {
-        message.success(`Success to validate feature view ${this.formState.name}`);
-        notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
+        notification["success"]({
+              message: this.$t('Execute Success'),
+              description: `Success to validate feature view ${this.formState.name}`
             });
 
         this.validatedFeatureNames = response.data.split(",").map(str => str.trim());
         this.isShowAnalyseButton = false;
       })
       .catch(error => {
-        if (error.response.data) {
-          notification["error"]({
-            message: this.$t('Validate Fail'),
-            description: error.response.data
-          });
-        } else {
-          notification["error"]({
-            message: this.$t('Validate Fail'),
-            description: error.message
-          });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });      
     },
 
@@ -175,17 +191,14 @@ export default {
         this.$emit('submitted', this.formState.name);
       })
       .catch(error => {
-        if (error.response.data) {
-          notification["error"]({
-            message: this.$t('Validate Fail'),
-            description: error.response.data
-          });
-        } else {
-          notification["error"]({
-            message: this.$t('Validate Fail'),
-            description: error.message
-          });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 
@@ -205,7 +218,22 @@ export default {
 
     changeSql() {      
       this.isShowAnalyseButton = true;
-    }
+    },
+
+    openSqlUsageDocDrawer() {
+      this.isOpenSqlUsageDocDrawer = true;
+    },
+
+    handleClickCopy(sql) {
+      this.isOpenSqlUsageDocDrawer = false;
+
+      notification["success"]({
+        message: this.$t('Execute Success'),
+        description: `Success to copy SQL: ${sql}`
+      });
+
+      this.formState.sql = sql;
+    },
 
   },
 };

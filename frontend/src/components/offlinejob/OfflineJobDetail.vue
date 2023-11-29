@@ -3,6 +3,9 @@
 
   <h2>{{ $t('Offline Job') }}: <router-link :to="`/offlinejobs/${data.id}`">{{ data.id }}</router-link></h2>
 
+  <a-button @click="refreshStatus" type="primary">{{ $t('Refresh Status') }}</a-button>
+
+  <br/><br/>
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Job ID')">
       {{ data.id }}
@@ -24,12 +27,12 @@
 
   <br/>
   <a-switch v-model:checked="isShowJobLog" :checked-children="$t('Display log')" :un-checked-children="$t('Hide log')" @click="showJobLog"/>
+  &nbsp;<router-link :to="`/offlinejobs/${id}/log`"><a-button>{{ $t('Check Completed Log') }}</a-button></router-link>
+
   <br/><br/>
   <div v-if="isShowJobLog">
     <pre>{{ jobLog }}</pre>
   </div>
-
-  <router-link :to="`/offlinejobs/${id}/log`"><a-button>{{ $t('Check Completed Log') }}</a-button></router-link>
 
 </div>
 </template>
@@ -107,6 +110,15 @@ export default {
           })
           .finally(() => {});
       }
+    },
+
+    refreshStatus() {
+      this.initData();
+
+      notification["success"]({
+        message: this.$t('Execute Success'),
+        description: "Success to refresh job status"
+      });
     }
 
   }

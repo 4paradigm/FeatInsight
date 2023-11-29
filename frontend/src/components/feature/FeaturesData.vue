@@ -19,7 +19,7 @@
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
-  <a-table :columns="columns" :data-source="searchFilteredFeatures" :loading="loading">
+  <a-table :columns="columns" :data-source="searchFilteredFeatures">
     <template #featureView="{ text, record }">
       <a-button type="link" @click="openFeatureViewDrawer(record.featureViewName)">{{ record.featureViewName }}</a-button>
       </template>
@@ -54,8 +54,6 @@ export default {
       searchFilteredFeatures: [],
 
       features: [],
-
-      loading: false,
       
       columns: [{
         title: this.$t('Feature View'),
@@ -92,20 +90,20 @@ export default {
 
   methods: {
     initData() {
-      this.loading = true;
       axios.get(`/api/features`)
         .then(response => {
           this.features = response.data;
           this.searchFilteredFeatures = this.features;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {
-          this.loading = false;
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
     },
 

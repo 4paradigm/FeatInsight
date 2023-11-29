@@ -89,12 +89,15 @@ export default {
           this.searchFilteredOfflineSamples = this.offlineSamples;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     matchSearch(item) {
@@ -132,10 +135,14 @@ export default {
         this.initData();
       })
       .catch(error => {
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
         notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 

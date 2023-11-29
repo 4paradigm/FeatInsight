@@ -123,10 +123,14 @@ export default {
           this.searchFilteredFeatureServices = this.featureServices;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         })
         .finally(() => {});
     },

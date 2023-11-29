@@ -186,10 +186,14 @@ export default {
             });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         })
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/tables`)
@@ -200,10 +204,14 @@ export default {
           });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
@@ -211,10 +219,14 @@ export default {
           this.requestSchema = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
 
       axios.get(`/api/featureservices/${this.name}/${this.version}/request/demo`)
@@ -222,10 +234,14 @@ export default {
           this.requestDemoData = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });  
     },
 

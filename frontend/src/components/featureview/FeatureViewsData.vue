@@ -19,7 +19,7 @@
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
-  <a-table :columns="columns" :data-source="searchFilteredFeatureViews" :loading="loading">
+  <a-table :columns="columns" :data-source="searchFilteredFeatureViews">
     <template #name="{ text, record }">
       <a-button type="link" @click="openFeatureViewDrawer(record.name)">{{ record.name }}</a-button>
     </template>
@@ -62,8 +62,6 @@ export default {
       searchFilteredFeatureViews: [],
 
       featureViews: [],
-
-      loading: false,
       
       columns: [{
         title: 'Name',
@@ -103,20 +101,20 @@ export default {
 
   methods: {
     initData() {
-      this.loading = true;
       axios.get(`/api/featureviews`)
         .then(response => {
           this.featureViews = response.data;
           this.searchFilteredFeatureViews = this.featureViews;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {
-          this.loading = false;
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
     },
 
@@ -131,10 +129,14 @@ export default {
         this.initData();
       })
       .catch(error => {
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
         notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 
