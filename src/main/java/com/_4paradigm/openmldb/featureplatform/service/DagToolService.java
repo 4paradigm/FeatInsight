@@ -51,21 +51,23 @@ public class DagToolService {
 
     public String convertDagtoSQL(String dagJSON) throws SQLException {
 
-        //String newSQLCode = "test res1 "+ dagJSON + "hi";
         cleanup();
         readDAG(dagJSON);
+	String newSQLCode = "";
 
-        //return edgeList.get(0).getFirst();
+        if (taskSql.size() == 0){
+		return newSQLCode;
+	}
 
-        String newSQLCode = convertSQL();
+        newSQLCode = convertSQL();
         return newSQLCode;
 
     }
 
     public String convertSQLtoDag(String sqlCode) throws SQLException {
 
-    String newDAGJson = "test res2 "+ sqlCode + " hi";
-    return newDAGJson;
+    	String newDAGJson = "Placeholder "+ sqlCode;
+    	return newDAGJson;
     }
 
 
