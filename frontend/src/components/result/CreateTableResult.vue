@@ -6,11 +6,12 @@
   <!-- :sub-title="$('Text of creating offline sample')" -->
   <a-result
     status="success"
-    :title="$t('Success to create table')"
-    sub-title="创建表需要1到3分钟，请等待。"
+    title="成功提交创建表任务"
+    sub-title="请稍等0到2分钟，创建表任务属于离线任务，如果创建失败可以在离线任务查看最新任务的日志。"
   >
     <template #extra>
       <a-button type="primary" @click="redirectToTablesPage">{{ $t('Data Tables') }}</a-button>
+      <a-button @click="redirectToOfflineJobsPage">{{ $t('Offline Jobs') }}</a-button>
     </template>
   </a-result>
 
@@ -25,7 +26,7 @@ export default {
             type: String,
             required: true,
         },
-        name: {
+        table: {
             type: String,
             required: true,
         },
@@ -41,7 +42,11 @@ export default {
 
   methods: {
     redirectToTablesPage() {
-      this.$router.push(`/tables`);
+      this.$router.push(`/tables/${this.db}/${this.table}`);
+    },
+
+    redirectToOfflineJobsPage() {
+      this.$router.push(`/offlinejobs`);
     }
   },
 };

@@ -11,8 +11,15 @@
   <a-drawer
     v-model:visible="isOpenSqlUsageDocDrawer"
     width="80%"
-    :title="$t('SQL Usage Document')">
+    :title="$t('SQL Usage Examples')">
     <SqlUsageDoc @clickCopy="handleClickCopy"/>
+  </a-drawer>
+
+  <a-drawer
+    v-model:visible="isOpenTableDrawer"
+    width="50%"
+    :title="$t('Data Tables')">
+    <OnlineTables />
   </a-drawer>
 
   <br/>
@@ -41,7 +48,8 @@
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input sql!' }]">
       
-      <a-button type="dashed" @click="openSqlUsageDocDrawer">{{ $t('SQL Usage Document') }}</a-button>
+      <a-button type="dashed" @click="openSqlUsageDocDrawer">{{ $t('SQL Usage Examples') }}</a-button>
+      &nbsp;<a-button type="dashed" @click="openTablesDrawer">{{ $t('Data Tables') }}</a-button>
       <br/><br/>
 
       <a-textarea
@@ -72,12 +80,14 @@
 import axios from 'axios'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
 import SqlUsageDoc from '@/components/SqlUsageDoc.vue'
+import OnlineTables from '@/components/table/OnlineTables.vue'
 import { notification } from 'ant-design-vue';
 
 export default {
   components: {
     OfflineJobDetail,
-    SqlUsageDoc
+    SqlUsageDoc,
+    OnlineTables
   },
   
   data() {
@@ -89,7 +99,7 @@ export default {
 
       isShowResult: false,
 
-      isOpenDrawer: false,
+      isOpenTableDrawer: false,
 
       formState: {
         sql: '',
@@ -242,6 +252,10 @@ export default {
     
     openSqlUsageDocDrawer() {
       this.isOpenSqlUsageDocDrawer = true;
+    },
+
+    openTablesDrawer() {
+      this.isOpenTableDrawer = true;
     },
 
     handleClickCopy(sql) {

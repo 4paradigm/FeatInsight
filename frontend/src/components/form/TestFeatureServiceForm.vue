@@ -144,9 +144,13 @@ export default {
             this.featureServiceVersions = response.data;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 
@@ -164,9 +168,13 @@ export default {
             this.columns = [...columnList]
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 
@@ -176,9 +184,13 @@ export default {
             this.requestDemoData = response.data;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });   
           
@@ -202,12 +214,15 @@ export default {
           this.featureServices = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {}); 
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        }); 
     },
 
     handleDelete(name) {
@@ -221,10 +236,14 @@ export default {
         this.initData();
       })
       .catch(error => {
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
         notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 
@@ -308,9 +327,13 @@ export default {
         }
       })
       .catch(error => {
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
         notification["error"]({
-          message: this.$t('Request Fail'),
-          description: `Error message: ${error.message}, request json: ${requestJson}`
+          message: this.$t('Execute Fail'),
+          description: errorMessage
         });
       });
     },

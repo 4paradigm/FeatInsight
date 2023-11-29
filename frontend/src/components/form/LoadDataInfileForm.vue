@@ -31,35 +31,89 @@
         placeholder="file:///tmp/data.csv or hive://db1.t1"/>
     </a-form-item>
 
-    <a-form-item
-        :label="$t('File Format')"
-        :rules="[{ required: true, message: 'Please choose file format!' }]">
-        <a-select show-search v-model:value="formState.format">
-          <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
-        </a-select>
-    </a-form-item>
+    <a-button type="dashed" @click="switchShowMoreOptions">{{ $t('More Options') }}</a-button>
 
-    <a-form-item
-        :label="$t('Write Mode')"
-        :rules="[{ required: true, message: 'Please choose write mode!' }]">
-        <a-select show-search v-model:value="formState.mode">
-          <option v-for="mode in writeModeOptions" :key="mode.id" :value="mode.name">{{ mode.name}}</option>
-        </a-select>
-    </a-form-item>
-
-    <a-form-item 
-          :label="$t('Spark Config')">
-          <a-tooltip>
-            <template #title>Spark config like 'spark.executor.memory=2g;spark.executor.cores=2'</template>
-            <a-input v-model:value="formState.sparkConfig"></a-input>
-          </a-tooltip>
+    <div v-if="isShowMoreOptions">
+      <br/>
+      <a-form-item 
+        :label="$t('Spark Config')">
+        <a-tooltip>
+          <template #title>Spark config like 'spark.executor.memory=2g;spark.executor.cores=2'</template>
+          <a-input v-model:value="formState.sparkConfig"></a-input>
+        </a-tooltip>
       </a-form-item>
 
-    <a-form-item
-      :label="$t('Options')">
-      <a-input v-model:value="formState.options" 
-        placeholder=""/>
-    </a-form-item>
+      <a-form-item
+        :label="$t('File Format')" >
+          <a-select show-search v-model:value="formState.format">
+            <option v-for="format in formatOptions" :key="format.id" :value="format.name">{{ format.name}}</option>
+          </a-select>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Delimiter')">
+          <a-input v-model:value="formState.delimiter"></a-input>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Header')">
+          <a-select show-search v-model:value="formState.header">
+            <option v-for="item in booleanOptions" :key="item.id" :value="item.name">{{ item.name}}</option>
+          </a-select>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Null Value')">
+          <a-input v-model:value="formState.nullValue"></a-input>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Quote')">
+          <a-input v-model:value="formState.quote"></a-input>
+      </a-form-item>
+
+      <a-form-item
+        :label="$t('Mode')">
+        <a-select show-search v-model:value="formState.mode">
+          <option v-for="mode in modeOptions" :key="mode.id" :value="mode.name">{{ mode.name}}</option>
+        </a-select>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Deep Copy')">
+          <a-select show-search v-model:value="formState.deepCopy">
+            <option v-for="item in booleanOptions" :key="item.id" :value="item.name">{{ item.name}}</option>
+          </a-select>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Load Mode')">
+          <a-select show-search v-model:value="formState.loadMode">
+            <option v-for="item in loadModeOptions" :key="item.id" :value="item.name">{{ item.name}}</option>
+          </a-select>
+      </a-form-item>
+
+      <a-form-item 
+          :label="$t('Thread')">
+          <a-input v-model:value="formState.thread"></a-input>
+      </a-form-item>
+
+      <!-- TODO: not support yet 
+      <a-form-item 
+          :label="$t('Writer Type')">
+          <a-select show-search v-model:value="formState.writerType">
+            <option v-for="item in writerTypeOptions" :key="item.id" :value="item.name">{{ item.name}}</option>
+          </a-select>
+      </a-form-item>
+      -->
+      
+      <a-form-item 
+          :label="$t('Filter SQL')">
+          <a-input v-model:value="formState.sql"></a-input>
+      </a-form-item>
+
+
+    </div>
 
   </a-form>
 
@@ -78,7 +132,7 @@ export default {
     },
     format: {
       type: String,
-      default: "Parquet",
+      default: "csv",
     }
   },
 
@@ -87,33 +141,58 @@ export default {
       tableNames: [],
 
       formatOptions:[
-        {id: '', name: ''},
-        {id: 'CSV', name: 'CSV'},
-        {id: 'Parquet', name: 'Parquet'}
+        {id: 'csv', name: 'csv'},
+        {id: 'parquet', name: 'parquet'}
       ],
 
-      writeModeOptions:[
+      modeOptions:[
         {id: 'append', name: 'append'},
         {id: 'overwrite', name: 'overwrite'},
         {id: 'error_if_exists', name: 'error_if_exists'}
       ],
 
+      booleanOptions:[
+        {id: 'true', name: 'true'},
+        {id: 'false', name: 'false'}
+      ],
+
+      loadModeOptions:[
+        {id: 'cluster', name: 'cluster'},
+        {id: 'local', name: 'local'}
+      ],
+
+
       formState: {
         isOnlineMode: true,
         tableName: "",
         path: "",
-        format: "",
-        mode: "",
         sparkConfig: "",
-        options: ""
+        format: "csv",
+        delimiter: ",",
+        header: "true",
+        nullValue: "null",
+        quote: '"',
+        mode: "append",
+        deepCopy: "true",
+        loadMode: "cluster",
+        thread: "1",
+        sql: ""
       },
+
+      isShowMoreOptions: false,
+
     };
   },
 
   mounted() {
-    this.formState.isOnlineMode = this.isOnline;
-    this.formState.format = this.format;
-
+    if (this.isOnline != null) {
+      this.formState.isOnlineMode = this.isOnline;
+    }
+    
+    if (this.format != null && this.format != "") {
+      this.formState.format = this.format;
+    }
+    
     this.initData();
   },
 
@@ -127,21 +206,40 @@ export default {
           });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     submitForm() {
       var sql = "";
-      // TODO: merge options
+
       if (this.formState.sparkConfig !== "") {
         sql = `SET @@spark_config='${this.formState.sparkConfig}';`
       }
-      sql += `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} OPTIONS (format='${this.formState.format}', mode='${this.formState.mode}')`;
+
+      var optionString = "OPTIONS (";
+      optionString += `format='${this.formState.format}'`;
+      optionString += `, mode='${this.formState.mode}'`;
+      optionString += `, delimiter='${this.formState.delimiter}'`;
+      optionString += `, header=${this.formState.header}`;
+      optionString += `, null_value='${this.formState.nullValue}'`;
+      optionString += `, quote='${this.formState.quote}'`;
+      optionString += `, deep_copy=${this.formState.deepCopy}`;
+      optionString += `, load_mode='${this.formState.loadMode}'`;
+      optionString += `, thread=${this.formState.thread}`;
+      if (this.formState.sql !== "") {
+        optionString += `, sql='${this.formState.sql}'`;
+      }
+      optionString += ")";
+
+      sql += `LOAD DATA INFILE '${this.formState.path}' INTO TABLE ${this.formState.tableName} ${optionString}`;
 
       axios.post(`/api/sql/import`, {
         "sql": sql,
@@ -157,19 +255,25 @@ export default {
         this.$router.push(`/offlinejobs/${jobId}/result`);
       })
       .catch(error => {
-        if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-        } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
+
+    switchShowMoreOptions() {
+      if (this.isShowMoreOptions) {
+        this.isShowMoreOptions = false;
+      } else {
+        this.isShowMoreOptions = true;
+      }
+    },
+
   }
 };
 </script>

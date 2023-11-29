@@ -112,12 +112,15 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     submitForm() {
@@ -171,17 +174,14 @@ export default {
         this.$emit('submitted');
       })
       .catch(error => {
-        if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-        } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 

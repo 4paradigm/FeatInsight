@@ -11,7 +11,7 @@
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
 
-  <a-table :columns="columns" :data-source="searchFilteredOfflineJobInfos" :loading="loading">
+  <a-table :columns="columns" :data-source="searchFilteredOfflineJobInfos">
     <template #id="{ text, record }">
       <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>
     </template>
@@ -46,9 +46,6 @@ export default {
       searchFilteredOfflineJobInfos: [],
 
       offlineJobInfos: [],
-
-      loading: false,
-
 
       columns: [{
         title: this.$t('ID'),
@@ -95,23 +92,20 @@ export default {
 
   methods: {
     initData() {
-      this.loading = true;
-
-      let requestUrl = "/api/offlinejobs"
-
-      axios.get(requestUrl)
+      axios.get("/api/offlinejobs")
         .then(response => {
           this.offlineJobInfos = response.data;
           this.searchFilteredOfflineJobInfos = this.offlineJobInfos;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {
-          this.loading = false;
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
     },
 
@@ -150,10 +144,14 @@ export default {
         this.initData();
       })
       .catch(error => {
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
         notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 

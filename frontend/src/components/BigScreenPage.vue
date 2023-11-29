@@ -145,9 +145,13 @@ export default {
             this.tableCount = this.tables.length;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 
@@ -157,9 +161,13 @@ export default {
             this.featureCount = this.features.length;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 
@@ -169,9 +177,13 @@ export default {
             this.offlineSampleCount = this.offlineSamples.length;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 
@@ -181,9 +193,13 @@ export default {
             this.featureServiceCount = this.featureservices.length;
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });
 

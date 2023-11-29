@@ -125,12 +125,15 @@ export default {
           this.featureServices = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
 
       this.updateSelectFeatureOptions();
     },
@@ -146,10 +149,14 @@ export default {
           });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         })
         .finally(() => {});
 
@@ -162,10 +169,14 @@ export default {
           });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         })
         .finally(() => {});
 
@@ -189,17 +200,14 @@ export default {
         this.$router.push(`/featureservices/${this.formState.name}/${this.formState.version}/result`);
       })
       .catch(error => {
-          if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-          } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-          }
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
+        }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
 
@@ -211,9 +219,13 @@ export default {
             this.featureServiceVersions.push("");
           })
           .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
             notification["error"]({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: errorMessage
             });
           });  
       }

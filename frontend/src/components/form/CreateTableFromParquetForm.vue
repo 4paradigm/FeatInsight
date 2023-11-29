@@ -65,47 +65,44 @@ export default {
           this.databases = response.data;
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     submitForm() {
-      notification["success"]({
-              message: this.$t('Execute Success'),
-              description: `Create table from parquet may take 1 minute, please wait`
-            });
-
       const sql = `CREATE TABLE ${this.formState.db}.${this.formState.table} LIKE PARQUET '${this.formState.path}'`;
 
       axios.post(`/api/sql/online`, {
         "sql": sql
       })
       .then(response => {
-        notification["success"]({
-              message: this.$t('Execute Success'),
-              description: `Success to submit create table job, create sql: ${sql}`
-            });
-
-        this.$router.push(`/tables/${this.formState.db}/${this.formState.table}/createresult`);
       })
       .catch(error => {
-        if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-        } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
+
+      notification["success"]({
+        message: this.$t('Execute Success'),
+        description: `Success to submit create table job, create sql: ${sql}`
+      });
+
+      this.$router.push(`/tables/${this.formState.db}/${this.formState.table}/createresult`);
     },
+
   }
 };
 </script>

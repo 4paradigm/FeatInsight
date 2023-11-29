@@ -66,17 +66,14 @@ export default {
             });
         })
         .catch(error => {
-          if (error.response.data) {
-              notification["error"]({
-                message: this.$t('Execute Fail'),
-                description: error.response.data
-              });
-          } else {
-              notification["error"]({
-                message: this.$t('Execute Fail'),
-                description: message
-              });
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
           }
+          notification["error"]({
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
 
       } else if (this.formState.sql.toLowerCase().startsWith("load")) {
@@ -94,17 +91,14 @@ export default {
           this.$router.push(`/offlinejobs/${jobId}/result`);
         })
         .catch(error => {
-          if (error.response.data) {
-              notification["error"]({
-                message: this.$t('Execute Fail'),
-                description: error.response.data
-              });
-          } else {
-              notification["error"]({
-                message: this.$t('Execute Fail'),
-                description: error.message
-              });
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
           }
+          notification["error"]({
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
 
       } else {

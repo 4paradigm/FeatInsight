@@ -93,12 +93,15 @@ export default {
           });
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     updateSchema() {
@@ -117,12 +120,15 @@ export default {
           this.columns = [...columnList]
         })
         .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
-        })
-        .finally(() => {});
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
     },
 
     submitForm() {
@@ -154,17 +160,14 @@ export default {
         });
       })
       .catch(error => {
-        if (error.response.data) {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.response.data
-            });
-        } else {
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+        var errorMessage = error.message;
+        if (error.response && error.response.data) {
+          errorMessage = error.response.data;
         }
+        notification["error"]({
+          message: this.$t('Execute Fail'),
+          description: errorMessage
+        });
       });
     },
   }

@@ -248,7 +248,11 @@
     "Execute Success": "Execute Success",
     "Delete Fail": "Delete Fail",
     "Delete Success": "Delete Success",
-    "SQL Usage Document": "SQL Usage Document",
-    "Spark Config": "Spark Config"
+    "SQL Usage Examples": "SQL Usage Examples",
+    "Spark Config": "Spark Config",
+    "More Options": "More Options",
+    "Refresh Log": "Refresh Log",
+    "Refresh Status": "Refresh Status",
+    "Filter SQL": "Filter SQL"
 
 }

@@ -69,7 +69,6 @@ public class OfflineSampleService {
         statement.close();
         return offlineSample;
     }
-
     public OfflineSample createOfflineSample(OfflineSample offlineSample) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
@@ -80,7 +79,6 @@ public class OfflineSampleService {
         String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService,
                 offlineSample.getFeatureNames(), joinKeys);
 
-        // TODO: Get format and update options
         String outfileSql = String.format("%s INTO OUTFILE '%s' OPTIONS (%s)", mergedSql,
                 offlineSample.getPath(), offlineSample.getOptions());
 

@@ -21,6 +21,12 @@
 
 <script>
 export default {
+  props: {
+    defaultSearchText: {
+      type: String,
+      required: false
+    }
+  },
 
   data() {
     return {
@@ -251,6 +257,13 @@ FROM
     SELECT * FROM q1)              # q1 resolves to the third inner WITH subquery`,
           },
           {
+            function: "指定 Spark 资源参数",
+            sql: `
+            SET @@spark_config = 'spark.executor.memory=2g;spark.executor.cores=2';
+            SELECT * FROM db1.t1
+            `,
+          }, 
+          {
             function: "导出数据为 CSV 文件",
             sql: "SELECT col1, col2, col3 FROM t1 INTO OUTFILE 'data.csv' OPTIONS ( delimiter = ',' )",
           },
@@ -337,7 +350,12 @@ FROM
 
   methods: {
     initData() {
-      this.searchFilteredDataSource = this.dataSource;
+      if (this.defaultSearchText) {
+        this.searchText = this.defaultSearchText;
+        this.handleSearch();
+      } else {
+        this.searchFilteredDataSource = this.dataSource;
+      }
     },
 
     renderMultilineString(text) {
