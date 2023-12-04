@@ -74,9 +74,9 @@ export default {
         key: 'endTime',
       },
       {
-        title: this.$t('Application ID'),
-        dataIndex: 'applicationId',
-        key: 'applicationId',
+        title: this.$t('Parameter'),
+        dataIndex: 'parameter',
+        key: 'parameter',
       },
       {
         title: this.$t('Actions'),
