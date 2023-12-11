@@ -63,9 +63,13 @@ public class SqlService {
         return sql.startsWith("select") || sql.startsWith("show") || sql.startsWith("with");
     }
 
-    public OfflineJobInfo executeOfflineSql(String sql) throws SQLException {
+    public OfflineJobInfo executeOfflineSql(String sql, String sparkConfig) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='offline'");
+
+        if (!sparkConfig.isEmpty()) {
+            statement.execute(String.format("SET @@spark_config='%s'", sparkConfig));
+        }
 
         String[] sqls = sql.split(";");
         for (String singleLineSql: sqls) {
@@ -92,9 +96,13 @@ public class SqlService {
      * @return the first element is schema(list of column name), other elements are row data(list of string value)
      * @throws SQLException
      */
-    public List<List<String>> executeOnlineSql(String sql) throws SQLException {
+    public List<List<String>> executeOnlineSql(String sql, String sparkConfig) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
+
+        if (!sparkConfig.isEmpty()) {
+            statement.execute(String.format("SET @@spark_config='%s'", sparkConfig));
+        }
 
         String[] sqls = sql.split(";");
         for (String singleLineSql: sqls) {
@@ -119,7 +127,7 @@ public class SqlService {
         return returnList;
     }
 
-    public int importData(String sql, boolean isOnline) throws SQLException {
+    public int importData(String sql, boolean isOnline, String sparkConfig) throws SQLException {
         Statement statement = sqlExecutor.getStatement();
 
         if (isOnline) {
@@ -128,7 +136,16 @@ public class SqlService {
             statement.execute("SET @@execute_mode='offline'");
         }
 
-        statement.execute(sql);
+        if (sparkConfig != null && !sparkConfig.isEmpty()) {
+            statement.execute(String.format("SET @@spark_config='%s'", sparkConfig));
+        }
+
+        String[] sqls = sql.split(";");
+        for (String singleLineSql: sqls) {
+            if (!singleLineSql.trim().isEmpty()) {
+                statement.execute(singleLineSql.trim());
+            }
+        }
 
         ResultSet resultSet = statement.getResultSet();
 

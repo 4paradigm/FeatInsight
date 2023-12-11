@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSqlRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
 import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleSqlRequest;
@@ -29,7 +30,7 @@ public class SqlController {
     @PostMapping("/online")
     public ResponseEntity<List<List<String>>> executeOnline(@RequestBody SimpleSqlRequest simpleSqlRequest) throws SQLException {
         try {
-            return ResponseEntity.ok(sqlService.executeOnlineSql(simpleSqlRequest.getSql()));
+            return ResponseEntity.ok(sqlService.executeOnlineSql(simpleSqlRequest.getSql(), simpleSqlRequest.getSparkConfig()));
         } catch (SQLException e) {
             logger.info(String.format("Call executeOnline with %s but get exception: %s", simpleSqlRequest, e.getMessage()));
             throw e;
@@ -37,11 +38,11 @@ public class SqlController {
     }
 
     @PostMapping("/offline")
-    public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody SimpleSqlRequest simpleSqlRequest) throws SQLException {
+    public ResponseEntity<OfflineJobInfo> executeOffline(@RequestBody OfflineSqlRequest offlineSqlRequest) throws SQLException {
         try {
-            return ResponseEntity.ok(sqlService.executeOfflineSql(simpleSqlRequest.getSql()));
+            return ResponseEntity.ok(sqlService.executeOfflineSql(offlineSqlRequest.getSql(), offlineSqlRequest.getSparkConfig()));
         } catch (SQLException e) {
-            logger.info(String.format("Call executeOffline with %s but get exception: %s", simpleSqlRequest, e.getMessage()));
+            logger.info(String.format("Call executeOffline with %s but get exception: %s", offlineSqlRequest, e.getMessage()));
             throw e;
         }
     }
@@ -64,7 +65,7 @@ public class SqlController {
     @PostMapping("/import")
     public int importSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
         try {
-            int jobId = sqlService.importData(sqlRequest.getSql(), sqlRequest.isOnline());
+            int jobId = sqlService.importData(sqlRequest.getSql(), sqlRequest.isOnline(), sqlRequest.getSparkConfig());
             return jobId;
         } catch (SQLException e) {
             logger.info(String.format("Call importSql with %s but get exception: %s", sqlRequest, e.getMessage()));

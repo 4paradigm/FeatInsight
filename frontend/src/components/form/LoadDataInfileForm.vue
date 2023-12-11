@@ -220,9 +220,11 @@ export default {
     submitForm() {
       var sql = "";
 
+      /* Use single sql with spark config.
       if (this.formState.sparkConfig !== "") {
-        sql = `SET @@spark_config='${this.formState.sparkConfig}';`
+        sql = `SET @@spark_config='${}';`
       }
+      */
 
       var optionString = "OPTIONS (";
       optionString += `format='${this.formState.format}'`;
@@ -243,7 +245,8 @@ export default {
 
       axios.post(`/api/sql/import`, {
         "sql": sql,
-        "online": this.formState.isOnlineMode
+        "online": this.formState.isOnlineMode,
+        "sparkConfig": this.formState.sparkConfig
       })
       .then(response => {
         notification["success"]({
