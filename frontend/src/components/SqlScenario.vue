@@ -44,6 +44,15 @@
       <a-switch v-model:checked="formState.isOnlineMode" :checked-children="$t('Online')" :un-checked-children="$t('Offline')" />
     </a-form-item>
 
+    <a-form-item 
+      v-if="!formState.isOnlineMode"
+      :label="$t('Spark Config')">
+      <a-tooltip>
+        <template #title>Spark config like 'spark.executor.memory=2g;spark.executor.cores=2'</template>
+        <a-input v-model:value="formState.sparkConfig"></a-input>
+      </a-tooltip>
+    </a-form-item>
+
     <a-form-item
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input sql!' }]">
@@ -104,6 +113,7 @@ export default {
       formState: {
         sql: '',
         isOnlineMode: true,
+        sparkConfig: ''
       },
 
       resultColumns: [],
@@ -217,7 +227,8 @@ export default {
     executeOfflineSql() {
       axios
         .post(`/api/sql/offline`, {
-          sql: this.formState.sql
+          sql: this.formState.sql,
+          sparkConfig: this.formState.sparkConfig
         })
         .then((response) => {
           notification["success"]({

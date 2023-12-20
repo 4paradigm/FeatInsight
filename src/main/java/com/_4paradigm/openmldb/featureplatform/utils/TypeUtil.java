@@ -2,6 +2,7 @@ package com._4paradigm.openmldb.featureplatform.utils;
 
 import com._4paradigm.openmldb.DataType;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
+import com._4paradigm.openmldb.sdk.Common;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -161,6 +162,11 @@ public class TypeUtil {
         } else {
             throw new SQLException("Not support type for " + type);
         }
+    }
+
+    public static String getResultSetStringColumn(SQLResultSet resultSet, int i, int type) throws SQLException {
+        DataType dataType = Common.sqlTypeToDataType(type);
+        return getResultSetStringColumn(resultSet, i, dataType);
     }
 
 }
