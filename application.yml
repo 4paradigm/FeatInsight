@@ -2,7 +2,7 @@ server:
   port: 8888
 
 openmldb:
-  zk_cluster: 127.0.0.1:2181
+  zk_cluster: openmldb-zk:2181
   zk_path: /openmldb
-  apiserver: 127.0.0.1:9080
+  apiserver: openmldb-zk:9080
   skip_index_check: false
