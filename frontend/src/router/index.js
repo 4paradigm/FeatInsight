@@ -27,6 +27,7 @@ import ImportDataDatabases from '@/components/importdata/ImportDataDatabases.vue
 import ImportDataTables from '@/components/importdata/ImportDataTables.vue'
 import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
+import ImportDataIndex from '@/components/importdata/ImportDataIndex.vue'
 import SqlScenario from '@/components/SqlScenario.vue'
 
 const router = createRouter({
@@ -54,7 +55,8 @@ const router = createRouter({
         { path: 'databases', component: ImportDataDatabases, props: true },
         { path: 'tables', component: ImportDataTables, props: true },
         { path: 'online', component: ImportDataOnline, props: true },
-        { path: 'offline', component: ImportDataOffline, props: true }
+        { path: 'offline', component: ImportDataOffline, props: true },
+        { path: 'index', component: ImportDataIndex, props: true }
       ]
     },
     { path: '/developprocess/online', component: OnlineScenario, props: true },

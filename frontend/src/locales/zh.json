@@ -177,7 +177,7 @@
     "Text of introduce create table from sql": "用户可以使用SQL语句创建新的数据表，请参考",
     "Text of introduce online import": "用户可以进行在线导入，把用于在线实时计算的数据导入到在线存储中，请参考",
     "Text of introduce offline import": "用户可以进行离线导入，把用于生成离线样本的数据导入到离线存储中，请参考",
-    "Create From SQL": "使用 SQL 创建表",
+    "Create From SQL": "使用 SQL 创建",
     "Other Create Methods": "其他创建方法",
     "Create From Parquet": "使用 Parquet 创建表",
     "Create From Hive": "使用 Hive 创建表",
@@ -255,6 +255,7 @@
     "More Options": "更多选项",
     "Refresh Log": "刷新日志",
     "Refresh Status": "刷新状态",
-    "Filter SQL": "过滤数据 SQL"
+    "Filter SQL": "过滤数据 SQL",
+    "Add Index": "添加索引"
 
 }
