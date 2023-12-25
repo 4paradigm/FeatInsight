@@ -10,7 +10,7 @@ The OpenMLDB Feature Platform is a sophisticated feature store service, leveragi
 ## Core Concepts
 
 * Feature: Data obtained through feature extraction from raw data that can be directly used for model training and inference.
-* Feature Group: A set of features defined by a single SQL computation statement.
+* Feature View: A set of features defined by a single SQL computation statement.
 * Data Table: In OpenMLDB, data tables include online storage that supports real-time queries and distributed offline storage.
 * Online Scenario: By deploying online feature services, it provides hard real-time online feature extraction interfaces using online data.
 * Offline Scenario: Uses distributed computing to process offline data for feature computation and exports sample files needed for machine learning.
@@ -77,7 +77,7 @@ Start the server with local config file.
 Access the feature platform by navigating to http://127.0.0.1:8888/ using any conventional web browser.
 
 1. Importing Data: Create databases, create data tables, import online data, and import offline data using SQL commands or frontend forms.
-2. Creating Features: Define feature groups using SQL statements. The feature platform will use a SQL compiler to analyze the features and create corresponding entities.
-3. Offline Scenario: Select the desired features to import. You can choose features from different feature groups simultaneously and use distributed computing to import sample files into local or distributed storage.
+2. Creating Features: Define feature views using SQL statements. The feature platform will use a SQL compiler to analyze the features and create corresponding entities.
+3. Offline Scenario: Select the desired features to import. You can choose features from different feature views simultaneously and use distributed computing to import sample files into local or distributed storage.
 4. Online Scenario: Select the desired features to go live. Publish them as an online feature extraction service with one click, and then use an HTTP client to request and return online feature extraction results.
 5. SQL Debugging: Execute any online or offline computing SQL statement and view the execution results and logs on the web frontend.
