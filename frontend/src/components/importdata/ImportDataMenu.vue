@@ -18,6 +18,11 @@
     <router-link to='/developprocess/import/offline'>{{ $t('Import Offline Data')}}</router-link>
   </a-menu-item>
 
+  <!--
+  <a-menu-item key="5">
+    <router-link to='/developprocess/import/index'>{{ $t('Add Index')}}</router-link>
+  </a-menu-item>
+  -->
 </a-menu>
 
 <router-view></router-view>
