@@ -163,7 +163,7 @@
     "Success to deploy feature service": "成功部署特征服务",
     "Display log": "显示日志",
     "Hide log": "隐藏日志",
-    "Test Feature Service": "测试特征视图",
+    "Test Feature Service": "测试特征服务",
     "Text of introduce test feature service": "用户可以通过输入测试数据，测试特征服务的功能和性能，测试数据格式请参考",
     "Execute Online SQL": "执行在线 SQL",
     "Execute Offline SQL": "执行离线 SQL",
@@ -256,6 +256,7 @@
     "Refresh Log": "刷新日志",
     "Refresh Status": "刷新状态",
     "Filter SQL": "过滤数据 SQL",
-    "Add Index": "添加索引"
+    "Add Index": "添加索引",
+    "Request Feature Service": "请求特征服务"
 
 }

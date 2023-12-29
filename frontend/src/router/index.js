@@ -10,6 +10,9 @@ import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
+import RequestFeatureService from '@/components/featureservice/RequestFeatureService.vue'
+import RequestModePage from '@/components/featureservice/RequestModePage.vue'
+import OnlineQueryModePage from '@/components/featureservice/OnlineQueryModePage.vue'
 import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
@@ -46,6 +49,10 @@ const router = createRouter({
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
+    { path: '/featureservices/:name/:version/request', component: RequestFeatureService, props: true, children: [
+      { path: 'requestmode', component: RequestModePage, props: true },
+      { path: 'onlinequerymode', component: OnlineQueryModePage, props: true },
+    ]},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },
