@@ -257,6 +257,8 @@
     "Refresh Status": "刷新状态",
     "Filter SQL": "过滤数据 SQL",
     "Add Index": "添加索引",
-    "Request Feature Service": "请求特征服务"
+    "Request Feature Service": "请求特征服务",
+    "Choose Index": "选择索引",
+    "Online Query Feature Result": "在线查询特征结果"
 
 }

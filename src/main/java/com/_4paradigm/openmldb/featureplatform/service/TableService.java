@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
+import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
@@ -63,7 +64,7 @@ public class TableService {
 
         for (FeatureService featureService : allFeatureServices) {
 
-            String selectSql = FeatureServiceService.removeDeploySubstring(featureService.getSql());
+            String selectSql = OpenmldbSqlUtil.removeDeployFromSql(featureService.getSql());
 
             List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(selectSql,
                     featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
@@ -116,5 +117,7 @@ public class TableService {
 
         statement.close();
     }
+
+
 
 }

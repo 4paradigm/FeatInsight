@@ -3,11 +3,10 @@
 <div>
 
   <br/>
-
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Name')">{{ name }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Version')"> {{ version }}</a-descriptions-item>
-    <!--<a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>-->
+    <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ featureNames }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Request Schema')"> {{ requestSchema }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Request Demo Data')"> {{ requestDemoData }}</a-descriptions-item>
   </a-descriptions>
@@ -87,6 +86,7 @@ export default {
   
   data() {
     return {
+      featureNames: null,
 
       isUseJsonTestData: false,
 
@@ -111,6 +111,22 @@ export default {
 
   methods: {
     init() {
+      axios.get(`/api/featureservices/${this.name}/${this.version}`)
+        .then(response => {
+          this.featureNames = response.data.featureNames;
+
+        })
+        .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
+          notification["error"]({
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        })
+
         axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
           .then(response => {
             this.requestSchema = response.data;
@@ -151,7 +167,6 @@ export default {
             });
           });   
     },
-
 
     submitForm() {
       var requestJson = {}

@@ -27,25 +27,6 @@
 
   <router-view></router-view>
 
-<!--
-  <a-typography>
-    <a-typography-paragraph>
-      <blockquote>
-        用户可以使用“请求模式”或“在线查询模式”来访问特征服务。
-        请求模式下用户需要输入整行主表数据通过 LastJoin 等方法提取副表特征。
-        在线查询模式则不需要传入数据，直接查询在线表的特征数据，并且可以通过主键进行数据过滤。
-      </blockquote>
-    </a-typography-paragraph>
-  </a-typography>
-
-
-  <br/>
-  <a-descriptions bordered>
-    <a-descriptions-item :span="24" :label="$t('Name')">{{ data.name }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Version')"> {{ data.version }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
-  </a-descriptions>
--->
 </div>
 </template>
     

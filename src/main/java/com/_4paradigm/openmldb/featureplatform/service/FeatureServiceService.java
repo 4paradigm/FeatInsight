@@ -3,9 +3,16 @@ package com._4paradigm.openmldb.featureplatform.service;
 import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.*;
 import com._4paradigm.openmldb.featureplatform.utils.*;
+import com._4paradigm.openmldb.jdbc.SQLResultSet;
+import com._4paradigm.openmldb.proto.Common;
+import com._4paradigm.openmldb.proto.NS;
 import com._4paradigm.openmldb.sdk.Column;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,6 +29,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.*;
 
 @Repository
@@ -356,32 +364,100 @@ public class FeatureServiceService {
         return new ResponseEntity<String>(responseBody, HttpStatus.valueOf(statusCode));
     }
 
-    public static String removeDeploySubstring(String inputSql) {
-        int substringIndex = inputSql.toLowerCase().indexOf("select");
+    public List<List<String>> requestOnlineQueryMode(String name, String version, String requestData) throws IOException, SQLException {
+        // TODO: Get the db from feature service
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
+        String db = featureService.getDb();
+        String deploymentSql = featureService.getSql();
 
-        if (substringIndex >= 0) {
-            return inputSql.substring(substringIndex);
-        } else {
-            return inputSql;
+        String querySql = OpenmldbSqlUtil.removeDeployFromSql(deploymentSql);
+
+        Schema schema = OpenmldbTableUtil.getMainTableSchema(sqlExecutor, querySql, db);
+
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(requestData, JsonObject.class);
+        JsonArray dataJsonArray = jsonObject.getAsJsonArray("data");
+        JsonArray indexJsonArray = jsonObject.getAsJsonArray("index");
+
+        // TODO: Support only one index now
+        String indexName = indexJsonArray.get(0).getAsString();
+        String indexDataValue = dataJsonArray.getAsJsonArray().get(0).getAsString();
+
+        boolean isIndexStringType = false;
+        for (Column column: schema.getColumnList()) {
+            if (column.getColumnName().equals(indexName)) {
+                if(column.getSqlType() == Types.CHAR || column.getSqlType() == Types.VARCHAR) {
+                    isIndexStringType = true;
+                }
+            }
         }
+
+        String finalSql = String.format("%s WHERE %s = %s", querySql, indexName, indexDataValue);
+        if (isIndexStringType) {
+            // TODO: Handle single quote and double quote
+            finalSql = String.format("%s WHERE %s = '%s'", querySql, indexName, indexDataValue);
+        }
+
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+        statement.execute(String.format("USE %s", db));
+
+        statement.execute(finalSql);
+
+        List<List<String>> returnList = new ArrayList<>();
+
+        // TODO: Check if has result set
+        SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+        returnList = ResultSetUtil.resultSetToStringArray(resultSet);
+        resultSet.close();
+
+        return returnList;
+
     }
+
+    public List<String> getIndexNames(String name, String version) throws SQLException {
+
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
+        String db = featureService.getDb();
+        String deploymentSql = featureService.getSql();
+
+        String querySql = OpenmldbSqlUtil.removeDeployFromSql(deploymentSql);
+
+        String mainTableName = OpenmldbTableUtil.getMainTableName(sqlExecutor, querySql, db);
+
+        NS.TableInfo tableInfo = sqlExecutor.getTableInfo(db, mainTableName);
+
+        // For example: ["name", "name,age"]
+        List<String> indexColumnNames = new ArrayList<>();
+
+
+        for (Common.ColumnKey columnKey: tableInfo.getColumnKeyList()) {
+            if(columnKey.getFlag() == 0){
+                List<String> columnNameList = new ArrayList<>();
+                for (String columnName: columnKey.getColNameList()) {
+                    columnNameList.add(columnName);
+                }
+
+                indexColumnNames.add(String.join(",", columnNameList));
+            }
+        }
+
+        return indexColumnNames;
+    }
+
+
 
     public Schema getRequestSchema(String serviceName, String version) throws SQLException {
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        String selectSql = removeDeploySubstring(sql);
+        String selectSql = OpenmldbSqlUtil.removeDeployFromSql(sql);
 
-        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(selectSql, db,
-                OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
-        Pair<String, String> mainTablePair = tables.get(0);
-
-        String mainDb = mainTablePair.getKey();
-        String mainTable = mainTablePair.getValue();
-
-        Schema schema = sqlExecutor.getTableSchema(mainDb, mainTable);
+        Schema schema = OpenmldbTableUtil.getMainTableSchema(sqlExecutor, selectSql, db);
         return schema;
     }
 
@@ -439,7 +515,7 @@ public class FeatureServiceService {
     public List<String> getDependentTables(String name, String version) throws SQLException {
         FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
 
-        String selectSql = removeDeploySubstring(featureService.getSql());
+        String selectSql = OpenmldbSqlUtil.removeDeployFromSql(featureService.getSql());
 
         List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(selectSql,
                 featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
@@ -461,7 +537,7 @@ public class FeatureServiceService {
         String sql = featureService.getSql();
         String db = featureService.getDb();
 
-        String selectSql = removeDeploySubstring(sql);
+        String selectSql = OpenmldbSqlUtil.removeDeployFromSql(sql);
 
         Schema schema = SqlClusterExecutor.genOutputSchema(selectSql, db, OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
         return schema;

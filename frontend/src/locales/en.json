@@ -255,6 +255,8 @@
     "Refresh Status": "Refresh Status",
     "Filter SQL": "Filter SQL",
     "Add Index": "Add Index",
-    "Request Feature Service": "Request Feature Service"
+    "Request Feature Service": "Request Feature Service",
+    "Choose Index": "Choose Index",
+    "Online Query Feature Result": "Online Query Feature Result"
 
 }

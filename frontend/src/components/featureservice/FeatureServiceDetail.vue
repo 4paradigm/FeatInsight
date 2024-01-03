@@ -30,7 +30,7 @@
     </template>
 
     <template v-slot:action="scope">
-      <a-button type="default" @click="showTestFormModal(scope.record.name, scope.record.version)">{{ $t('Test Service Version') }}</a-button>
+      <a-button type="default"><router-link :to="`/featureservices/${scope.record.name}/${scope.record.version}/request/requestmode`">{{ $t('Request Feature Service') }}</router-link></a-button>
     
       <br/>
       <a-popconfirm

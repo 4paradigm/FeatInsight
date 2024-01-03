@@ -49,7 +49,9 @@
   </a-descriptions>
 
   <br/>
-  <a-button type="default" @click="showTestFormModal()">{{ $t('Test Service Version') }}</a-button>
+  <a-button type="default">
+    <router-link :to="`/featureservices/${data.name}/${data.version}/request/requestmode`">{{ $t('Request Feature Service') }}</router-link>
+  </a-button>
 
   <br/><br/>
   <h2>{{ $t('Features') }}</h2>

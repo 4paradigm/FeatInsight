@@ -1,71 +1,33 @@
 <template>
 
-<div>
-
   <div>
-    <a-typography-paragraph>
-      <!-- <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre> -->
-      <pre>用户可以使用“请求模式”或“在线查询模式”来访问特征服务，请求模式下用户需要输入整行主表数据通过 LastJoin 等方法提取副表特征；在线查询模式则不需要传入数据，直接查询在线表的特征数据，并且可以通过主键进行数据过滤。</pre>
-    </a-typography-paragraph>
+  
     <br/>
-    
+    <a-descriptions bordered>
+      <a-descriptions-item :span="24" :label="$t('Name')">{{ name }}</a-descriptions-item>
+      <a-descriptions-item :span="24" :label="$t('Version')"> {{ version }}</a-descriptions-item>
+      <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ featureNames }}</a-descriptions-item>
+      
+    </a-descriptions>
+  
+    <br/>
     <!-- Test form -->
-    <a-form
-      :model="testFormState"
-      layout="vertical">
+    <a-form :model="formState"
+      @submit="submitForm">
+    
       <a-form-item
-        :label='$t("Feature Service Name")'
-        :rules="[{ required: true, message: 'Please input feature service name!' }]">
-        <a-select show-search id="itemSelect" v-model:value="testFormState.name" @change="updateSelectedService">
-          <option v-for="featureViewItem in featureServices" :value="featureViewItem.name">{{ featureViewItem.name }}</option>
+        :label="$t('Choose Index')">
+        <!-- TODO: Do not support mode="multiple" now -->
+        <a-select show-search 
+          v-model:value="formState.chooseColumnNames"
+          @change="changeFilterColumnNames">
+          <option v-for="columnNames in allIndexColumnNamesList" :value="columnNames"></option>
         </a-select>
       </a-form-item>
 
-      <a-form-item
-        :label='$t("Version")'
-        :rules="[{ required: false, message: 'Please input feature service version!' }]">
-        <a-select show-search id="itemSelect" v-model:value="testFormState.version" @change="updateSelectedService">
-          <option v-for="version in featureServiceVersions" :value="version">{{ version }}</option>
-        </a-select>
-      </a-form-item>
 
-      <a-form-item
-        :label='$t("Request Schema")'>
-        <a-typography>
-          <a-typography-paragraph>
-            <pre>{{ requestSchema }}</pre>
-          </a-typography-paragraph>
-        </a-typography>
-      </a-form-item>
-
-      <p>
-        <span style="color:red;">* </span>{{ $t('Request Data') }}
-        &nbsp;&nbsp;<a-button size="small" @click="switchJsonTestData">{{ $t('Switch Json Data') }}</a-button>
-      </p>
-
-
-
-      <div v-if="isUseJsonTestData"> 
-        <a-form-item
-          :label='$t("Request Demo Data")'>
-          <a-typography>
-            <a-typography-paragraph>
-              <pre>{{ requestDemoData }}</pre>
-            </a-typography-paragraph>
-          </a-typography>
-        </a-form-item>
-
-        <a-form-item
-          :label='$t("Test Data")'
-          :rules="[{ required: true, message: 'Please input test data!' }]">
-          <a-textarea v-model:value="testFormState.jsonTestData" :rows="5"></a-textarea>
-        </a-form-item>
-      </div>
-
-
-      <div v-else>
-        <a-space
-        v-for="(column, index) in columns"
+      <a-space
+        v-for="(column, index) in formInputColumns"
         :key="column.name"
         style="display: flex; margin-bottom: 0px"
         align="baseline"
@@ -74,203 +36,151 @@
 
         <a-form-item
           :name="['columns', index, 'name']">
-          <a-input v-model:value="testFormState.columnDataList[index]" placeholder="" />
+          <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
         </a-form-item>
       </a-space>
-      </div>
-
+  
+        <a-form-item>
+          <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
+        </a-form-item>
     </a-form>
+  
+    <div v-if="isShowResult">
+      <br/>
+      <h2>{{ $t('Online Query Feature Result') }}</h2>
+      <a-table :dataSource="resultData" :columns="resultColumns">
+        <template #id="{ text, record }">
+          <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>
+        </template>
+      </a-table>
+    </div>
+  
   </div>
-
-</div>
-</template>
+  </template>
+    
+  <script>
+  import axios from 'axios'
+  import { notification } from 'ant-design-vue'
   
-<script>
-import axios from 'axios'
-import { notification } from 'ant-design-vue'
-import { Modal } from 'ant-design-vue'
-import { h } from 'vue';
-
-export default {
-  props: {
-    featureServiceName: {
-      type: String,
-      default: "",
+  export default {
+    props: {
+      name: {
+        type: String,
+        default: "",
+      },
+      version: {
+        type: String,
+        default: "",
+      }
     },
-    featureServiceVersion: {
-      type: String,
-      default: "",
-    }
-  },
+    
+    data() {
+      return {
+        featureNames: null,
   
-  data() {
-    return {
-      featureServices: [],
+        formState: {
+          chooseColumnNames: [],
 
-      featureServiceVersions: [],
+          columnDataList: []
+        },
 
-      isUseJsonTestData: false,
+        // For exmaples: ["name", "name,age"]
+        allIndexColumnNamesList: [],
+        mainTableColumns: [],
+        formInputColumns: [],
 
-      testFormState: {
-        name: "",
-        version: "",
-        jsonTestData: "",
-        columnDataList: []
+        isShowResult: false,
+        resultColumns: [],
+        resultData: [],
+      };
+    },
+  
+    mounted() {
+      this.init();
+    },
+  
+    methods: {
+      init() {
+        axios.get(`/api/featureservices/${this.name}/${this.version}`)
+          .then(response => {
+            this.featureNames = response.data.featureNames;
+  
+          })
+          .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: errorMessage
+            });
+          })
+  
+
+          axios.get(`/api/featureservices/${this.name}/${this.version}/indexes`)
+          .then(response => {
+            this.allIndexColumnNamesList = response.data;
+          })
+          .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: errorMessage
+            });
+          });
+
+          
+
+
+          axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
+          .then(response => {
+            this.mainTableColumns = response.data.split(",").map(pair => {
+              return {
+                "name": pair.split(":")[0],
+                "type": pair.split(":")[1]
+              }
+            });
+          })
+          .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: errorMessage
+            });
+          });
+
       },
 
-      requestSchema: "",
-      requestDemoData: "",
+      changeFilterColumnNames() {
+        const columnNameList = this.formState.chooseColumnNames.split(",")
 
-      // Example: [{"name": "", "type": ""}]
-      columns: [],
+        this.formInputColumns = this.mainTableColumns.filter(item => columnNameList.includes(item.name));
+      },
+  
+      submitForm() {
+        var requestJson = {}
+  
+        // Construct single row data, example: {"index": ["name, age"], "data": [["John", 28]]}
+        requestJson = {};
+        requestJson["data"] = [];
+        requestJson["data"][0] = [];
+        requestJson["index"] = this.formInputColumns.map(item => item.name);
 
-    };
-  },
-
-  mounted() {
-    this.initData();
-  },
-
-  // Use updated() instead mounted() for using latest feature service and version
-  updated() {
-    this.initData();
-  },
-
-  methods: {
-    updateSelectedService() {
-      if (this.testFormState.name != "") {
-
-        axios.get(`/api/featureservices/${this.testFormState.name}/versions`)
-          .then(response => {
-            this.featureServiceVersions = response.data;
-          })
-          .catch(error => {
-            var errorMessage = error.message;
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data;
-            }
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: errorMessage
-            });
-          });
-
-        axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/schema`)
-          .then(response => {
-            this.requestSchema = response.data;
-
-            const columnList = response.data.split(",").map(obj => {
-              return {
-                "name": obj.split(":")[0],
-                "type": obj.split(":")[1]
-              }
-            })
-
-            this.columns = [...columnList]
-          })
-          .catch(error => {
-            var errorMessage = error.message;
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data;
-            }
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: errorMessage
-            });
-          });
-
+        
+        for (var i=0; i< this.formInputColumns.length; ++i) {
+          console.log("index: " + i);
+          const type = this.formInputColumns[i]["type"];
+          console.log("type: " + type);
           
-        axios.get(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request/demo`)
-          .then(response => {
-            this.requestDemoData = response.data;
-          })
-          .catch(error => {
-            var errorMessage = error.message;
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data;
-            }
-            notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: errorMessage
-            });
-          });   
-          
-          
-      }
-    },
+          const columnDataString = this.formState.columnDataList[i];
 
-    initData() {
-      if (this.featureServiceName) {
-        this.testFormState.name = this.featureServiceName;
-
-        if (this.featureServiceVersion) {
-          this.testFormState.version = this.featureServiceVersion;
-        }
-
-        this.updateSelectedService();
-      }
-
-      axios.get(`/api/featureservices`)
-        .then(response => {
-          this.featureServices = response.data;
-        })
-        .catch(error => {
-          var errorMessage = error.message;
-          if (error.response && error.response.data) {
-            errorMessage = error.response.data;
-          }
-          notification["error"]({
-            message: this.$t('Execute Fail'),
-            description: errorMessage
-          });
-        }); 
-    },
-
-    handleDelete(name) {
-      axios.delete(`/api/featureservices/${name}`)
-      .then(response => {
-        notification["success"]({
-              message: this.$t('Execute Success'),
-              description: `Success to delete feature service: ${name}`
-            });
-
-        this.initData();
-      })
-      .catch(error => {
-        var errorMessage = error.message;
-        if (error.response && error.response.data) {
-          errorMessage = error.response.data;
-        }
-        notification["error"]({
-          message: this.$t('Execute Fail'),
-          description: errorMessage
-        });
-      });
-    },
-
-    submitForm() {
-      var requestJson = {}
-
-      if (this.isUseJsonTestData) {
-        try {
-          requestJson = JSON.parse(this.testFormState.jsonTestData);
-        } catch (e) {
-          notification["error"]({
-            message: this.$t('Request Fail'),
-            description: e.message
-          });
-        }
-
-      } else {
-        // Construct single row data, example: {input: [ ["foo"] ]}
-        requestJson = {"input": []};
-        requestJson["input"][0] = [];
-
-        const columnStringList = this.requestSchema.split(",")
-        for (var i=0; i< columnStringList.length; ++i) {
-          const type = columnStringList[i].split(":")[1];
-
-          const columnDataString = this.testFormState.columnDataList[i];
           var columnData = columnDataString;
 
           if (type === "int16") {
@@ -298,56 +208,66 @@ export default {
             });
           }
 
-
-          requestJson["input"][0].push(columnData);
+          requestJson["data"][0].push(columnData);
         }
-      }
 
-      axios.post(`/api/featureservices/${this.testFormState.name}/${this.testFormState.version}/request`,
-        requestJson
-      )
-      .then(response => {
-        notification["success"]({
+        axios.post(`/api/featureservices/${this.name}/${this.version}/request/onlinequerymode`,
+          requestJson
+        )
+        .then(response => {
+            notification["success"]({
               message: this.$t('Execute Success'),
-              description: `Success to request feature service ${this.testFormState.name}`
+              description: "Success to request feature service"
             });
+  
+            this.isShowResult = true;
 
-        if (response.data.code == 0) {
-          Modal.success({
-            title: 'Request result',
-            content: h('div', {}, [
-              h('p', JSON.stringify(response.data.data)),
-            ]),
-            onOk() {},
-          });
-        } else {
+            if (response.data.length > 0) {
+              const columnCount = response.data[0].length;
+
+              this.resultColumns = []
+              for (var i = 0; i < columnCount; i++) {
+                const columnName = response.data[0][i];
+                this.resultColumns.push({
+                  title: columnName,
+                  dataIndex: columnName,
+                  key: columnName
+                })
+              }
+
+              this.resultData = []
+              for (var i = 1; i < response.data.length; i++) {
+                const row = response.data[i]
+                const rowDataMap = {}
+
+                for (var j = 0; j < columnCount; j++) {
+                  const columnName = response.data[0][j];
+                  const columnData = row[j];
+                  rowDataMap[columnName] = columnData;
+                }
+
+                this.resultData.push(rowDataMap);
+              }
+              
+            } else {
+              this.resultColumns = [];
+              this.resultData = [];
+            }
+
+
+        })
+        .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
           notification["error"]({
-              message: this.$t('Request Fail'),
-              description: `Error message: ${response.data.msg}, request json: ${requestJson}`
-            });
-        }
-      })
-      .catch(error => {
-        var errorMessage = error.message;
-        if (error.response && error.response.data) {
-          errorMessage = error.response.data;
-        }
-        notification["error"]({
-          message: this.$t('Execute Fail'),
-          description: errorMessage
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
         });
-      });
-    },
-
-    switchJsonTestData() {
-      if (this.isUseJsonTestData) {
-        this.isUseJsonTestData = false;
-      } else {
-        this.isUseJsonTestData = true;
       }
-      
+  
     }
-
-  }
-};
-</script>
+  };
+  </script>
