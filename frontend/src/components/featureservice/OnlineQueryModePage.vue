@@ -1,4 +1,10 @@
 <template>
+  <a-drawer
+    v-model:visible="isOpenTableDrawer"
+    size="large"
+    :title="$t('Table') + $t('Detail')">
+    <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerDatabase+currentDrawerTable"></TableDetail>
+  </a-drawer>
 
   <div>
   
@@ -7,9 +13,11 @@
       <a-descriptions-item :span="24" :label="$t('Name')">{{ name }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Version')"> {{ version }}</a-descriptions-item>
       <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ featureNames }}</a-descriptions-item>
-      
+      <a-descriptions-item :span="24" :label="$t('Feature Table')">
+        <a-button type="link" @click="openTableDrawer(mainTable.database, mainTable.table)">{{ mainTable.database + "." + mainTable.table }}</a-button>
+      </a-descriptions-item>
     </a-descriptions>
-  
+
     <br/>
     <!-- Test form -->
     <a-form :model="formState"
@@ -61,8 +69,13 @@
   <script>
   import axios from 'axios'
   import { notification } from 'ant-design-vue'
+  import TableDetail from '@/components/table/TableDetail.vue'
   
   export default {
+    components: {
+      TableDetail
+    },
+
     props: {
       name: {
         type: String,
@@ -77,7 +90,13 @@
     data() {
       return {
         featureNames: null,
-  
+
+        mainTable: {},
+
+        isOpenTableDrawer: false,
+        currentDrawerDatabase: "",
+        currentDrawerTable: "",
+
         formState: {
           chooseColumnNames: [],
 
@@ -101,6 +120,7 @@
   
     methods: {
       init() {
+
         axios.get(`/api/featureservices/${this.name}/${this.version}`)
           .then(response => {
             this.featureNames = response.data.featureNames;
@@ -116,9 +136,24 @@
               description: errorMessage
             });
           })
+
+        axios.get(`/api/featureservices/${this.name}/${this.version}/maintable`)
+          .then(response => {
+            this.mainTable = response.data;
+          })
+          .catch(error => {
+            var errorMessage = error.message;
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data;
+            }
+            notification["error"]({
+              message: this.$t('Execute Fail'),
+              description: errorMessage
+            });
+          })
   
 
-          axios.get(`/api/featureservices/${this.name}/${this.version}/indexes`)
+        axios.get(`/api/featureservices/${this.name}/${this.version}/indexes`)
           .then(response => {
             this.allIndexColumnNamesList = response.data;
           })
@@ -164,6 +199,12 @@
         this.formInputColumns = this.mainTableColumns.filter(item => columnNameList.includes(item.name));
       },
   
+      openTableDrawer(db, table) {
+        this.isOpenTableDrawer = true;
+        this.currentDrawerDatabase = db;
+        this.currentDrawerTable = table;
+      },
+
       submitForm() {
         var requestJson = {}
   

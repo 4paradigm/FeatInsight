@@ -373,30 +373,39 @@ public class FeatureServiceService {
 
         String querySql = OpenmldbSqlUtil.removeDeployFromSql(deploymentSql);
 
-        Schema schema = OpenmldbTableUtil.getMainTableSchema(sqlExecutor, querySql, db);
-
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(requestData, JsonObject.class);
         JsonArray dataJsonArray = jsonObject.getAsJsonArray("data");
         JsonArray indexJsonArray = jsonObject.getAsJsonArray("index");
 
-        // TODO: Support only one index now
-        String indexName = indexJsonArray.get(0).getAsString();
-        String indexDataValue = dataJsonArray.getAsJsonArray().get(0).getAsString();
+        // TODO: Only Support one row, need to support 'select * from t1 where (name, gender) in (("tobe", "male"))'
 
-        boolean isIndexStringType = false;
-        for (Column column: schema.getColumnList()) {
-            if (column.getColumnName().equals(indexName)) {
-                if(column.getSqlType() == Types.CHAR || column.getSqlType() == Types.VARCHAR) {
-                    isIndexStringType = true;
-                }
+        List<String> indexNames = new ArrayList<>();
+        for (JsonElement element: indexJsonArray) {
+            indexNames.add(element.getAsString());
+        }
+
+        List<String> indexDataValues = new ArrayList<>();
+
+
+        for (JsonElement dataElement : dataJsonArray) {
+            JsonArray innerArray = dataElement.getAsJsonArray();
+
+            for (JsonElement innerElement : innerArray) {
+                indexDataValues.add(innerElement.getAsString());
             }
         }
 
-        String finalSql = String.format("%s WHERE %s = %s", querySql, indexName, indexDataValue);
-        if (isIndexStringType) {
-            // TODO: Handle single quote and double quote
-            finalSql = String.format("%s WHERE %s = '%s'", querySql, indexName, indexDataValue);
+        String finalSql = querySql;
+        for (int i=0; i<indexNames.size(); ++i) {
+
+            if (i == 0) {
+                // TODO: Handle single quote and double quote
+                finalSql += String.format(" WHERE %s = '%s'", indexNames.get(i), indexDataValues.get(i));
+            } else {
+                finalSql += String.format(" AND %s = '%s'", indexNames.get(i), indexDataValues.get(i));
+            }
+
         }
 
         Statement statement = sqlExecutor.getStatement();
@@ -413,7 +422,6 @@ public class FeatureServiceService {
         resultSet.close();
 
         return returnList;
-
     }
 
     public List<String> getIndexNames(String name, String version) throws SQLException {
@@ -546,5 +554,15 @@ public class FeatureServiceService {
     public Schema getOutputSchema(String serviceName) throws SQLException {
         String latestVersion = getLatestVersion(serviceName);
         return getOutputSchema(serviceName, latestVersion);
+    }
+
+    public DatabaseTable getMainTable(String name, String version) throws SQLException {
+        FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
+        String sql = featureService.getSql();
+        String db = featureService.getDb();
+
+        String selectSql = OpenmldbSqlUtil.removeDeployFromSql(sql);
+
+        return OpenmldbTableUtil.getMainTable(sqlExecutor, selectSql, db);
     }
 }

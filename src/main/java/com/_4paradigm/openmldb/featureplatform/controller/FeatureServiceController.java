@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.DatabaseTable;
 import com._4paradigm.openmldb.featureplatform.service.FeatureServiceService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.UpdateLatestVersionRequest;
@@ -272,6 +273,16 @@ public class FeatureServiceController {
     public ResponseEntity<List<String>> getIndexNames(@PathVariable String name, @PathVariable String version) throws SQLException {
         try {
             return new ResponseEntity<>(featureServiceService.getIndexNames(name, version), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(String.format("Call getRequestSchema with %s and %s but get exception: %s", name, version, e.getMessage()));
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{name}/{version}/maintable")
+    public ResponseEntity<DatabaseTable> getMainTable(@PathVariable String name, @PathVariable String version) throws SQLException {
+        try {
+            return new ResponseEntity<>(featureServiceService.getMainTable(name, version), HttpStatus.OK);
         } catch (SQLException e) {
             logger.info(String.format("Call getRequestSchema with %s and %s but get exception: %s", name, version, e.getMessage()));
             throw new SQLException(e.getMessage());

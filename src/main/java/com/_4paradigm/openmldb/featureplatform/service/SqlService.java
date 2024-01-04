@@ -112,7 +112,7 @@ public class SqlService {
         }
 
         String lastSql = sqls[sqls.length - 1].trim();
-        if (lastSql.isEmpty()) {
+        if (lastSql.isEmpty() && sqls.length >= 2) {
             lastSql = sqls[sqls.length - 2].trim();
         }
 
