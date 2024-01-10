@@ -19,43 +19,49 @@
     </a-descriptions>
 
     <br/>
-    <!-- Test form -->
-    <a-form :model="formState"
-      @submit="submitForm">
+    <a-button type="primary" @click="randomlyGenerateFeatures">随机生成特征</a-button>
+    &nbsp;<a-button type="primary" @click="showForm">通过索引过滤特征</a-button>
     
-      <a-form-item
-        :label="$t('Choose Index')">
-        <!-- TODO: Do not support mode="multiple" now -->
-        <a-select show-search 
-          v-model:value="formState.chooseColumnNames"
-          @change="changeFilterColumnNames">
-          <option v-for="columnNames in allIndexColumnNamesList" :value="columnNames"></option>
-        </a-select>
-      </a-form-item>
-
-
-      <a-space
-        v-for="(column, index) in formInputColumns"
-        :key="column.name"
-        style="display: flex; margin-bottom: 0px"
-        align="baseline"
-      >
-        <p style="min-width: 200px">{{ column.name }} ({{ column.type }}):</p>
-
+    <div v-if="isShowForm">
+      <br/>
+      <!-- Test form -->
+      <a-form :model="formState"
+        @submit="submitForm">
+      
         <a-form-item
-          :name="['columns', index, 'name']">
-          <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
+          :label="$t('Choose Index')">
+          <!-- TODO: Do not support mode="multiple" now -->
+          <a-select show-search 
+            v-model:value="formState.chooseColumnNames"
+            @change="changeFilterColumnNames">
+            <option v-for="columnNames in allIndexColumnNamesList" :value="columnNames"></option>
+          </a-select>
         </a-form-item>
-      </a-space>
-  
-        <a-form-item>
-          <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
-        </a-form-item>
-    </a-form>
-  
+
+
+        <a-space
+          v-for="(column, index) in formInputColumns"
+          :key="column.name"
+          style="display: flex; margin-bottom: 0px"
+          align="baseline"
+        >
+          <p style="min-width: 200px">{{ column.name }} ({{ column.type }}):</p>
+
+          <a-form-item
+            :name="['columns', index, 'name']">
+            <a-input v-model:value="formState.columnDataList[index]" placeholder="" />
+          </a-form-item>
+        </a-space>
+    
+          <a-form-item>
+            <a-button type="primary" html-type="submit">{{ $t('Submit') }}</a-button>
+          </a-form-item>
+      </a-form>
+    </div>
+
     <div v-if="isShowResult">
       <br/>
-      <h2>{{ $t('Online Query Feature Result') }}</h2>
+      <h2>{{ $t('Feature Result') }}</h2>
       <a-table :dataSource="resultData" :columns="resultColumns">
         <template #id="{ text, record }">
           <a-button type="link" @click="openOfflineJobDrawer(record.id)">{{ record.id }}</a-button>
@@ -93,13 +99,14 @@
 
         mainTable: {},
 
+        isShowForm: false,
+
         isOpenTableDrawer: false,
         currentDrawerDatabase: "",
         currentDrawerTable: "",
 
         formState: {
           chooseColumnNames: [],
-
           columnDataList: []
         },
 
@@ -169,9 +176,7 @@
           });
 
           
-
-
-          axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
+        axios.get(`/api/featureservices/${this.name}/${this.version}/request/schema`)
           .then(response => {
             this.mainTableColumns = response.data.split(",").map(pair => {
               return {
@@ -216,9 +221,7 @@
 
         
         for (var i=0; i< this.formInputColumns.length; ++i) {
-          console.log("index: " + i);
           const type = this.formInputColumns[i]["type"];
-          console.log("type: " + type);
           
           const columnDataString = this.formState.columnDataList[i];
 
@@ -296,6 +299,67 @@
             }
 
 
+        })
+        .catch(error => {
+          var errorMessage = error.message;
+          if (error.response && error.response.data) {
+            errorMessage = error.response.data;
+          }
+          notification["error"]({
+            message: this.$t('Execute Fail'),
+            description: errorMessage
+          });
+        });
+      },
+
+      showForm() {
+        if (this.isShowForm) {
+          this.isShowForm = false;
+        } else {
+          this.isShowForm = true;
+        }
+      },
+      
+      randomlyGenerateFeatures() {
+        axios.post(`/api/featureservices/${this.name}/${this.version}/request/onlinequerymode/samples`)
+        .then(response => {
+            notification["success"]({
+              message: this.$t('Execute Success'),
+              description: "Success to request feature service"
+            });
+  
+            this.isShowResult = true;
+
+            if (response.data.length > 0) {
+              const columnCount = response.data[0].length;
+
+              this.resultColumns = []
+              for (var i = 0; i < columnCount; i++) {
+                const columnName = response.data[0][i];
+                this.resultColumns.push({
+                  title: columnName,
+                  dataIndex: columnName,
+                  key: columnName
+                })
+              }
+
+              this.resultData = []
+              for (var i = 1; i < response.data.length; i++) {
+                const row = response.data[i]
+                const rowDataMap = {}
+
+                for (var j = 0; j < columnCount; j++) {
+                  const columnName = response.data[0][j];
+                  const columnData = row[j];
+                  rowDataMap[columnName] = columnData;
+                }
+
+                this.resultData.push(rowDataMap);
+              }
+            } else {
+              this.resultColumns = [];
+              this.resultData = [];
+            }
         })
         .catch(error => {
           var errorMessage = error.message;

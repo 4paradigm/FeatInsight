@@ -156,10 +156,19 @@ public class FeatureServiceController {
     @PostMapping(value = "/{name}/{version}/request/onlinequerymode", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<List<String>>> requestOnlineQueryMode(@PathVariable String name, @PathVariable String version, @RequestBody String dataRequest) throws SQLException {
         try {
-            //tobe1
             return ResponseEntity.ok(featureServiceService.requestOnlineQueryMode(name, version, dataRequest));
         } catch (Exception e) {
             logger.info(String.format("Call requestOnlineQueryMode with %s, %s and %s but get exception: %s", name, version, dataRequest, e.getMessage()));
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/{name}/{version}/request/onlinequerymode/samples")
+    public ResponseEntity<List<List<String>>> requestOnlineQueryModeSamples(@PathVariable String name, @PathVariable String version) throws SQLException {
+        try {
+            return ResponseEntity.ok(featureServiceService.requestOnlineQueryModeSamples(name, version));
+        } catch (Exception e) {
+            logger.info(String.format("Call requestOnlineQueryModeSample with %s and %s but get exception: %s", name, version, e.getMessage()));
             throw new SQLException(e.getMessage());
         }
     }

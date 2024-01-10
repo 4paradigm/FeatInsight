@@ -32,6 +32,7 @@ import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
 import ImportDataIndex from '@/components/importdata/ImportDataIndex.vue'
 import SqlScenario from '@/components/SqlScenario.vue'
+import ComputedFeaturesPage from '@/components/computedfeatures/ComputedFeaturesPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -44,6 +45,7 @@ const router = createRouter({
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
     { path: '/features', component: FeaturesAndFeatureViewsPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
+    { path: '/computedfeatures', component: ComputedFeaturesPage},
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },

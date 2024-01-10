@@ -387,7 +387,6 @@ public class FeatureServiceService {
 
         List<String> indexDataValues = new ArrayList<>();
 
-
         for (JsonElement dataElement : dataJsonArray) {
             JsonArray innerArray = dataElement.getAsJsonArray();
 
@@ -424,6 +423,31 @@ public class FeatureServiceService {
         return returnList;
     }
 
+    public List<List<String>> requestOnlineQueryModeSamples(String name, String version) throws SQLException {
+        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
+        String db = featureService.getDb();
+        String deploymentSql = featureService.getSql();
+
+        String querySql = OpenmldbSqlUtil.removeDeployFromSql(deploymentSql);
+
+        String finalSql = String.format("%s limit 10", querySql);
+
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+        statement.execute(String.format("USE %s", db));
+
+        statement.execute(finalSql);
+
+        List<List<String>> returnList = new ArrayList<>();
+
+        // TODO: Check if has result set
+        SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+        returnList = ResultSetUtil.resultSetToStringArray(resultSet);
+        resultSet.close();
+
+        return returnList;
+    }
     public List<String> getIndexNames(String name, String version) throws SQLException {
 
         FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);

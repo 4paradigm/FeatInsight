@@ -6,6 +6,10 @@ import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
+import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
+import com._4paradigm.openmldb.jdbc.SQLResultSet;
+import com._4paradigm.openmldb.proto.Common;
+import com._4paradigm.openmldb.proto.NS;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +35,14 @@ public class TableService {
 
         List<String> databases = sqlExecutor.showDatabases();
         for (String database : databases) {
-            List<String> tables = sqlExecutor.getTableNames(database);
-            for (String table : tables) {
-                Schema schema = sqlExecutor.getTableSchema(database, table);
-                String schemaString = schema.toString();
-                SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);
-                simpleTableInfos.add(simpleTableInfo);
+            if (!database.equals("SYSTEM_FEATURE_PLATFORM")) { // Ignore the system tables
+                List<String> tables = sqlExecutor.getTableNames(database);
+                for (String table : tables) {
+                    Schema schema = sqlExecutor.getTableSchema(database, table);
+                    String schemaString = schema.toString();
+                    SimpleTableInfo simpleTableInfo = new SimpleTableInfo(database, table, schemaString);
+                    simpleTableInfos.add(simpleTableInfo);
+                }
             }
         }
 
@@ -118,6 +124,24 @@ public class TableService {
         statement.close();
     }
 
+    public List<String> getIndexNames(String db, String table) throws SQLException {
+        NS.TableInfo tableInfo = sqlExecutor.getTableInfo(db, table);
 
+        // For example: ["name", "name,age"]
+        List<String> indexColumnNames = new ArrayList<>();
+
+        for (Common.ColumnKey columnKey: tableInfo.getColumnKeyList()) {
+            if(columnKey.getFlag() == 0){
+                List<String> columnNameList = new ArrayList<>();
+                for (String columnName: columnKey.getColNameList()) {
+                    columnNameList.add(columnName);
+                }
+
+                indexColumnNames.add(String.join(",", columnNameList));
+            }
+        }
+
+        return indexColumnNames;
+    }
 
 }

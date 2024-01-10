@@ -9,21 +9,8 @@
   </a-typography>
 
   <a-typography-paragraph>
-    <!-- <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre> -->
-    <pre>用户可以使用“请求模式”或“在线查询模式”来访问特征服务，请求模式下用户需要输入整行主表数据通过 LastJoin 等方法提取副表特征；在线查询模式则不需要传入数据，直接查询在线表的特征数据，并且可以通过主键进行数据过滤。</pre>
+    <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
   </a-typography-paragraph>
-
-
-  <a-menu mode="horizontal">
-    <a-menu-item key="1">
-      <router-link :to="`/featureservices/${name}/${version}/request/requestmode`">请求模式</router-link>
-    </a-menu-item>
-
-    <a-menu-item key="2">
-      <router-link :to="`/featureservices/${name}/${version}/request/onlinequerymode`">在线查询模式</router-link>
-    </a-menu-item>
-  </a-menu>
-
 
   <router-view></router-view>
 

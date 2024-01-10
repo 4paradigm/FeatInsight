@@ -12,7 +12,7 @@
       <a-popconfirm
           title="确定复制到输入框？"
           @confirm="handleCopy(scope.record.sql)">
-        <a-button type="primary">复制</a-button>
+        <a-button type="primary">{{ $t('Copy') }}</a-button>
       </a-popconfirm>
     </template>
   </a-table>
@@ -38,13 +38,13 @@ export default {
 
       columns: [
           {
-            title: '功能',
+            title: this.$t('Function'),
             dataIndex: 'function',
             key: 'function',
             fixed: 'left',
           },
           {
-            title: '示例',
+            title: this.$t('Example'),
             dataIndex: 'sql',
             key: 'sql',
             slots: { customRender: 'content' }

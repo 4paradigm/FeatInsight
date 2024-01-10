@@ -23,7 +23,13 @@ public class DatabaseService {
 
     public List<String> getDatabases() {
         List<String> databases = sqlExecutor.showDatabases();
-        return databases;
+        List<String> outputDatabases = new ArrayList<>();
+        for (String database: databases) {
+            if (!database.equals("SYSTEM_FEATURE_PLATFORM")) { // Ignore the system database
+                outputDatabases.add(database);
+            }
+        }
+        return outputDatabases;
     }
 
     public List<SimpleTableInfo> getDatabaseTables(String database) throws SQLException {

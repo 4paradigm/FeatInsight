@@ -5,6 +5,7 @@ import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -58,6 +59,26 @@ public class FeatureController {
         } catch (SQLException e) {
             logger.info(String.format("Call getFeatureViewByName with %s and %s but get exception: %s", feature_view_name, feature_name, e.getMessage()));
             throw e;
+        }
+    }
+
+    @GetMapping(value = "/{feature_view_name}/{feature_name}/sourcesql")
+    public ResponseEntity<String> getSourceSql(@PathVariable String feature_view_name, @PathVariable String feature_name) throws SQLException {
+        try {
+            return ResponseEntity.ok(featureService.getSourceSql(feature_view_name, feature_name));
+        } catch (Exception e) {
+            logger.info(String.format("Call requestOnlineQueryModeSamples with %s and %s but get exception: %s", feature_view_name, feature_name, e.getMessage()));
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/{feature_view_name}/{feature_name}/onlinequerymode/samples")
+    public ResponseEntity<List<List<String>>> requestOnlineQueryModeSamples(@PathVariable String feature_view_name, @PathVariable String feature_name) throws SQLException {
+        try {
+            return ResponseEntity.ok(featureService.requestOnlineQueryModeSamples(feature_view_name, feature_name));
+        } catch (Exception e) {
+            logger.info(String.format("Call requestOnlineQueryModeSamples with %s and %s but get exception: %s", feature_view_name, feature_name, e.getMessage()));
+            throw new SQLException(e.getMessage());
         }
     }
 

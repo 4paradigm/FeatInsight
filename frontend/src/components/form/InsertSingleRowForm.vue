@@ -2,7 +2,7 @@
 
 <div>
   <a-typography-paragraph>
-    <pre>用户可以根据选择的数据表的 Schema，直接插入单行数据到在线数据库中。</pre>
+    <pre>{{ $t('Text of Insert Single Row') }}</pre>
   </a-typography-paragraph>
 
   <br/>

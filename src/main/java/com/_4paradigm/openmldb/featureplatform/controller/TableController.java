@@ -7,6 +7,8 @@ import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -81,6 +83,16 @@ public class TableController {
         } catch (SQLException e) {
             logger.info(String.format("Call deleteTable with %s and table but get exception: %s", db, table, e.getMessage()));
             throw e;
+        }
+    }
+
+    @GetMapping("/{db}/{table}/indexes")
+    public ResponseEntity<List<String>> getIndexNames(@PathVariable String db, @PathVariable String table) throws SQLException {
+        try {
+            return new ResponseEntity<>(tableService.getIndexNames(db, table), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(String.format("Call getIndexNames with %s and %s but get exception: %s", db, table, e.getMessage()));
+            throw new SQLException(e.getMessage());
         }
     }
 

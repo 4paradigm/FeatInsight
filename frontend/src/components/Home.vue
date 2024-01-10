@@ -5,7 +5,7 @@
 
 <a-layout class="layout">
   <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }">
-    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_management', 'languages']">
+    <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_usage', 'advanced_management', 'languages']">
 
       <a-menu-item key="bigscrren">
         <router-link to='/'>{{ $t('Feature Big Screen') }}</router-link>
@@ -25,9 +25,18 @@
         <a-menu-item key="online">
           <router-link to='/developprocess/online'>{{ $t('Online Scenario') }}</router-link>
         </a-menu-item>
+      </a-sub-menu>
+
+      <a-sub-menu key="advanced_usage">
+        <template #title>{{ $t('Advanced Usage') }}</template>
+
 
         <a-menu-item key="sql">
-          <router-link to='/sql'>{{ $t('SQL Scenario') }}</router-link>
+          <router-link to='/sql'>{{ $t('SQL Playground') }}</router-link>
+        </a-menu-item>
+
+        <a-menu-item key="computedfeatures">
+          <router-link to='/computedfeatures'>{{ $t('Computed Features') }}</router-link>
         </a-menu-item>
       </a-sub-menu>
 
