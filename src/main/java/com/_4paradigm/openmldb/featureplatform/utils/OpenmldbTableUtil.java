@@ -1,5 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
+import com._4paradigm.openmldb.common.Pair;
+import com._4paradigm.openmldb.featureplatform.dao.model.DatabaseTable;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 
@@ -28,5 +30,36 @@ public class OpenmldbTableUtil {
         return schemaMaps;
     }
 
+    public static Schema getMainTableSchema(SqlClusterExecutor sqlExecutor, String sql, String db) throws SQLException {
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db,
+                OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+
+        Pair<String, String> mainTablePair = tables.get(0);
+
+        String mainDb = mainTablePair.getKey();
+        String mainTable = mainTablePair.getValue();
+
+        Schema schema = sqlExecutor.getTableSchema(mainDb, mainTable);
+        return schema;
+    }
+
+    public static String getMainTableName(SqlClusterExecutor sqlExecutor, String sql, String db) throws SQLException {
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db,
+                OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+
+        Pair<String, String> mainTablePair = tables.get(0);
+
+        String mainTable = mainTablePair.getValue();
+        return mainTable;
+    }
+
+    public static DatabaseTable getMainTable(SqlClusterExecutor sqlExecutor, String sql, String db) throws SQLException {
+        List<Pair<String, String>> tables = SqlClusterExecutor.getDependentTables(sql, db,
+                OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+
+        Pair<String, String> mainTablePair = tables.get(0);
+
+        return new DatabaseTable(mainTablePair.getKey(), mainTablePair.getValue());
+    }
 
 }

@@ -3,10 +3,14 @@ package com._4paradigm.openmldb.featureplatform.service;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
+import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
+import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -133,6 +137,40 @@ public class FeaturesService {
         statement.execute(sql);
 
         statement.close();
+    }
+
+    public String getSourceSql(String featureViewName, String featureName) throws SQLException {
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
+
+        String querySql = featureView.getSql();
+        String db = featureView.getDb();
+
+        String sourceSql = String.format("SELECT %s FROM (%s)", featureName, querySql);
+
+        return sourceSql;
+    }
+    public List<List<String>> requestOnlineQueryModeSamples(String featureViewName, String featureName) throws SQLException {
+        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
+
+        String querySql = featureView.getSql();
+        String db = featureView.getDb();
+
+        String finalSql = String.format("SELECT %s FROM (%s) limit 10", featureName, querySql);
+
+        Statement statement = sqlExecutor.getStatement();
+        statement.execute("SET @@execute_mode='online'");
+        statement.execute(String.format("USE %s", db));
+
+        statement.execute(finalSql);
+
+        // TODO: Check if has result set
+        SQLResultSet resultSet = (SQLResultSet) statement.getResultSet();
+        List<List<String>> returnList = ResultSetUtil.resultSetToStringArray(resultSet);
+        resultSet.close();
+
+        return returnList;
     }
 
 }

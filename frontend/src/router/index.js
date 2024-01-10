@@ -10,6 +10,9 @@ import FeatureDetail from '@/components/feature/FeatureDetail.vue'
 import FeatureViewDetail from '@/components/featureview/FeatureViewDetail.vue'
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
+import RequestFeatureService from '@/components/featureservice/RequestFeatureService.vue'
+import RequestModePage from '@/components/featureservice/RequestModePage.vue'
+import OnlineQueryModePage from '@/components/featureservice/OnlineQueryModePage.vue'
 import DagPage from '@/components/DAG/DagPage.vue'
 import OfflineJobsPage from '@/components/offlinejob/OfflineJobsPage.vue'
 import OfflineJobDetail from '@/components/offlinejob/OfflineJobDetail.vue'
@@ -29,6 +32,7 @@ import ImportDataOnline from '@/components/importdata/ImportDataOnline.vue'
 import ImportDataOffline from '@/components/importdata/ImportDataOffline.vue'
 import ImportDataIndex from '@/components/importdata/ImportDataIndex.vue'
 import SqlScenario from '@/components/SqlScenario.vue'
+import ComputedFeaturesPage from '@/components/computedfeatures/ComputedFeaturesPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory("/"),
@@ -41,11 +45,16 @@ const router = createRouter({
     { path: '/databases/:db', component: DatabaseDetail, props: true  },
     { path: '/features', component: FeaturesAndFeatureViewsPage},
     { path: '/features/:featureViewName/:featureName', component: FeatureDetail, props: true },
+    { path: '/computedfeatures', component: ComputedFeaturesPage},
     { path: '/featureviews/:name', component: FeatureViewDetail, props: true },
     { path: '/featureservices', component: FeatureServicesPage},
     { path: '/featureservices/:name', component: FeatureServiceDetail, props: true },
     { path: '/featureservices/:name/:version', component: FeatureServiceVersionDetail, props: true },
     { path: '/featureservices/:name/:version/result', component: CreateFeatureServiceResult, props: true },
+    { path: '/featureservices/:name/:version/request', component: RequestFeatureService, props: true, children: [
+      { path: 'requestmode', component: RequestModePage, props: true },
+      { path: 'onlinequerymode', component: OnlineQueryModePage, props: true },
+    ]},
     { path: '/offlinejobs', component: OfflineJobsPage},
     { path: '/offlinejobs/:id', component: OfflineJobDetail, props: true },
     { path: '/offlinejobs/:id/log', component: OfflineJobLog, props: true },

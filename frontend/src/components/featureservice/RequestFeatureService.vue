@@ -1,79 +1,19 @@
 <template>
 <div>
 
-  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
-    <TestFeatureServiceForm ref="TestFeatureServiceForm" :featureServiceName="name" :featureServiceVersion="version" ></TestFeatureServiceForm>
-  </a-modal>
-
-  <a-drawer
-    v-model:visible="isOpenFeatureViewDrawer"
-    size="large"
-    :title="$t('Feature View') + $t('Detail')">
-    <FeatureViewDetail :name="currentDrawerFeatureView" :key="currentDrawerFeatureView"></FeatureViewDetail>
-  </a-drawer>
-
-  <a-drawer
-    v-model:visible="isOpenFeatureDrawer"
-    size="large"
-    :title="$t('Feature') + $t('Detail')">
-    <FeatureDetail :featureViewName="currentDrawerFeatureView" :featureName="currentDrawerFeature" :key="currentDrawerFeatureView+currentDrawerFeature"></FeatureDetail>
-  </a-drawer>
-
-  <a-drawer
-    v-model:visible="isOpenDatabaseDrawer"
-    size="large"
-    :title="$t('Database') + $t('Detail')">
-    <DatabaseDetail :db="currentDrawerDatabase" :key="currentDrawerDatabase"></DatabaseDetail>
-  </a-drawer>
-
-  <a-drawer
-    v-model:visible="isOpenTableDrawer"
-    size="large"
-    :title="$t('Table') + $t('Detail')">
-    <TableDetail :db="currentDrawerDatabase" :name="currentDrawerTable" :key="currentDrawerTable"></TableDetail>
-  </a-drawer>
-
-  <h2>{{ $t('Feature Service') }}: {{ data.name }} ({{ data.version }})</h2>
-
   <br/>
-  <a-descriptions bordered>
-    <a-descriptions-item :span="24" :label="$t('Name')">{{ data.name }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Version')"> {{ data.version }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Feature Names')">{{ data.featureNames }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Database')">
-      <a-button type="link" @click="openDatabaseDrawer(data.db)">{{ data.db }}</a-button>
-    </a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('SQL')">{{ data.sql }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label="$t('Deployment')">{{ data.deployment }}</a-descriptions-item>
-    <a-descriptions-item :span="24" :label='$t("Description")'>{{ data.description }}</a-descriptions-item>
-  </a-descriptions>
+  <a-typography>
+    <a-typography-title :level="2">{{ $t('Request Feature Service') }}</a-typography-title>
+    <a-typography-paragraph>
+    </a-typography-paragraph>
+  </a-typography>
 
-  <br/>
-  <a-button type="default">
-    <router-link :to="`/featureservices/${data.name}/${data.version}/request/requestmode`">{{ $t('Request Feature Service') }}</router-link>
-  </a-button>
+  <a-typography-paragraph>
+    <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
+  </a-typography-paragraph>
 
-  <br/><br/>
-  <h2>{{ $t('Features') }}</h2>
-  <a-table :columns="columns" :data-source="features">
-    <template #featureView="{ text, record }">
-      <a-button type="link" @click="openFeatureViewDrawer(record.featureViewName)">{{ record.featureViewName }}</a-button>
-    </template>
-    <template #name="{ text, record }">
-      <a-button type="link" @click="openFeatureDrawer(record.featureViewName, record.featureName)">{{ record.featureName }}</a-button>
-    </template>
-  </a-table>
+  <router-view></router-view>
 
-  <br/>
-  <h2>{{ $t('Dependent Tables') }}</h2>
-  <a-table :columns="tableColumns" :data-source="tables">
-    <template #db="{ text, record }">
-      <a-button type="link" @click="openDatabaseDrawer(record.db)">{{ record.db }}</a-button>
-    </template>
-    <template #table="{ text, record }">
-      <a-button type="link" @click="openTableDrawer(record.db, record.table)">{{ record.table }}</a-button>
-    </template>
-  </a-table>
 </div>
 </template>
     

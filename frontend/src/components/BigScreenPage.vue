@@ -9,7 +9,7 @@
     <a-typography-title>{{ $t('Feature Platform') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        OpenMLDB 特征平台是基于特征数据库实现的 Feature Store 服务，用户使用 SQL 来定义特征，离线场景中选择特征生成离线样本，在线场景中选择特征实现实时特征计算。
+        {{ $t('Text of Introduce OpenMLDB') }}
       </blockquote>
     </a-typography-paragraph>
   </a-typography>

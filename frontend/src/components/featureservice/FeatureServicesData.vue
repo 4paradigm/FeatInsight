@@ -15,10 +15,6 @@
     <FeatureServiceVersionDetail :name="currentDrawerFeatureService" :version="currentDrawerFeatureServiceVersion" :key="currentDrawerFeatureService+currentDrawerFeatureServiceVersion"></FeatureServiceVersionDetail>
   </a-drawer>
 
-  <a-modal v-model:visible="isOpenTestModal" width="1000px" :title="$t('Test Feature Service')" @ok="clickTestModalOk" >
-    <TestFeatureServiceForm ref="TestFeatureServiceForm" :featureServiceName="chooseFeatureServiceName" :featureServiceVersion="chooseFeatureServiceVersion" ></TestFeatureServiceForm>
-  </a-modal>
-
   <!-- Data table -->
   <a-input v-model:value="searchText" :placeholder="$t('Search')" @change="handleSearch" />
   <br/><br/>
@@ -35,7 +31,7 @@
       <a-button type="link" @click="openFeatureServiceVersionDrawer(record.name, record.version)">{{ record.version }}</a-button>
     </template>
     <template v-slot:action="scope">
-      <a-button type="default" @click="showTestFormModal(scope.record.name, scope.record.version)">{{ $t('Test Service') }}</a-button>
+      <router-link :to="`/featureservices/${scope.record.name}/${scope.record.version}/request/requestmode`">{{ $t('Request Feature Service') }}</router-link>
     </template>
   </a-table>
 
@@ -45,13 +41,11 @@
 <script>
 import axios from 'axios'
 import { notification } from 'ant-design-vue'
-import TestFeatureServiceForm from '@/components/form/TestFeatureServiceForm.vue';
 import FeatureServiceDetail from '@/components/featureservice/FeatureServiceDetail.vue'
 import FeatureServiceVersionDetail from '@/components/featureservice/FeatureServiceVersionDetail.vue'
 
 export default {
   components: {
-    TestFeatureServiceForm,
     FeatureServiceDetail,
     FeatureServiceVersionDetail
   },
@@ -166,10 +160,6 @@ export default {
       this.isOpenFeatureServiceVersionDrawer = true;
       this.currentDrawerFeatureService = name;
       this.currentDrawerFeatureServiceVersion = version;
-    },
-
-    clickTestModalOk() {
-      this.$refs.TestFeatureServiceForm.submitForm();
     }
 
   }

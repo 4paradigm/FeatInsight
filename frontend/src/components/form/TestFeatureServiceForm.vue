@@ -4,7 +4,8 @@
 
   <div>
     <a-typography-paragraph>
-      <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre>
+      <!-- <pre>{{ $t("Text of introduce test feature service") }} <a target="blank" href="https://openmldb.ai/docs/zh/main/quickstart/sdk/rest_api.html">{{$t('OpenMLDB documents')}}</a></pre> -->
+      <pre>用户可以使用“请求模式”或“在线查询模式”来访问特征服务，请求模式下用户需要输入整行主表数据通过 LastJoin 等方法提取副表特征；在线查询模式则不需要传入数据，直接查询在线表的特征数据，并且可以通过主键进行数据过滤。</pre>
     </a-typography-paragraph>
     <br/>
     
@@ -28,7 +29,6 @@
         </a-select>
       </a-form-item>
 
-
       <a-form-item
         :label='$t("Request Schema")'>
         <a-typography>
@@ -43,7 +43,8 @@
         &nbsp;&nbsp;<a-button size="small" @click="switchJsonTestData">{{ $t('Switch Json Data') }}</a-button>
       </p>
 
-      <!-- Use json to request -->
+
+
       <div v-if="isUseJsonTestData"> 
         <a-form-item
           :label='$t("Request Demo Data")'>
@@ -61,7 +62,7 @@
         </a-form-item>
       </div>
 
-      <!-- Use normal form to construct request data -->
+
       <div v-else>
         <a-space
         v-for="(column, index) in columns"

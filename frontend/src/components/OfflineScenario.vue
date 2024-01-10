@@ -17,19 +17,22 @@
     <a-typography-title :level="2">{{ $t('Offline Scenario') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        离线场景是使用分布式计算，对离线数据进行特征计算并导出机器学习所需的样本文件，用户首先<a-button type="link" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="link" @click="showCreateOfflineSampleFormModal">{{ $t('Export Offline Sample') }}</a-button>。
+        {{ $t('Text of Offline Scenario') }}
       </blockquote>
     </a-typography-paragraph>
   </a-typography>
 
   <br/>
-  <h1>{{ $t('Offline Samples') }}</h1>
+  <h1>
+    {{ $t('Offline Samples') }}<a-button type="link" @click="showCreateOfflineSampleFormModal"><PlusCircleOutlined /></a-button>
+  </h1>
   <OfflineSamplesData></OfflineSamplesData>
  
 </div>
 </template>
   
 <script>
+import { PlusCircleOutlined } from '@ant-design/icons-vue';
 import OfflineSamplesData from '@/components/offlinesample/OfflineSamplesData.vue'
 import OfflineTables from '@/components/table/OfflineTables.vue'
 import CreateOfflineSampleForm from '@/components/form/CreateOfflineSampleForm.vue'
@@ -37,6 +40,7 @@ import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
 
 export default {
   components: {
+    PlusCircleOutlined,
     OfflineSamplesData,
     OfflineTables,
     CreateOfflineSampleForm,

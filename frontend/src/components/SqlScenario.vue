@@ -24,10 +24,10 @@
 
   <br/>
   <a-typography>
-    <a-typography-title :level="2">{{ $t('SQL Scenario') }}</a-typography-title>
+    <a-typography-title :level="2">{{ $t('SQL Playground') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        用户可以执行任意的 OpenMLDB SQL 语句，在线模式下会请求在线数据库，可进行在线数据的增删改查；离线模式下会提交分布式执行的 SQL，可进行离线探索或样本生成。
+        {{ $t('Text of SQL Playground') }}
       </blockquote>
     </a-typography-paragraph>
   </a-typography>

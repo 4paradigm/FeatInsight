@@ -17,13 +17,15 @@
     <a-typography-title :level="2">{{ $t('Online Scenario') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        在线场景是上线特征服务，使用在线数据提供硬实时的在线特征抽取接口，用户首先<a-button type="link" @click="clickCreateFeature">{{ $t('Create Feature') }}</a-button>，然后选择特征来<a-button type="link" @click="showCreateFeatureServiceFormModal">{{ $t('Create Feature Service') }}</a-button>。
+        {{ $t('Text of Online Scenario') }}
       </blockquote>
     </a-typography-paragraph>
   </a-typography>
 
   <br/>
-  <h1>{{ $t('Feature Services') }}</h1>
+  <h1>
+    {{ $t('Feature Services') }}<a-button type="link" @click="showCreateFeatureServiceFormModal"><PlusCircleOutlined /></a-button>
+  </h1>
   <FeatureServicesData></FeatureServicesData>
  
 </div>
@@ -34,9 +36,11 @@ import FeatureServicesData from '@/components/featureservice/FeatureServicesData
 import OnlineTables from '@/components/table/OnlineTables.vue';
 import CreateFeatureServiceForm from '@/components/form/CreateFeatureServiceForm.vue';
 import CreateFeatureForm from '@/components/form/CreateFeatureForm.vue'
+import { PlusCircleOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {
+    PlusCircleOutlined,
     FeatureServicesData,
     OnlineTables,
     CreateFeatureServiceForm,
