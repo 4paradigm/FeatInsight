@@ -14,7 +14,7 @@
   </div>
 
   <br/>
-  <a-button type="primary" @click="randomlyGenerateFeatures">{{ $t('Display Sample Features') }}</a-button>
+  <a-button type="primary" @click="randomlyGenerateFeatures">{{ $t('Preview Sample Features') }}</a-button>
   <!-- &nbsp;<a-button type="primary" @click="showForm">通过索引过滤特征</a-button> -->
 
   <div v-if="isShowForm">

@@ -192,7 +192,7 @@ export default {
       })
       .then(response => {
         notification["success"]({
-              message: this.$t('Success Fail'),
+              message: this.$t('Execute Success'),
               description: `Success to add feature service ${this.formState.name} and version ${this.formState.version}`
             });
 

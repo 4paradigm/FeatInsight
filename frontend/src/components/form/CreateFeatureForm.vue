@@ -184,7 +184,7 @@ export default {
       })
       .then(response => {
         notification["success"]({
-          message: this.$t('Execute Fail'),
+          message: this.$t('Execute Success'),
           description: `${this.$t('Success to create feature view')}: ${this.formState.name}`
         });
 
