@@ -80,7 +80,7 @@
     <a-layout-footer style="text-align: center">
       <br />
       <div>
-        <a href="https://github.com/4paradigm/OpenMLDB" target="_blank">OpenMLDB</a> © 2021-2023
+        <a href="https://github.com/4paradigm/OpenMLDB" target="_blank">OpenMLDB</a> © 2021-2024
       </div>
     </a-layout-footer>
   </a-layout>

@@ -29,7 +29,7 @@
     </a-form-item>
   </a-form>
 
-    <a-button type="primary" @click="generateSampleFeatures">{{ $t('Display Sample Features') }}</a-button>
+    <a-button type="primary" @click="generateSampleFeatures">{{ $t('Preview Sample Features') }}</a-button>
     &nbsp;<a-button type="primary" @click="showForm">{{ $t('Filter with Index') }}</a-button>
     
     <div v-if="isShowForm">
