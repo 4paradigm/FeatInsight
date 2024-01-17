@@ -14,7 +14,7 @@
     <a-form-item
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
-      <a-input v-model:value="formState.sql" 
+      <a-textarea v-model:value="formState.sql" 
         placeholder="CREATE TABLE db1.t1 (name string, age int)"/>
     </a-form-item>
   </a-form>

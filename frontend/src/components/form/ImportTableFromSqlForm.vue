@@ -19,7 +19,7 @@
     <a-form-item
       :label="$t('SQL')"
       :rules="[{ required: true, message: 'Please input SQL!' }]">
-      <a-input v-model:value="formState.sql" 
+      <a-textarea v-model:value="formState.sql" 
         placeholder="'INSERT INTO db1.t1 VALUES (1)' or 'LOAD DATA INFILE 'file:///data/' INTO TABLE db1.t1'"/>
     </a-form-item>
   </a-form>

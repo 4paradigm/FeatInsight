@@ -6,10 +6,10 @@
 
   <br/>
   <a-typography>
-    <a-typography-title>{{ $t('Feature Platform') }}</a-typography-title>
+    <a-typography-title>{{ $t('FeatInsight') }}</a-typography-title>
     <a-typography-paragraph>
       <blockquote>
-        {{ $t('Text of Introduce OpenMLDB') }}
+        {{ $t('Text of Introduce FeatInsight') }}
       </blockquote>
     </a-typography-paragraph>
   </a-typography>
