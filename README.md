@@ -5,7 +5,7 @@
 
 ## Introduction
 
-FeatInsight is a sophisticated feature store service, leveraging [OpenMLDB](https://github.com/4paradigm/OpenMLDB) for efficient feature management and orchestration.
+FeatInsight is a feature platform, leveraging [OpenMLDB](https://github.com/4paradigm/OpenMLDB) for efficient feature management and orchestration.
 
 ## Core Concepts
 
