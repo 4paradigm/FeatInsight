@@ -1,4 +1,4 @@
-# FeatInsight
+# FeatInsight - a Feature Platform Based on OpenMLDB
 
 * [English Version](README.md)
 * [中文版本](README-zh.md)
