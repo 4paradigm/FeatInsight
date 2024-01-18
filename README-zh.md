@@ -1,8 +1,8 @@
-# OpenMLDB 特征平台
+# FeastInsight - 基于 OpenMLDB 的特征平台
 
 ## 介绍
 
-OpenMLDB 特征平台是一个先进的特征存储服务，利用 [OpenMLDB](https://github.com/4paradigm/OpenMLDB) 实现高效的特征管理和编排。
+FeastInsight 是一个先进的特征计算和存储服务，利用 [OpenMLDB](https://github.com/4paradigm/OpenMLDB) 实现高效的特征管理和编排。
 
 ## 核心概念
 
@@ -20,7 +20,7 @@ OpenMLDB 特征平台是一个先进的特征存储服务，利用 [OpenMLDB](ht
 下载 Jar 文件。
 
 ```
-wget https://openmldb.ai/download/feature-platform/openmldb-feature-platform-0.8-SNAPSHOT.jar
+wget https://openmldb.ai/download/featinsight/featinsight-0.1.0-SNAPSHOT.jar
 ```
 
 准备配置文件并命名为 `application.yml`。
@@ -35,10 +35,10 @@ openmldb:
   apiserver: 127.0.0.1:9080
 ```
 
-启动特征平台服务。
+启动 FeastInsight 服务。
 
 ```
-java -jar ./openmldb-feature-platform-0.8-SNAPSHOT.jar
+java -jar ./featinsight-0.1.0-SNAPSHOT.jar
 ```
 
 ### Docker
@@ -46,35 +46,15 @@ java -jar ./openmldb-feature-platform-0.8-SNAPSHOT.jar
 准备配置文件 `application.yml` 并启动 Docker 容器.
 
 ```
-docker run -d -p 8888:8888 -v `pwd`/application.yml:/app/application.yml registry.cn-shenzhen.aliyuncs.com/tobe43/openmldb-feature-platform
-```
-
-### 源码编译
-
-下载项目源码并从头编译。
-
-```
-git clone https://github.com/4paradigm/feature-platform
-
-cd ./feature-platform/frontend/
-npm run build
-
-cd ../
-mvn clean package
-```
-
-使用本地配置文件启动服务。
-
-```
-./start_server.sh
+docker run -d -p 8888:8888 -v `pwd`/application.yml:/app/application.yml registry.cn-shenzhen.aliyuncs.com/tobe43/featinsight
 ```
 
 ## 使用教程
 
-使用任意网页浏览器访问特征平台服务地址 http://127.0.0.1:8888/ 。
+使用任意网页浏览器访问 FeatInsight 服务地址 http://127.0.0.1:8888/ 。
 
 1. 导入数据：使用 SQL 命令或前端表单进行创建数据库、创建数据表、导入在线数据和导入离线数据等操作。
-2. 创建特征：使用 SQL 语句来定义特征视图，特征平台将使用 SQL 编译器进行特征分析并创建对应的特征。
+2. 创建特征：使用 SQL 语句来定义特征视图，FeatInsight 将使用 SQL 编译器进行特征分析并创建对应的特征。
 3. 离线场景：选择想要导入的特征，可以同时选择不同特征视图的特征，并使用分布式计算把样本文件导入到本地或分布式存储。
 3. 在线场景：选择想要上线的特征，一键发布成在线特征抽取服务，然后可使用 HTTP 客户端进行请求和返回在线特征抽取结果。
 4. SQL 调试：执行任意的在线或者离线计算 SQL 语句，并且在网页前端查看执行的结果和日志。

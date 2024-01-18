@@ -14,14 +14,14 @@ public class HttpServer {
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
     public static void main(String[] args) {
-        logger.info("Try to start OpenMLDB feature platform http server");
+        logger.info("Try to start FeatInsight http server");
 
         ApplicationContext context = SpringApplication.run(HttpServer.class, args);
 
         SqlService sqlService = context.getBean(SqlService.class);
         try {
             // Init the OpenMLDB system tables
-            logger.info("Try to create OpenMLDB system tables for feature platform");
+            logger.info("Try to create OpenMLDB system tables for FeatInsight");
             sqlService.initDbAndTables();
         } catch (SQLException e) {
             e.printStackTrace();

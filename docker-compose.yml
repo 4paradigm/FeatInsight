@@ -9,7 +9,7 @@ volumes:
 
 services:
   feat_plat:
-    image: registry.cn-shenzhen.aliyuncs.com/tobe43/openmldb-feature-platform
+    image: registry.cn-shenzhen.aliyuncs.com/tobe43/featinsight
     ports:
       - 8888
     volumes:
