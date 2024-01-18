@@ -1,8 +1,8 @@
-# FeastInsight
+# FeastInsight - 基于 OpenMLDB 的特征平台
 
 ## 介绍
 
-FeastInsight 是一个先进的特征存储服务，利用 [OpenMLDB](https://github.com/4paradigm/OpenMLDB) 实现高效的特征管理和编排。
+FeastInsight 是一个先进的特征计算和存储服务，利用 [OpenMLDB](https://github.com/4paradigm/OpenMLDB) 实现高效的特征管理和编排。
 
 ## 核心概念
 
