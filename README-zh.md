@@ -12,7 +12,9 @@ FeatInsight 的主要目的是解决在机器学习项目中常见的问题，�
 
 FeatInsight 提供的[主要功能](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/functions/index.html)包括：数据管理，特征管理，上线特征服务，离线样本导出，SQL实验室，预计算特征等。
 
-## [安装部署](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/install/index.html)
+## 安装部署
+
+FeatInsight 提供多种部署方式，详情请参见[文档](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/install/index.html)
 
 ### Docker 镜像
 
@@ -28,7 +30,7 @@ openmldb:
   apiserver: 127.0.0.1:9080
 ```
 
-启动 Docker 容器.
+启动 Docker 容器。
 
 ```
 docker run -d -p 8888:8888 -v `pwd`/application.yml:/app/application.yml registry.cn-shenzhen.aliyuncs.com/tobe43/featinsight
@@ -54,10 +56,11 @@ java -jar ./featinsight-0.1.0-SNAPSHOT.jar
 
 使用任意网页浏览器访问 FeatInsight 服务地址 http://127.0.0.1:8888/ 。
 
+
+FeatInsight 的大致使用流程如下：
 1. 导入数据：使用 SQL 命令或前端表单进行创建数据库、创建数据表、导入在线数据和导入离线数据等操作。
 2. 创建特征：使用 SQL 语句来定义特征视图，FeatInsight 将使用 SQL 编译器进行特征分析并创建对应的特征。
 3. 离线场景：选择想要导入的特征，可以同时选择不同特征视图的特征，并使用分布式计算把样本文件导入到本地或分布式存储。
 3. 在线场景：选择想要上线的特征，一键发布成在线特征抽取服务，然后可使用 HTTP 客户端进行请求和返回在线特征抽取结果。
 
-
-## [快速入门](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/quickstart.html)
+我们提供了一个简单的例子来展示如何 FeatInsight 的具体使用流程，请参见[快速入门](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/quickstart.html)。
