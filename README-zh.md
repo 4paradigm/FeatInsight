@@ -64,3 +64,6 @@ FeatInsight 的大致使用流程如下：
 3. 在线场景：选择想要上线的特征，一键发布成在线特征抽取服务，然后可使用 HTTP 客户端进行请求和返回在线特征抽取结果。
 
 我们提供了一个简单的例子来展示如何 FeatInsight 的具体使用流程，请参见[快速入门](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/quickstart.html)。
+
+## 产品文档
+更多内容请参考 [FeatInsight 产品文档](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/index.html)
