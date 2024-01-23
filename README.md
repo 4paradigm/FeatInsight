@@ -3,8 +3,6 @@
 * [English Version](README.md)
 * [中文版本](README-zh.md)
 
-[FeatInsight Documentation](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/index.html)
-
 ## Introduction
 
 FeatInsight is a feature computation and store platform, leveraging [OpenMLDB](https://github.com/4paradigm/OpenMLDB) for efficient feature computation, management and orchestration. FeatInsight provides a user-friendly user interface, allowing users to perform the entire process of feature engineering for machine learning, including data import, viewing and update, feature generation, store and online deployment. For offline scenarios, user can choose features for training sample generation for ML training; for online scenarios, user can deploy online feature services for real-time feature computations.
@@ -71,3 +69,6 @@ The general usage process is as follows:
 4. Online Scenario: Select the desired features to go live. Publish them as an online feature extraction service with one click, and then use an HTTP client to request and return online feature extraction results.
 
 We provide a comprehensive guide using dummy data to show a whole usage process, please refer to [QuickStart](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/quickstart.html).
+
+## Documentation
+For more details, please refer to [FeatInsight Documentation](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/index.html).

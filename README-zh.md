@@ -1,7 +1,5 @@
 # FeatInsight - 基于 OpenMLDB 的特征平台
 
-[FeatInsight 文档](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/index.html)
-
 ## 介绍
 
 FeatInsight 是一个先进的特征计算和存储服务，利用 [OpenMLDB](https://github.com/4paradigm/OpenMLDB) 实现高效的特征计算、管理和编排。FeatInsight 提供简便易用的 UI 界面，用户可以进行机器学习特征开发的全流程，包括数据的导入、查看、编辑，特征的生成、存储、上线等功能。针对离线场景中，用户可以选择特征生成离线样本用于后续的机器学习开发；针对在线场景中，用户可以选择特征创建特征服务，实现实时特征计算。
