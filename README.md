@@ -3,7 +3,7 @@
 * [English Version](README.md)
 * [中文版本](README-zh.md)
 
-[Documentation](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/index.html)
+[FeatInsight Documentation](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/index.html)
 
 ## Introduction
 
@@ -16,12 +16,12 @@ The main objective for FeatInsight is to tackle engineering problems in the proc
 
 The main objective of FeatInsight is to address common challenges in machine learning development, including facilitating easy and quick feature extraction, transformation, combination, and selection, managing feature lineage, enabling feature reuse and sharing, version control for feature services, and ensuring consistency and reliability of feature data used in both training and inference processes. Application scenarios include deploying online feature services, building MLOps workflows, establishing FeatureStore platforms, reusing open-source feature solutions, and using it as a business component in applications such as recommendation systems, natural language processing, finance, healthcare, and other areas of machine learning implementation.
 
-FeatInsight offers [key functionalities](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/functions/index.html) including data management, feature management, online feature services deployment, offline samples generation, SQL Playground, pre-computed features, and more.
+FeatInsight offers key functionalities including data management, feature management, online feature services deployment, offline samples generation, SQL Playground, pre-computed features, and more.
 
 
 ## Installation and Deployment
 
-FeatInsight provides multiple ways for deployment. For more details, please refer to the [documentation](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/install/index.html).
+FeatInsight provides multiple ways for deployment. For more details, please refer to the [documentation](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/install/index.html).
 
 ### Docker
 
@@ -70,4 +70,4 @@ The general usage process is as follows:
 3. Offline Scenario: Select the desired features to import. You can choose features from different feature views simultaneously and use distributed computing to import sample files into local or distributed storage.
 4. Online Scenario: Select the desired features to go live. Publish them as an online feature extraction service with one click, and then use an HTTP client to request and return online feature extraction results.
 
-We provide a comprehensive guide using dummy data to show a whole usage process, please refer to [QuickStart](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/quickstart.html).
+We provide a comprehensive guide using dummy data to show a whole usage process, please refer to [QuickStart](https://openmldb.ai/docs/en/main/app_ecosystem/feat_insight/quickstart.html).

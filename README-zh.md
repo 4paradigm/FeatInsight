@@ -1,6 +1,6 @@
 # FeatInsight - 基于 OpenMLDB 的特征平台
 
-[文档](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/index.html)
+[FeatInsight 文档](https://openmldb.ai/docs/zh/main/app_ecosystem/feat_insight/index.html)
 
 ## 介绍
 
