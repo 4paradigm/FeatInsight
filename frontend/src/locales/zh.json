@@ -276,7 +276,11 @@
     "Text of SQL Playground": "用户可以执行任意的 OpenMLDB SQL 语句，在线模式下会请求在线数据库，可进行在线数据的增删改查；离线模式下会提交分布式执行的 SQL，可进行离线探索或样本生成。",
     "Text of Computed Features": "用户可以通过预计算把特征值直接存入 OpenMLDB 在线表中，然后访问在线表数据进行读写特征。如果需要实现更复杂的特征计算逻辑，可以通过命令行或SDK来编写 OpenMLDB SQL 实现。",
     "Preview Sample Features": "预览样本特征",
-    "Filter with Index": "通过索引过滤"
-
+    "Filter with Index": "通过索引过滤",
+    "Login": "登陆",
+    "Username": "用户名",
+    "Password": "密码",
+    "Authentication": "认证",
+    "Logout": "登出"
 
 }
