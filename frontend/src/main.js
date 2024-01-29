@@ -7,9 +7,12 @@ import router from './router'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import { createI18n } from 'vue-i18n'
+import { createPinia } from 'pinia';
 
 import en from './locales/en.json'
 import zh from './locales/zh.json'
+
+import { useUserStore } from '@/stores/user';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
 
@@ -22,9 +25,16 @@ messages: {
     zh
 }
 })
-  
+
+const pinia = createPinia();
+
 const app = createApp(App)
 app.use(router)
+app.use(pinia)
 app.use(Antd)
 app.use(i18n)
+
+const userStore = useUserStore();
+userStore.checkAuth();
+
 app.mount('#app')

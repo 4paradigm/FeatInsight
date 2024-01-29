@@ -1,10 +1,33 @@
-<script setup>
-import Home from "./components/Home.vue";
-</script>
-
 <template>
-<Home />
+    
+    <div v-if="userStore.isAuthenticated">
+        <Home />    
+    </div>
+
+    <div v-else>
+        <WelcomePage />
+    </div>
+
 </template>
 
-<style scoped>
-</style>
+<script>
+import Home from "@/components/Home.vue";
+import WelcomePage from '@/components/WelcomePage.vue'
+import { useUserStore } from '@/stores/user';
+
+export default {
+  components: {
+    Home,
+    WelcomePage
+  },
+
+  data() {
+    return {
+      userStore: useUserStore(),
+    }
+  }
+}
+</script>
+
+
+

@@ -1,5 +1,7 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
+import App from '@/App.vue'
+import WelcomePage from '@/components/WelcomePage.vue'
 import BigScreenPage from '@/components/BigScreenPage.vue'
 import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
 import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
@@ -35,9 +37,11 @@ import SqlScenario from '@/components/SqlScenario.vue'
 import ComputedFeaturesPage from '@/components/computedfeatures/ComputedFeaturesPage.vue'
 
 const router = createRouter({
-  history: createWebHashHistory("/"),
+  history: createWebHistory(),
   routes: [
     { path: '/', component: BigScreenPage },
+    { path: '/welcome', component: WelcomePage },
+    { path: '/bigscreen', component: BigScreenPage },
     { path: '/sql', component: SqlScenario, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },
     { path: '/tables/:db/:name', component: TableDetail, props: true },
@@ -75,7 +79,7 @@ const router = createRouter({
     { path: '/offlinesamples/:id', component: OfflineSampleDetail, props: true },
     { path: '/offlinesamples/:id/result', component: CreateOfflineSampleResult, props: true },
     { path: '/404', redirect: "/" },
-    { path: '/:pathMatch(.*)*', redirect: "/404" }
+    //{ path: '/:pathMatch(.*)*', redirect: "/404" }
   ]
 })
 

@@ -1,14 +1,11 @@
-<script setup>
-</script>
-
 <template>
 
 <a-layout class="layout">
   <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }">
     <a-menu theme="dark" mode="inline" class="navi-menu" :openKeys="['whole_process_wizard', 'advanced_usage', 'advanced_management', 'languages']">
 
-      <a-menu-item key="bigscrren">
-        <router-link to='/'>{{ $t('Feature Big Screen') }}</router-link>
+      <a-menu-item key="bigscreen">
+        <router-link to='/bigscreen'>{{ $t('Feature Big Screen') }}</router-link>
       </a-menu-item>
 
       <a-sub-menu key="whole_process_wizard">
@@ -66,8 +63,13 @@
 
       <a-sub-menu key="languages">
         <template #title>{{ $t('Languages') }}</template>
-        <a-menu-item key="100" @click="changeLocale('en')">English</a-menu-item>
-        <a-menu-item key="101" @click="changeLocale('zh')">中文</a-menu-item>
+        <a-menu-item key="en" @click="changeLocale('en')">English</a-menu-item>
+        <a-menu-item key="zh" @click="changeLocale('zh')">中文</a-menu-item>
+      </a-sub-menu>
+
+      <a-sub-menu key="login">
+        <template #title>{{ $t('Authentication') }}</template>
+        <a-menu-item @click="logout()">{{ $t('Logout') }}</a-menu-item>
       </a-sub-menu>
     </a-menu>
   </a-layout-sider>
@@ -89,10 +91,42 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user';
+import { Modal } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'
+
 export default {
   methods: {
     changeLocale(locale) {
       this.$i18n.locale = locale;
+    },
+    
+    logout() {
+
+      Modal.confirm({
+        title: 'Confirm Logout',
+        content: 'Are you sure you want to log out?',
+        onOk() {
+          // TODO: Use $t('Execute Success')
+          notification["success"]({
+              message: 'Execute Success',
+              description: `Success to logout`
+            });
+
+          const userStore = useUserStore();
+          userStore.logout();
+
+        },
+        onCancel() {
+          notification["success"]({
+              message: 'Execute Success',
+              description: `Cancel logout`
+            });
+        },
+      });
+
+      
+
     }
   }
 }

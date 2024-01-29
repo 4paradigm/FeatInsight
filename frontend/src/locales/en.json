@@ -274,6 +274,11 @@
     "Text of SQL Playground": "Users can execute any OpenMLDB SQL statement. In online mode, it will request the online database, allowing for the addition, deletion, modification, and querying of online data; in offline mode, it will submit SQL for distributed execution, enabling offline exploration or sample generation.",
     "Text of Computed Features": "Users can precompute feature values and directly store them in the OpenMLDB online table, and then access the online table data for reading and writing features. If more complex feature computation logic is needed, it can be implemented through the command line or SDK by writing OpenMLDB SQL.",
     "Preview Sample Features": "Preview Sample Features",
-    "Filter with Index": "Filter with Index"
+    "Filter with Index": "Filter with Index",
+    "Login": "Login",
+    "Username": "Username",
+    "Password": "Password",
+    "Authentication": "Authentication",
+    "Logout": "Logout"
 
 }
