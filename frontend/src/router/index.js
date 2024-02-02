@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 import App from '@/App.vue'
-import WelcomePage from '@/components/WelcomePage.vue'
+import LandingPage from '@/components/LandingPage.vue'
 import BigScreenPage from '@/components/BigScreenPage.vue'
 import DatabasesAndTablesPage from '@/components/table/DatabasesAndTablesPage.vue'
 import FeaturesAndFeatureViewsPage from '@/components/feature/FeaturesAndFeatureViewsPage.vue'
@@ -40,7 +40,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: BigScreenPage },
-    { path: '/welcome', component: WelcomePage },
+    { path: '/welcome', component: LandingPage },
     { path: '/bigscreen', component: BigScreenPage },
     { path: '/sql', component: SqlScenario, props: true },
     { path: '/tables', component: DatabasesAndTablesPage },

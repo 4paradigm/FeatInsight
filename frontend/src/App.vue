@@ -5,20 +5,20 @@
     </div>
 
     <div v-else>
-        <WelcomePage />
+        <LandingPage />
     </div>
 
 </template>
 
 <script>
 import Home from "@/components/Home.vue";
-import WelcomePage from '@/components/WelcomePage.vue'
+import LandingPage from '@/components/LandingPage.vue'
 import { useUserStore } from '@/stores/user';
 
 export default {
   components: {
     Home,
-    WelcomePage
+    LandingPage
   },
 
   data() {
