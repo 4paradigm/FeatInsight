@@ -112,7 +112,7 @@ const handleOk = () => {
           </div>
         </div>
 
-        <div class="partners-wrapper">
+        <!-- <div class="partners-wrapper">
           <p>服务伙伴</p>
           <a-space>
             <img src="@/assets/images/transsion.png" style="width: 70%" />
@@ -127,7 +127,7 @@ const handleOk = () => {
             text="All Partners"
             :style="{ marginTop: '55px' }"
           />
-        </div>
+        </div> -->
       </div>
     </a-layout-content>
 
