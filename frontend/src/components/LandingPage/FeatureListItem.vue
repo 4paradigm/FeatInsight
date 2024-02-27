@@ -26,7 +26,6 @@ const props = defineProps<{
 
   .title {
     font-size: 16px;
-    // font-weight: 300;
     line-height: 30px;
     color: #fff;
   }

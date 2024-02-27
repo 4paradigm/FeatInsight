@@ -56,8 +56,9 @@ const handleOk = () => {
 
           <div class="btn-wrapper">
             <a-space size="large">
-              <!-- TODO：注册弹窗 -->
-              <a-button type="primary">Try For Free</a-button>
+              <a-button @click="handleClickLogin" type="primary"
+                >Try For Free</a-button
+              >
               <LandingPageBtn
                 href="https://www.openmldb.com"
                 target="__blank"
@@ -183,14 +184,6 @@ const handleOk = () => {
           </a-space>
         </p>
       </div>
-      <!-- <a href="https://github.com/4paradigm/OpenMLDB" target="_blank"
-        >OpenMLDB</a
-      >
-      &
-      <a href="https://github.com/4paradigm/FeatInsight" target="_blank"
-        >FeatInsight</a
-      >
-      © 2021-2024 -->
     </a-layout-footer>
   </a-layout>
 </template>
@@ -205,8 +198,6 @@ const handleOk = () => {
   justify-content: flex-end;
   align-items: center;
   height: 100%;
-}
-.content {
 }
 
 .main-content {
@@ -294,16 +285,6 @@ const handleOk = () => {
 .ant-layout-footer {
   background: #181818;
   padding: 0 162px 162px;
-
-  .link-wrapper {
-    // text-align: left;
-    // width: 100%;
-    margin: 0 auto;
-
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-  }
 
   a {
     font-size: 16px;

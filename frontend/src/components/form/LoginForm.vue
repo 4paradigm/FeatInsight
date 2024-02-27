@@ -47,7 +47,6 @@ const submitForm = () => {
     });
 };
 
-// 组合式 api 需要手动 expose
 defineExpose({
   submitForm,
 });
