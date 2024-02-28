@@ -1,5 +1,5 @@
 <template>
-  <a-button class="landing-button" @click="click">{{ text }}</a-button>
+  <a-button class="landing-button">{{ text }}</a-button>
 </template>
 
 <script setup lang="ts">
