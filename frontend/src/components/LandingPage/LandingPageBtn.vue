@@ -6,7 +6,6 @@
 import { ButtonProps } from 'ant-design-vue';
 defineProps<{
   text: string;
-  click: () => void;
   params?: ButtonProps;
 }>();
 </script>
