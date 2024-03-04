@@ -37,7 +37,7 @@ import SqlScenario from '@/components/SqlScenario.vue'
 import ComputedFeaturesPage from '@/components/computedfeatures/ComputedFeaturesPage.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     { path: '/', component: BigScreenPage },
     { path: '/welcome', component: LandingPage },
