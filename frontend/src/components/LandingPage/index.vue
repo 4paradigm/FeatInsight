@@ -60,7 +60,7 @@ const handleOk = () => {
                 >Try For Free</a-button
               >
               <LandingPageBtn
-                href="https://www.openmldb.ai"
+                href="https://openmldb.ai"
                 target="__blank"
                 text="Learn More"
               />
@@ -123,7 +123,7 @@ const handleOk = () => {
             <img src="@/assets/images/intel.png" style="width: 70%" />
           </a-space>
           <LandingPageBtn
-            href="https://www.openmldb.ai/case/"
+            href="https://openmldb.ai/case/"
             target="__blank"
             text="All Partners"
             :style="{ marginTop: '55px' }"
@@ -139,8 +139,8 @@ const handleOk = () => {
             <ChromeOutlined
               :style="{ color: '#fff', marginRight: '5px', fontSize: '18px' }"
             />
-            <a href="https://www.openmldb.ai" target="_blank"
-              >https://www.openmldb.ai</a
+            <a href="https://openmldb.ai" target="_blank"
+              >https://openmldb.ai</a
             >
           </p>
           <p>
