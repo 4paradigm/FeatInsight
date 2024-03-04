@@ -68,11 +68,12 @@
 <script>
 import axios from 'axios';
 import { notification } from 'ant-design-vue';
+import { routerPropsIdValidator } from '../../utils';
 
 export default {
   props: {
     id: {
-      type: Number,
+      validator: routerPropsIdValidator,
       required: true,
     },
   },
