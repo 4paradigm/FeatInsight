@@ -55,6 +55,7 @@ public class LoginService {
                     e.getMessage()));
             return false;
         }
+        sqlExecutor.close();
         return true;
     }
 
