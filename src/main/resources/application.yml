@@ -5,6 +5,3 @@ openmldb:
   zk_path: /openmldb
   apiserver: 127.0.0.1:9080
   skip_index_check: false
-mockuser:
-  username: admin
-  password: admin
