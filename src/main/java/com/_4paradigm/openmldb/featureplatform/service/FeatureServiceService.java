@@ -1,7 +1,9 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.common.Pair;
-import com._4paradigm.openmldb.featureplatform.dao.model.*;
+import com._4paradigm.openmldb.featureplatform.dao.model.DatabaseTable;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
+import com._4paradigm.openmldb.featureplatform.dao.model.LatestFeatureService;
 import com._4paradigm.openmldb.featureplatform.utils.*;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.proto.Common;
@@ -25,11 +27,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.*;
 
 @Repository

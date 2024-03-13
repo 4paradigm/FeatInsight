@@ -2,15 +2,16 @@ package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSqlRequest;
+import com._4paradigm.openmldb.featureplatform.dao.model.SimpleSqlRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
 import com._4paradigm.openmldb.featureplatform.service.SqlService;
-import com._4paradigm.openmldb.featureplatform.dao.model.SimpleSqlRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.sql.SQLException;
 import java.util.List;
 

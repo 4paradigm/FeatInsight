@@ -1,10 +1,10 @@
 package com._4paradigm.openmldb.featureplatform.controller;
+
 import com._4paradigm.openmldb.featureplatform.service.DagToolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController

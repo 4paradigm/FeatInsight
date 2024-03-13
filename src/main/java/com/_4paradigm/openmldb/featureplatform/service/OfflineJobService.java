@@ -1,14 +1,14 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
-import com._4paradigm.openmldb.featureplatform.dao.model.*;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 

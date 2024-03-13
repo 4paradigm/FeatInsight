@@ -1,16 +1,17 @@
 package com._4paradigm.openmldb.featureplatform.service;
+
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import java.sql.*;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 @Repository

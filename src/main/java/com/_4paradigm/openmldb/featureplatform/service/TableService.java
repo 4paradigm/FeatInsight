@@ -6,14 +6,13 @@ import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
-import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
-import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.proto.Common;
 import com._4paradigm.openmldb.proto.NS;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
