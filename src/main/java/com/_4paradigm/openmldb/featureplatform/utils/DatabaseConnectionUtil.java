@@ -26,10 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class DatabaseConnectionUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConnectionUtil.class);
-
     private static Environment env;
     private static final long lifetimeInSeconds = 3600L;
-    private static ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
     private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     @Autowired
