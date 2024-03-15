@@ -2,9 +2,9 @@ server:
   port: 8888
 
 openmldb:
-  zk_cluster: openmldb-zk:2181
+  zk_cluster: 172.17.0.2:2181
   zk_path: /openmldb
-  apiserver: openmldb-zk:9080
+  apiserver: 172.17.0.2:9080
   skip_index_check: false
   username: root
   password: 123456
