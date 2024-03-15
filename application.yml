@@ -6,3 +6,5 @@ openmldb:
   zk_path: /openmldb
   apiserver: openmldb-zk:9080
   skip_index_check: false
+  username: root
+  password: 123456

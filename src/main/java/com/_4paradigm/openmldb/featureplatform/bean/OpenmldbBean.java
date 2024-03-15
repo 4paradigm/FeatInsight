@@ -16,24 +16,26 @@ public class OpenmldbBean {
     @Autowired
     private Environment env;
 
-//    @Bean
-//    public SqlClusterExecutor sqlExecutor() throws SQLException {
-//        String zkHost = env.getProperty("openmldb.zk_cluster");
-//        String zkPath = env.getProperty("openmldb.zk_path");
-//
-//        SdkOption option = new SdkOption();
-//        option.setZkCluster(zkHost);
-//        option.setZkPath(zkPath);
-//        option.setUser("root");
-//        option.setPassword("123456");
-//
-//        SqlClusterExecutor sqlExecutor = null;
-//        try {
-//            sqlExecutor = new SqlClusterExecutor(option);
-//        } catch (SqlException e) {
-//            throw new SQLException(e);
-//        }
-//        return sqlExecutor;
-//    }
+    @Bean
+    public SqlClusterExecutor sqlExecutor() throws SQLException {
+        String zkHost = env.getProperty("openmldb.zk_cluster");
+        String zkPath = env.getProperty("openmldb.zk_path");
+        String username = env.getProperty("openmldb.username");
+        String password = env.getProperty("openmldb.password");
+
+        SdkOption option = new SdkOption();
+        option.setZkCluster(zkHost);
+        option.setZkPath(zkPath);
+        option.setUser(username);
+        option.setPassword(password);
+
+        SqlClusterExecutor sqlExecutor = null;
+        try {
+            sqlExecutor = new SqlClusterExecutor(option);
+        } catch (SqlException e) {
+            throw new SQLException(e);
+        }
+        return sqlExecutor;
+    }
 
 }
