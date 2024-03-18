@@ -2,11 +2,9 @@ package com._4paradigm.openmldb.featureplatform.dao.model;
 
 import com._4paradigm.openmldb.sdk.SqlExecutor;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.Instant;
 
-@Getter
 @Data
 public class ExpiringSqlExecutor {
     private SqlExecutor sqlExecutor = null;
