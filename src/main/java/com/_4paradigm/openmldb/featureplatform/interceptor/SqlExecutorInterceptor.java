@@ -25,6 +25,7 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
 
         String uuid = request.getHeader("UUID");
         if(uuid != null) {
+            sqlExecutorWrapper.setUuid(uuid);
             SqlExecutor sqlExecutor = DatabaseConnectionUtil.getSqlExecutor(uuid);
             if(sqlExecutor != null) {
                 sqlExecutorWrapper.setSqlExecutor(sqlExecutor);

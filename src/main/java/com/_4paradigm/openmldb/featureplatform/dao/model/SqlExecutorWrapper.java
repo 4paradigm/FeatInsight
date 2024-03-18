@@ -11,6 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Data
 public class SqlExecutorWrapper {
+    private String uuid;
     private SqlExecutor sqlExecutor;
 
 }

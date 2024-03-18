@@ -74,6 +74,13 @@ public class DatabaseConnectionUtil {
         }
     }
 
+    public static boolean closeSqlExecutor(String uuid) {
+        ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
+        expiringSqlExecutor.closeSqlExecutor();
+        executorPool.remove(uuid);
+        return true;
+    }
+
     private static void cleanUp() {
         for(String uuid : executorPool.keySet()) {
             ExpiringSqlExecutor  expiringSqlExecutor = executorPool.get(uuid);
