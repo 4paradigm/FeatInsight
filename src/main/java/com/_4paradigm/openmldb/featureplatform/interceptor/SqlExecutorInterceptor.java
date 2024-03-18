@@ -18,6 +18,11 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String URI = request.getRequestURI();
+        if(URI.equals("/api/login")) {
+            return true;
+        }
+
         String uuid = request.getHeader("UUID");
         if(uuid != null) {
             SqlExecutor sqlExecutor = DatabaseConnectionUtil.getSqlExecutor(uuid);
