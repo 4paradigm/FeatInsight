@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.LoginRequest;
+import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
 import com._4paradigm.openmldb.featureplatform.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,14 @@ public class LoginController {
         } else {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
+    }
+
+    @Autowired
+    private SqlExecutorWrapper sqlExecutorWrapper;
+
+    @GetMapping("/test")
+    public ResponseEntity test() {
+        return ResponseEntity.ok(sqlExecutorWrapper.getSqlExecutor().toString());
     }
 
 }
