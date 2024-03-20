@@ -7,8 +7,8 @@ import java.time.Instant;
 
 @Data
 public class ExpiringSqlExecutor {
-    private SqlExecutor sqlExecutor = null;
-    private Instant expiryTime = null;
+    private SqlExecutor sqlExecutor;
+    private volatile Instant expiryTime;
 
     public ExpiringSqlExecutor(SqlExecutor sqlExecutor, long lifetimeInSeconds) {
         this.sqlExecutor = sqlExecutor;
@@ -19,9 +19,8 @@ public class ExpiringSqlExecutor {
         return Instant.now().isAfter(this.expiryTime);
     }
 
-    public void closeSqlExecutor() {
+    public synchronized void closeSqlExecutor() {
         this.sqlExecutor.close();
     }
-
 
 }

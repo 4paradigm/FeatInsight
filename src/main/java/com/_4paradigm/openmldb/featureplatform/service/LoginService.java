@@ -1,7 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
-import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

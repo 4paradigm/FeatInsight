@@ -29,9 +29,9 @@ public class SqlExecutorPoolManager {
     private Logger logger = LoggerFactory.getLogger(SqlExecutorPoolManager.class);
     @Autowired
     private Environment env;
-    private long lifetimeInSeconds = 3600L;
-    private ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private final long lifetimeInSeconds = 3600L;
+    private final ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     @Getter
     private static SqlExecutorPoolManager instance = new SqlExecutorPoolManager();
@@ -63,7 +63,6 @@ public class SqlExecutorPoolManager {
         String uuid = UUID.randomUUID().toString();
         executorPool.put(uuid, new ExpiringSqlExecutor(sqlExecutor, lifetimeInSeconds));
         return uuid;
-
     }
 
     public SqlExecutor getSqlExecutor(String uuid) {
@@ -84,15 +83,16 @@ public class SqlExecutorPoolManager {
         return true;
     }
 
-    private static void cleanUp() {
-
-        for(String uuid : SqlExecutorPoolManager.getInstance().executorPool.keySet()) {
-            ExpiringSqlExecutor  expiringSqlExecutor = SqlExecutorPoolManager.getInstance().executorPool.get(uuid);
+    private synchronized static void cleanUp() {
+        SqlExecutorPoolManager instance = SqlExecutorPoolManager.getInstance();
+        instance.executorPool.keySet().removeIf(uuid -> {
+            ExpiringSqlExecutor expiringSqlExecutor = instance.executorPool.get(uuid);
             if(expiringSqlExecutor != null && expiringSqlExecutor.isExpired()) {
                 expiringSqlExecutor.closeSqlExecutor();
-                SqlExecutorPoolManager.getInstance().executorPool.remove(uuid);
+                return true;
             }
-        }
+            return false;
+        });
     }
 
 }
