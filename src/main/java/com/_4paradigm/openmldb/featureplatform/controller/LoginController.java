@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.featureplatform.dao.model.LoginRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
 import com._4paradigm.openmldb.featureplatform.service.LoginService;
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
+import com._4paradigm.openmldb.sdk.SqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,22 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+
     @PostMapping
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) throws SQLException {
-        String uuid = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
-        if (uuid != null) {
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String uuid = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.ok(uuid);
-        } else {
-            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+        catch (SqlException e) {
+            logger.error(String.format("Try to create sql executor for %s but fail with exception: %s",
+                    loginRequest.getUsername(),
+                    e.getMessage()));
+            return ResponseEntity.status(401).
+                    body(String.format("Failed to login with username: %s", loginRequest.getUsername()));
         }
     }
+
 
     @Autowired
     private SqlExecutorWrapper sqlExecutorWrapper;

@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
+import com._4paradigm.openmldb.sdk.SqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class LoginService {
     @Autowired
     private Environment env;
 
-    public String login(String username, String password) {
+    public String login(String username, String password) throws SqlException {
         return SqlExecutorPoolManager.getInstance().createSqlExecutor(username, password);
     }
 

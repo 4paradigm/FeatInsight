@@ -40,7 +40,8 @@ public class SqlExecutorPoolManager {
         scheduledExecutorService.scheduleAtFixedRate(SqlExecutorPoolManager::cleanUp, 1, 30, TimeUnit.MINUTES);
     }
 
-    public String createSqlExecutor(String username, String password) {
+
+    public String createSqlExecutor(String username, String password) throws SqlException {
         String zkHost = env.getProperty("openmldb.zk_cluster");
         String zkPath = env.getProperty("openmldb.zk_path");
 
@@ -51,19 +52,13 @@ public class SqlExecutorPoolManager {
         option.setPassword(password);
 
         SqlClusterExecutor sqlExecutor = null;
-        try {
-            sqlExecutor = new SqlClusterExecutor(option);
-        } catch (SqlException e) {
-            logger.error(String.format("Try to create sql executor for %s but fail with exception: %s",
-                    username,
-                    e.getMessage()));
-            return null;
-        }
+        sqlExecutor = new SqlClusterExecutor(option);
 
         String uuid = UUID.randomUUID().toString();
         executorPool.put(uuid, new ExpiringSqlExecutor(sqlExecutor, lifetimeInSeconds));
         return uuid;
     }
+
 
     public SqlExecutor getSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
@@ -76,12 +71,14 @@ public class SqlExecutorPoolManager {
         }
     }
 
+
     public boolean closeSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
         expiringSqlExecutor.closeSqlExecutor();
         executorPool.remove(uuid);
         return true;
     }
+
 
     private synchronized static void cleanUp() {
         SqlExecutorPoolManager instance = SqlExecutorPoolManager.getInstance();
