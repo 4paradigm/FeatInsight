@@ -5,6 +5,7 @@ import com._4paradigm.openmldb.sdk.SdkOption;
 import com._4paradigm.openmldb.sdk.SqlException;
 import com._4paradigm.openmldb.sdk.SqlExecutor;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +24,23 @@ import java.util.concurrent.TimeUnit;
  * but if an executor has not been used within one hour, it will be cleaned up
  */
 @Component
-public class DatabaseConnectionUtil {
+public class SqlExecutorPoolManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseConnectionUtil.class);
-    private static Environment env;
-    private static final long lifetimeInSeconds = 3600L;
-    private static final ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
-    private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-
+    private Logger logger = LoggerFactory.getLogger(SqlExecutorPoolManager.class);
     @Autowired
-    public DatabaseConnectionUtil (Environment environment) {
-        env = environment;
-        scheduledExecutorService.scheduleAtFixedRate(DatabaseConnectionUtil::cleanUp, 1, 30, TimeUnit.MINUTES);
+    private Environment env;
+    private long lifetimeInSeconds = 3600L;
+    private ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
+    @Getter
+    private static SqlExecutorPoolManager instance = new SqlExecutorPoolManager();
+
+    private SqlExecutorPoolManager() {
+        scheduledExecutorService.scheduleAtFixedRate(SqlExecutorPoolManager::cleanUp, 1, 30, TimeUnit.MINUTES);
     }
 
-    public static String createSqlExecutor(String username, String password) {
+    public String createSqlExecutor(String username, String password) {
         String zkHost = env.getProperty("openmldb.zk_cluster");
         String zkPath = env.getProperty("openmldb.zk_path");
 
@@ -63,7 +66,7 @@ public class DatabaseConnectionUtil {
 
     }
 
-    public static SqlExecutor getSqlExecutor(String uuid) {
+    public SqlExecutor getSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
         if(expiringSqlExecutor == null || expiringSqlExecutor.isExpired()) {
             return null;
@@ -74,7 +77,7 @@ public class DatabaseConnectionUtil {
         }
     }
 
-    public static boolean closeSqlExecutor(String uuid) {
+    public boolean closeSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
         expiringSqlExecutor.closeSqlExecutor();
         executorPool.remove(uuid);
@@ -82,11 +85,12 @@ public class DatabaseConnectionUtil {
     }
 
     private static void cleanUp() {
-        for(String uuid : executorPool.keySet()) {
-            ExpiringSqlExecutor  expiringSqlExecutor = executorPool.get(uuid);
+
+        for(String uuid : SqlExecutorPoolManager.getInstance().executorPool.keySet()) {
+            ExpiringSqlExecutor  expiringSqlExecutor = SqlExecutorPoolManager.getInstance().executorPool.get(uuid);
             if(expiringSqlExecutor != null && expiringSqlExecutor.isExpired()) {
                 expiringSqlExecutor.closeSqlExecutor();
-                executorPool.remove(uuid);
+                SqlExecutorPoolManager.getInstance().executorPool.remove(uuid);
             }
         }
     }

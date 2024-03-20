@@ -1,6 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
-import com._4paradigm.openmldb.featureplatform.utils.DatabaseConnectionUtil;
+import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +14,10 @@ public class LoginService {
     private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 
     @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
     private Environment env;
 
-    @Autowired
-    public LoginService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
     public String login(String username, String password) {
-        return DatabaseConnectionUtil.createSqlExecutor(username, password);
+        return SqlExecutorPoolManager.getInstance().createSqlExecutor(username, password);
     }
 
 }

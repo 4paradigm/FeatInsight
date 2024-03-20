@@ -3,7 +3,7 @@ package com._4paradigm.openmldb.featureplatform.controller;
 import com._4paradigm.openmldb.featureplatform.dao.model.LoginRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
 import com._4paradigm.openmldb.featureplatform.service.LoginService;
-import com._4paradigm.openmldb.featureplatform.utils.DatabaseConnectionUtil;
+import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public ResponseEntity logout() {
-        if(DatabaseConnectionUtil.closeSqlExecutor(sqlExecutorWrapper.getUuid())) {
+        if(SqlExecutorPoolManager.getInstance().closeSqlExecutor(sqlExecutorWrapper.getUuid())) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(500).body("Failed to close sql executor");
