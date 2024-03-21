@@ -60,7 +60,7 @@ public class SqlExecutorPoolManager {
     }
 
 
-    public SqlExecutor getSqlExecutor(String uuid) {
+    public SqlClusterExecutor getSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
         if(expiringSqlExecutor == null || expiringSqlExecutor.isExpired()) {
             return null;
