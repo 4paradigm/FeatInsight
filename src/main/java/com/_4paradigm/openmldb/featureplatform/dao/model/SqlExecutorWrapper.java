@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.dao.model;
 
 import com._4paradigm.openmldb.sdk.SqlExecutor;
+import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -12,6 +13,6 @@ import org.springframework.web.context.WebApplicationContext;
 @Data
 public class SqlExecutorWrapper {
     private String uuid;
-    private SqlExecutor sqlExecutor;
+    private SqlClusterExecutor sqlExecutor;
 
 }
