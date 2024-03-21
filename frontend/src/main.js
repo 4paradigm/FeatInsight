@@ -14,7 +14,19 @@ import zh from './locales/zh.json'
 
 import { useUserStore } from '@/stores/user';
 
-axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
+// axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
+axios.defaults.baseURL = 'http://172.17.0.2:8888'
+
+axios.interceptors.request.use(config => {
+    const userStore = useUserStore();
+    const uuid = userStore.uuid;
+    if(uuid) {
+        config.headers['UUID'] = uuid;
+    }
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
 
 const i18n = createI18n({
 legacy: false,
