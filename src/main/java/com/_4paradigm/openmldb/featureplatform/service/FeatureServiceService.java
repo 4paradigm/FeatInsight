@@ -191,7 +191,7 @@ public class FeatureServiceService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         String featureSetString = featureService.getFeatureNames();
 
