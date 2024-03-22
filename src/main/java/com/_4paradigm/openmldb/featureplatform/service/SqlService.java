@@ -7,6 +7,7 @@ import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -19,9 +20,12 @@ import java.util.Map;
 @Repository
 public class SqlService {
 
+    @Autowired
+    private SqlClusterExecutor rootSqlExecutor;
+
     public void initDbAndTables() throws SQLException {
-        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
-        Statement statement = sqlExecutor.getStatement();
+
+        Statement statement = rootSqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
         String sql = "CREATE DATABASE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM";
