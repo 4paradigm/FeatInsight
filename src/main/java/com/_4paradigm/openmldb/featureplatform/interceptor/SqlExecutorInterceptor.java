@@ -1,8 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.interceptor;
 
-import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
-import com._4paradigm.openmldb.sdk.SqlExecutor;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,10 +25,10 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
 
         String uuid = request.getHeader("UUID");
         if(uuid != null) {
-            SqlExecutorWrapper.setUuid(uuid);
+            ThreadLocalSqlExecutor.setUuid(uuid);
             SqlClusterExecutor sqlExecutor = sqlExecutorPoolManager.getSqlExecutor(uuid);
             if(sqlExecutor != null) {
-                SqlExecutorWrapper.setSqlExecutor(sqlExecutor);
+                ThreadLocalSqlExecutor.setSqlExecutor(sqlExecutor);
                 return true;
             }
         }
@@ -39,7 +38,7 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
-        SqlExecutorWrapper.cleanThreadLocal();
+        ThreadLocalSqlExecutor.cleanThreadLocal();
     }
 
 }

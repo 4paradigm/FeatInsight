@@ -4,13 +4,13 @@ import com._4paradigm.openmldb.common.Pair;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.proto.Common;
 import com._4paradigm.openmldb.proto.NS;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -21,15 +21,8 @@ import java.util.List;
 @Repository
 public class TableService {
 
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public TableService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
     public List<SimpleTableInfo> getTables() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> databases = sqlExecutor.showDatabases();
@@ -49,6 +42,7 @@ public class TableService {
     }
 
     public SimpleTableInfo getTable(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Schema schema = sqlExecutor.getTableSchema(db, table);
         String schemaString = schema.toString();
         SimpleTableInfo simpleTableInfo = new SimpleTableInfo(db, table, schemaString);
@@ -56,15 +50,17 @@ public class TableService {
     }
 
     public String getTableSchema(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Schema schema = sqlExecutor.getTableSchema(db, table);
         return schema.toString();
     }
 
     public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         List<FeatureService> relatedFeatureServices = new ArrayList<>();
 
         // Get all feature services
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         List<FeatureService> allFeatureServices = featureServiceService.getFeatureServices();
 
         for (FeatureService featureService : allFeatureServices) {
@@ -89,10 +85,11 @@ public class TableService {
     }
 
     public List<FeatureView> getRelatedFeatureViews(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         List<FeatureView> relatedFeatureViews = new ArrayList<>();
 
         // Get all feature services
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
         for (FeatureView featureView : allFeatureViews) {
@@ -114,6 +111,7 @@ public class TableService {
     }
 
     public void deleteTable(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -124,6 +122,7 @@ public class TableService {
     }
 
     public List<String> getIndexNames(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         NS.TableInfo tableInfo = sqlExecutor.getTableInfo(db, table);
 
         // For example: ["name", "name,age"]

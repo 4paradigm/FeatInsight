@@ -1,6 +1,5 @@
 package com._4paradigm.openmldb.featureplatform.dao.model;
 
-import com._4paradigm.openmldb.sdk.SqlExecutor;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import lombok.Data;
 

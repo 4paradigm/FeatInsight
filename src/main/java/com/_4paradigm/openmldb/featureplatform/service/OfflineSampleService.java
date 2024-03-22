@@ -1,10 +1,10 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSample;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.FeatureSetUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -18,14 +18,6 @@ import java.util.List;
 @Repository
 public class OfflineSampleService {
 
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public OfflineSampleService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
     public OfflineSample resultSetToOfflineSample(ResultSet resultSet) throws SQLException {
         String featureNames = resultSet.getString(1);
         String path = resultSet.getString(2);
@@ -38,6 +30,7 @@ public class OfflineSampleService {
     }
 
     public List<OfflineSample> getOfflineSamples() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -57,6 +50,7 @@ public class OfflineSampleService {
     }
 
     public OfflineSample getOfflineSample(int id) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -73,10 +67,11 @@ public class OfflineSampleService {
         return offlineSample;
     }
     public OfflineSample createOfflineSample(OfflineSample offlineSample) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         List<String> joinKeys = new ArrayList<>(Arrays.asList(offlineSample.getMainTableKeys().split(",")));
         String mergedSql = FeatureSetUtil.featureSetToSql(sqlExecutor, featureViewService,
@@ -126,6 +121,7 @@ public class OfflineSampleService {
     }
 
     public void deleteOfflineSample(int id) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 

@@ -1,9 +1,9 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -14,15 +14,8 @@ import java.util.List;
 @Repository
 public class DatabaseService {
 
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public DatabaseService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
     public List<String> getDatabases() {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         List<String> databases = sqlExecutor.showDatabases();
         List<String> outputDatabases = new ArrayList<>();
         for (String database: databases) {
@@ -34,6 +27,8 @@ public class DatabaseService {
     }
 
     public List<SimpleTableInfo> getDatabaseTables(String database) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+
         ArrayList<SimpleTableInfo> simpleTableInfos = new ArrayList<>();
 
         List<String> tables = sqlExecutor.getTableNames(database);
@@ -49,6 +44,7 @@ public class DatabaseService {
     }
 
     public void deleteDatabase(String db) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 

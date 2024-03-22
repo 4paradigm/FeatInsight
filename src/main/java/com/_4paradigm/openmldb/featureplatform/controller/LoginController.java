@@ -1,7 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.LoginRequest;
-import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.service.LoginService;
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
 import com._4paradigm.openmldb.sdk.SqlException;
@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -53,7 +51,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public ResponseEntity logout() {
-        if(sqlExecutorPoolManager.closeSqlExecutor(SqlExecutorWrapper.getUuid())) {
+        if(sqlExecutorPoolManager.closeSqlExecutor(ThreadLocalSqlExecutor.getUuid())) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(500).body("Failed to close sql executor");
