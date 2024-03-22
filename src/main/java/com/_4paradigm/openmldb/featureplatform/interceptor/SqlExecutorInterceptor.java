@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class SqlExecutorInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private SqlExecutorPoolManager sqlExecutorPoolManager;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String URI = request.getRequestURI();
@@ -24,7 +27,7 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
         String uuid = request.getHeader("UUID");
         if(uuid != null) {
             SqlExecutorWrapper.setUuid(uuid);
-            SqlClusterExecutor sqlExecutor = SqlExecutorPoolManager.getInstance().getSqlExecutor(uuid);
+            SqlClusterExecutor sqlExecutor = sqlExecutorPoolManager.getSqlExecutor(uuid);
             if(sqlExecutor != null) {
                 SqlExecutorWrapper.setSqlExecutor(sqlExecutor);
                 return true;

@@ -26,15 +26,12 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SqlExecutorPoolManager {
 
-    private Logger logger = LoggerFactory.getLogger(SqlExecutorPoolManager.class);
+    private final Logger logger = LoggerFactory.getLogger(SqlExecutorPoolManager.class);
     @Autowired
     private Environment env;
     private final long lifetimeInSeconds = 3600L;
-    private final ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, ExpiringSqlExecutor> executorPool = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-
-    @Getter
-    private static SqlExecutorPoolManager instance = new SqlExecutorPoolManager();
 
     private SqlExecutorPoolManager() {
         scheduledExecutorService.scheduleAtFixedRate(SqlExecutorPoolManager::cleanUp, 1, 30, TimeUnit.MINUTES);
@@ -81,9 +78,8 @@ public class SqlExecutorPoolManager {
 
 
     private synchronized static void cleanUp() {
-        SqlExecutorPoolManager instance = SqlExecutorPoolManager.getInstance();
-        instance.executorPool.keySet().removeIf(uuid -> {
-            ExpiringSqlExecutor expiringSqlExecutor = instance.executorPool.get(uuid);
+        executorPool.keySet().removeIf(uuid -> {
+            ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
             if(expiringSqlExecutor != null && expiringSqlExecutor.isExpired()) {
                 expiringSqlExecutor.closeSqlExecutor();
                 return true;

@@ -17,8 +17,11 @@ public class LoginService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private SqlExecutorPoolManager sqlExecutorPoolManager;
+
     public String login(String username, String password) throws SqlException {
-        return SqlExecutorPoolManager.getInstance().createSqlExecutor(username, password);
+        return sqlExecutorPoolManager.createSqlExecutor(username, password);
     }
 
     public String test() {

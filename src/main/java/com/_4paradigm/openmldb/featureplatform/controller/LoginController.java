@@ -26,6 +26,8 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    @Autowired
+    private SqlExecutorPoolManager sqlExecutorPoolManager;
 
     @PostMapping
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
@@ -51,7 +53,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public ResponseEntity logout() {
-        if(SqlExecutorPoolManager.getInstance().closeSqlExecutor(SqlExecutorWrapper.getUuid())) {
+        if(sqlExecutorPoolManager.closeSqlExecutor(SqlExecutorWrapper.getUuid())) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(500).body("Failed to close sql executor");
