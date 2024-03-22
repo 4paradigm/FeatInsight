@@ -8,11 +8,29 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
-@Component
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-@Data
 public class SqlExecutorWrapper {
-    private String uuid;
-    private SqlClusterExecutor sqlExecutor;
+    private static final ThreadLocal<String> uuid = new ThreadLocal<>();
+    private static final ThreadLocal<SqlClusterExecutor> sqlExecutor = new ThreadLocal<>();
+
+    public static void setUuid(String id) {
+        uuid.set(id);
+    }
+
+    public static void setSqlExecutor(SqlClusterExecutor executor) {
+        sqlExecutor.set(executor);
+    }
+
+    public static String getUuid() {
+        return uuid.get();
+    }
+
+    public static SqlClusterExecutor getSqlExecutor() {
+        return sqlExecutor.get();
+    }
+
+    public static void cleanThreadLocal() {
+        uuid.remove();
+        sqlExecutor.remove();
+    }
 
 }

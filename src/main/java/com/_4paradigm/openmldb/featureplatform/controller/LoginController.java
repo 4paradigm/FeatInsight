@@ -43,18 +43,15 @@ public class LoginController {
     }
 
 
-    @Autowired
-    private SqlExecutorWrapper sqlExecutorWrapper;
-
     @GetMapping("/test")
     public ResponseEntity test() {
-        return ResponseEntity.ok(sqlExecutorWrapper.getSqlExecutor().toString());
+        return ResponseEntity.ok(loginService.test());
     }
 
 
     @GetMapping("/logout")
     public ResponseEntity logout() {
-        if(SqlExecutorPoolManager.getInstance().closeSqlExecutor(sqlExecutorWrapper.getUuid())) {
+        if(SqlExecutorPoolManager.getInstance().closeSqlExecutor(SqlExecutorWrapper.getUuid())) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(500).body("Failed to close sql executor");

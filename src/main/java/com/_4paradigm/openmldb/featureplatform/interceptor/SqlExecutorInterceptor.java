@@ -11,11 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Component
 public class SqlExecutorInterceptor implements HandlerInterceptor {
-
-    @Autowired
-    private SqlExecutorWrapper sqlExecutorWrapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -26,15 +22,20 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
 
         String uuid = request.getHeader("UUID");
         if(uuid != null) {
-            sqlExecutorWrapper.setUuid(uuid);
+            SqlExecutorWrapper.setUuid(uuid);
             SqlClusterExecutor sqlExecutor = SqlExecutorPoolManager.getInstance().getSqlExecutor(uuid);
             if(sqlExecutor != null) {
-                sqlExecutorWrapper.setSqlExecutor(sqlExecutor);
+                SqlExecutorWrapper.setSqlExecutor(sqlExecutor);
                 return true;
             }
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return false;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
+        SqlExecutorWrapper.cleanThreadLocal();
     }
 
 }

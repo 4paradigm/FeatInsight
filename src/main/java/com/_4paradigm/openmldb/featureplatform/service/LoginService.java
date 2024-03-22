@@ -1,5 +1,6 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
+import com._4paradigm.openmldb.featureplatform.dao.model.SqlExecutorWrapper;
 import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
 import com._4paradigm.openmldb.sdk.SqlException;
 import org.slf4j.Logger;
@@ -18,6 +19,10 @@ public class LoginService {
 
     public String login(String username, String password) throws SqlException {
         return SqlExecutorPoolManager.getInstance().createSqlExecutor(username, password);
+    }
+
+    public String test() {
+        return SqlExecutorWrapper.getSqlExecutor().toString();
     }
 
 }
