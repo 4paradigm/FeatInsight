@@ -1,13 +1,13 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
-import org.springframework.core.env.Environment;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import com._4paradigm.openmldb.sdk.SdkOption;
 import com._4paradigm.openmldb.sdk.SqlException;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
+import org.springframework.core.env.Environment;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class OpenmldbSdkUtil {
 

@@ -3,14 +3,12 @@ package com._4paradigm.openmldb.featureplatform.service;
 import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
 import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSqlUtil;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,20 +18,13 @@ import java.util.List;
 @Repository
 public class FeaturesService {
 
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public FeaturesService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
     public static Feature resultSetToFeature(ResultSet resultSet) throws SQLException {
         return new Feature(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
                 resultSet.getString(4));
     }
 
     public List<Feature> getFeatures() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -53,6 +44,7 @@ public class FeaturesService {
     }
 
     public Feature getFeature(String featureViewName, String featureName) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -74,7 +66,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureView(String featureViewName) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         // Get the feature service with latest version
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
@@ -90,7 +82,7 @@ public class FeaturesService {
 
     public List<Feature> getFeaturesByFeatureService(String featureServiceName) throws SQLException {
         // Get the feature service with latest version
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         String version = featureServiceService.getLatestVersion(featureServiceName);
 
         return getFeaturesByFeatureServiceAndVersion(featureServiceName, version);
@@ -99,7 +91,7 @@ public class FeaturesService {
     public List<Feature> getFeaturesByFeatureServiceAndVersion(String featureServiceName, String version) throws SQLException {
         List<Feature> outputFeatures = new ArrayList<>();
 
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
 
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(featureServiceName, version);
         String featureNames = featureService.getFeatureNames();
@@ -115,6 +107,7 @@ public class FeaturesService {
     }
 
     public Feature addFeature(Feature feature) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -128,6 +121,7 @@ public class FeaturesService {
     }
 
     public void deleteFeature(Feature feature) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -140,7 +134,7 @@ public class FeaturesService {
     }
 
     public String getSourceSql(String featureViewName, String featureName) throws SQLException {
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
 
         String querySql = featureView.getSql();
@@ -151,7 +145,8 @@ public class FeaturesService {
         return sourceSql;
     }
     public List<List<String>> requestOnlineQueryModeSamples(String featureViewName, String featureName) throws SQLException {
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+        FeatureViewService featureViewService = new FeatureViewService();
         FeatureView featureView = featureViewService.getFeatureViewByName(featureViewName);
 
         String querySql = featureView.getSql();

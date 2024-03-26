@@ -1,27 +1,19 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
-import com._4paradigm.openmldb.featureplatform.dao.model.*;
-import com._4paradigm.openmldb.featureplatform.utils.OpenmldbSdkUtil;
+import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class OfflineJobService {
-
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public OfflineJobService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
 
     public static OfflineJobInfo resultSetToOfflineJobInfo(ResultSet resultSet) throws SQLException {
         return new OfflineJobInfo(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
@@ -30,6 +22,7 @@ public class OfflineJobService {
     }
 
     public List<OfflineJobInfo> getOfflineJobInfos() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -50,6 +43,7 @@ public class OfflineJobService {
     }
 
     public OfflineJobInfo getOfflineJobInfo(int id) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -68,6 +62,7 @@ public class OfflineJobService {
     }
 
     public String getOfflineJobLog(int id) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -85,6 +80,7 @@ public class OfflineJobService {
     }
 
     public void deleteOfflineJob(int id) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 

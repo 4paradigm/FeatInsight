@@ -1,7 +1,10 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.common.Pair;
-import com._4paradigm.openmldb.featureplatform.dao.model.*;
+import com._4paradigm.openmldb.featureplatform.dao.model.DatabaseTable;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
+import com._4paradigm.openmldb.featureplatform.dao.model.LatestFeatureService;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.*;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
 import com._4paradigm.openmldb.proto.Common;
@@ -25,25 +28,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.*;
 
 @Repository
 public class FeatureServiceService {
 
     @Autowired
-    private SqlClusterExecutor sqlExecutor;
-    @Autowired
     private Environment env;
-
-    @Autowired
-    public FeatureServiceService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
 
     public static FeatureService resultSetToFeatureService(ResultSet resultSet) throws SQLException {
         return new FeatureService(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
@@ -52,6 +48,7 @@ public class FeatureServiceService {
     }
 
     public List<FeatureService> getFeatureServices() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -71,6 +68,7 @@ public class FeatureServiceService {
     }
 
     public Map<String, String> getLatestServiceNameVersionMap() throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -119,6 +117,7 @@ public class FeatureServiceService {
     }
 
     public LatestFeatureService getLatestFeatureServiceByName(String name) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -136,6 +135,7 @@ public class FeatureServiceService {
     }
 
     public FeatureService getFeatureServiceByNameAndVersion(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -152,6 +152,7 @@ public class FeatureServiceService {
     }
 
     public boolean checkIfFeatureServiceExists(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -180,6 +181,7 @@ public class FeatureServiceService {
     }
 
     public FeatureService createFeatureService(FeatureService featureService) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         assertServiceNotExist(featureService);
 
         if(checkIfFeatureServiceExists(featureService.getName(), featureService.getVersion())) {
@@ -189,7 +191,7 @@ public class FeatureServiceService {
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
-        FeatureViewService featureViewService = new FeatureViewService(sqlExecutor);
+        FeatureViewService featureViewService = new FeatureViewService();
 
         String featureSetString = featureService.getFeatureNames();
 
@@ -241,6 +243,7 @@ public class FeatureServiceService {
     }
 
     public List<String> getFeatureServiceVersions(String name) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -267,6 +270,7 @@ public class FeatureServiceService {
     }
 
     public void deleteFeatureService(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -293,6 +297,7 @@ public class FeatureServiceService {
     }
 
     public void updateLatestVersion(String name, String newVersion) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         String oldLatestVersion = getLatestVersion(name);
 
         if (!oldLatestVersion.equals(newVersion)) {
@@ -315,13 +320,14 @@ public class FeatureServiceService {
     }
 
     public ResponseEntity<String> requestFeatureService(String name, String requestData) throws IOException, SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         String apiServerEndpoint = env.getProperty("openmldb.apiserver");
         if (apiServerEndpoint == null || apiServerEndpoint.equals("")) {
             throw new IOException("Need to config openmldb.apiserver in application.yml");
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         LatestFeatureService featureService = featureServiceService.getLatestFeatureServiceByName(name);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -340,13 +346,14 @@ public class FeatureServiceService {
     }
 
     public ResponseEntity<String> requestFeatureService(String name, String version, String requestData) throws IOException, SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         String apiServerEndpoint = env.getProperty("openmldb.apiserver");
         if (apiServerEndpoint == null || apiServerEndpoint.equals("")) {
             throw new IOException("Need to config openmldb.apiserver in application.yml");
         }
 
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deployment = featureService.getDeployment();
@@ -365,8 +372,9 @@ public class FeatureServiceService {
     }
 
     public List<List<String>> requestOnlineQueryMode(String name, String version, String requestData) throws IOException, SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         // TODO: Get the db from feature service
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deploymentSql = featureService.getSql();
@@ -424,7 +432,8 @@ public class FeatureServiceService {
     }
 
     public List<List<String>> requestOnlineQueryModeSamples(String name, String version) throws SQLException {
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deploymentSql = featureService.getSql();
@@ -449,8 +458,9 @@ public class FeatureServiceService {
         return returnList;
     }
     public List<String> getIndexNames(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
 
-        FeatureServiceService featureServiceService = new FeatureServiceService(sqlExecutor);
+        FeatureServiceService featureServiceService = new FeatureServiceService();
         FeatureService featureService = featureServiceService.getFeatureServiceByNameAndVersion(name, version);
         String db = featureService.getDb();
         String deploymentSql = featureService.getSql();
@@ -482,6 +492,7 @@ public class FeatureServiceService {
 
 
     public Schema getRequestSchema(String serviceName, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
@@ -527,6 +538,7 @@ public class FeatureServiceService {
     }
 
     public String getLatestVersion(String serviceName) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -545,6 +557,7 @@ public class FeatureServiceService {
     }
 
     public List<String> getDependentTables(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
 
         String selectSql = OpenmldbSqlUtil.removeDeployFromSql(featureService.getSql());
@@ -565,6 +578,7 @@ public class FeatureServiceService {
     }
 
     public Schema getOutputSchema(String serviceName, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         FeatureService featureService = getFeatureServiceByNameAndVersion(serviceName, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();
@@ -581,6 +595,7 @@ public class FeatureServiceService {
     }
 
     public DatabaseTable getMainTable(String name, String version) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         FeatureService featureService = getFeatureServiceByNameAndVersion(name, version);
         String sql = featureService.getSql();
         String db = featureService.getDb();

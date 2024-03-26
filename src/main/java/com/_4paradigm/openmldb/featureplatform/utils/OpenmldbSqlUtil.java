@@ -1,14 +1,5 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
-import com._4paradigm.openmldb.common.Pair;
-import com._4paradigm.openmldb.sdk.Schema;
-import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class OpenmldbSqlUtil {
 
     public static String removeDeployFromSql(String inputSql) {

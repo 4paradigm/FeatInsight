@@ -20,17 +20,20 @@ const submitForm = () => {
       username: formState.value.username,
       password: formState.value.password,
     })
-    .then(() => {
+    .then((response) => {
       notification['success']({
         message: t('Execute Success'),
         description: `Success to login`,
       });
 
+      const uuid = response.data;
+
       // TODO: use token instead of username
       const userStore = useUserStore();
       userStore.login(
         { name: formState.value.username },
-        formState.value.username
+        formState.value.username,
+        uuid
       );
 
       router.push('/bigscreen');

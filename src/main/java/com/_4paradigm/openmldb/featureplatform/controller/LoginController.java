@@ -1,20 +1,16 @@
 package com._4paradigm.openmldb.featureplatform.controller;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.LoginRequest;
-import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSample;
-import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
-import com._4paradigm.openmldb.featureplatform.service.DatabaseService;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.service.LoginService;
+import com._4paradigm.openmldb.featureplatform.utils.SqlExecutorPoolManager;
+import com._4paradigm.openmldb.sdk.SqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-import java.util.List;
-
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/login")
 public class LoginController {
@@ -27,19 +23,37 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    @Autowired
+    private SqlExecutorPoolManager sqlExecutorPoolManager;
+
     @PostMapping
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) throws SQLException {
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         try {
-            boolean loginResult = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
-            if (loginResult) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(401).body("Invalid username or password");
-            }
-        } catch (SQLException e) {
-            logger.info(String.format("Call login with %s but get exception: %s", loginRequest, e.getMessage()));
-            throw e;
+            String uuid = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(uuid);
         }
+        catch (SqlException e) {
+            logger.error(String.format("Try to create sql executor for %s but fail with exception: %s",
+                    loginRequest.getUsername(),
+                    e.getMessage()));
+            return ResponseEntity.status(401).
+                    body(String.format("Failed to login with username: %s", loginRequest.getUsername()));
+        }
+    }
+
+
+    @GetMapping("/test")
+    public ResponseEntity test() {
+        return ResponseEntity.ok(loginService.test());
+    }
+
+
+    @GetMapping("/logout")
+    public ResponseEntity logout() {
+        if(sqlExecutorPoolManager.closeSqlExecutor(ThreadLocalSqlExecutor.getUuid())) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(500).body("Failed to close sql executor");
     }
 
 }

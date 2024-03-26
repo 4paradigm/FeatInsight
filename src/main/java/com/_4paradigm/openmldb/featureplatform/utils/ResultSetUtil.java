@@ -1,13 +1,13 @@
 package com._4paradigm.openmldb.featureplatform.utils;
 
+import com._4paradigm.openmldb.jdbc.SQLResultSet;
+import com._4paradigm.openmldb.sdk.Schema;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import com._4paradigm.openmldb.DataType;
-import com._4paradigm.openmldb.jdbc.SQLResultSet;
-import com._4paradigm.openmldb.sdk.Schema;
 
 public class ResultSetUtil {
     public static String resultSetToString(SQLResultSet resultSet) throws SQLException {

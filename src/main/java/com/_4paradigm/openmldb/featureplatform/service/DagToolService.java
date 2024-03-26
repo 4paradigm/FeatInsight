@@ -1,16 +1,15 @@
 package com._4paradigm.openmldb.featureplatform.service;
-import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Repository;
-import java.sql.*;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 @Repository
@@ -20,15 +19,6 @@ public class DagToolService {
     private Map<String, List<String>> dependency = new HashMap<>();
     private List<String> convertedSql = new ArrayList<>();
     private List<Pair<String, String>> edgeList = new ArrayList<>();
-
-    @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public DagToolService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
-
 
     private class Pair<F, S> {
         private final F first;

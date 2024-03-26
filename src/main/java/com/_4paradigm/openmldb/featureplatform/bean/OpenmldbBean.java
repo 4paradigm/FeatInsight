@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+
 import java.sql.SQLException;
 
 @Configuration
@@ -19,10 +20,14 @@ public class OpenmldbBean {
     public SqlClusterExecutor sqlExecutor() throws SQLException {
         String zkHost = env.getProperty("openmldb.zk_cluster");
         String zkPath = env.getProperty("openmldb.zk_path");
+        String username = env.getProperty("openmldb.username");
+        String password = env.getProperty("openmldb.password");
 
         SdkOption option = new SdkOption();
         option.setZkCluster(zkHost);
         option.setZkPath(zkPath);
+        option.setUser(username);
+        option.setPassword(password);
 
         SqlClusterExecutor sqlExecutor = null;
         try {

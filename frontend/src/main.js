@@ -16,6 +16,17 @@ import { useUserStore } from '@/stores/user';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
 
+axios.interceptors.request.use(config => {
+    const userStore = useUserStore();
+    const uuid = userStore.uuid;
+    if(uuid) {
+        config.headers['UUID'] = uuid;
+    }
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+
 const i18n = createI18n({
 legacy: false,
 locale: 'zh',

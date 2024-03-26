@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.service;
 
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
+import com._4paradigm.openmldb.featureplatform.dao.model.ThreadLocalSqlExecutor;
 import com._4paradigm.openmldb.featureplatform.utils.OpenmldbTableUtil;
 import com._4paradigm.openmldb.featureplatform.utils.ResultSetUtil;
 import com._4paradigm.openmldb.jdbc.SQLResultSet;
@@ -8,6 +9,7 @@ import com._4paradigm.openmldb.sdk.Schema;
 import com._4paradigm.openmldb.sdk.impl.SqlClusterExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,15 +21,11 @@ import java.util.Map;
 public class SqlService {
 
     @Autowired
-    private SqlClusterExecutor sqlExecutor;
-
-    @Autowired
-    public SqlService(SqlClusterExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
-    }
+    private SqlClusterExecutor rootSqlExecutor;
 
     public void initDbAndTables() throws SQLException {
-        Statement statement = sqlExecutor.getStatement();
+
+        Statement statement = rootSqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
         String sql = "CREATE DATABASE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM";
@@ -64,6 +62,7 @@ public class SqlService {
     }
 
     public OfflineJobInfo executeOfflineSql(String sql, String sparkConfig) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='offline'");
 
@@ -97,6 +96,7 @@ public class SqlService {
      * @throws SQLException
      */
     public List<List<String>> executeOnlineSql(String sql, String sparkConfig) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
 
@@ -128,6 +128,7 @@ public class SqlService {
     }
 
     public int importData(String sql, boolean isOnline, String sparkConfig) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
 
         if (isOnline) {
@@ -157,6 +158,7 @@ public class SqlService {
     }
 
     public List<String> validateSql(String sql) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Map<String, Map<String, Schema>> schemaMaps = OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor);
         List<String> result = SqlClusterExecutor.validateSQLInRequest(sql, schemaMaps);
 
