@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/dag_conversion")
 public class DagToolController {
