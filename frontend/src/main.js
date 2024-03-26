@@ -14,8 +14,7 @@ import zh from './locales/zh.json'
 
 import { useUserStore } from '@/stores/user';
 
-// axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
-axios.defaults.baseURL = 'http://172.17.0.2:8888'
+axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
 
 axios.interceptors.request.use(config => {
     const userStore = useUserStore();

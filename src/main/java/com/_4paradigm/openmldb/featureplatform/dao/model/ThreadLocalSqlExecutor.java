@@ -22,13 +22,13 @@ public class ThreadLocalSqlExecutor {
     }
 
     public static SqlClusterExecutor getSqlExecutor() {
-        try {
-            return sqlExecutor.get();
+        SqlClusterExecutor sqlClusterExecutor = sqlExecutor.get();
+        if(sqlClusterExecutor != null) {
+            return sqlClusterExecutor;
         }
-        catch (Exception e) {
-            logger.error(String.format("failed to get sql executor from ThreadLocal: %s", e.getMessage()));
-            return null;
-        }
+
+        throw new NullPointerException("Get a NULL SQL Executor");
+
     }
 
     public static void cleanThreadLocal() {
