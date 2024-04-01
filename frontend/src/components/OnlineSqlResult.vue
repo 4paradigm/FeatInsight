@@ -1,23 +1,25 @@
 <template>
-<div>
-
-  <a-table :dataSource="resultData" :columns="resultColumns"></a-table>
-
-</div>
+  <div>
+    <a-table
+      :dataSource="resultData"
+      :columns="resultColumns"
+      :scroll="{ x: 'max-content' }"
+    />
+  </div>
 </template>
-  
+
 <script>
-import axios from 'axios'
-import { notification } from 'ant-design-vue'
+import axios from 'axios';
+import { notification } from 'ant-design-vue';
 
 export default {
   props: {
     sql: {
       type: String,
       required: true,
-    }
+    },
   },
-  
+
   data() {
     return {
       resultColumns: [],
@@ -33,26 +35,26 @@ export default {
     initData() {
       axios
         .post(`/api/sql/online`, {
-          sql: this.sql
+          sql: this.sql,
         })
         .then((response) => {
           if (response.data.length > 0) {
             const columnCount = response.data[0].length;
 
-            this.resultColumns = []
+            this.resultColumns = [];
             for (var i = 0; i < columnCount; i++) {
               const columnName = response.data[0][i];
               this.resultColumns.push({
                 title: columnName,
                 dataIndex: columnName,
-                key: columnName
-              })
+                key: columnName,
+              });
             }
 
-            this.resultData = []
+            this.resultData = [];
             for (var i = 1; i < response.data.length; i++) {
-              const row = response.data[i]
-              const rowDataMap = {}
+              const row = response.data[i];
+              const rowDataMap = {};
 
               for (var j = 0; j < columnCount; j++) {
                 const columnName = response.data[0][j];
@@ -63,24 +65,22 @@ export default {
               this.resultData.push(rowDataMap);
             }
           } else {
-
           }
         })
         .catch((error) => {
           if ('response' in error && 'data' in error.response) {
-            notification["error"]({
+            notification['error']({
               message: this.$t('Execute Fail'),
-              description: error.response.data
+              description: error.response.data,
             });
           } else {
-            notification["error"]({
+            notification['error']({
               message: this.$t('Execute Fail'),
-              description: error.message
+              description: error.message,
             });
           }
         });
-    }
-
-  }
+    },
+  },
 };
 </script>

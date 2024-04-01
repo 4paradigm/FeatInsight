@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineExpose } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
