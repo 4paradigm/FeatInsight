@@ -1,31 +1,32 @@
 <template>
-<div>
+  <div>
+    <h2>{{ $t('Offline Job Log') }}: {{ id }}</h2>
 
-  <h2>{{ $t('Offline Job Log') }}: {{ id }} </h2>
+    <a-button @click="refreshLog" type="primary">{{
+      $t('Refresh Log')
+    }}</a-button>
 
-  <a-button @click="refreshLog" type="primary">{{ $t('Refresh Log') }}</a-button>
-
-  <br/><br/>
-  <pre>{{ jobLog }}</pre>
-
-</div>
+    <br /><br />
+    <pre>{{ jobLog }}</pre>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { notification } from 'ant-design-vue'
+import { notification } from 'ant-design-vue';
+import { routerPropsIdValidator } from '../../utils';
 
 export default {
   props: {
     id: {
-      type: Number,
+      validator: routerPropsIdValidator,
       required: true,
-    }
+    },
   },
 
   data() {
     return {
-      jobLog: ""
+      jobLog: '',
     };
   },
 
@@ -41,10 +42,10 @@ export default {
           this.jobLog = response.data;
         })
         .catch((error) => {
-          notification["error"]({
-              message: this.$t('Execute Fail'),
-              description: error.message
-            });
+          notification['error']({
+            message: this.$t('Execute Fail'),
+            description: error.message,
+          });
         })
         .finally(() => {});
     },
@@ -52,12 +53,11 @@ export default {
     refreshLog() {
       this.initData();
 
-      notification["success"]({
+      notification['success']({
         message: this.$t('Execute Success'),
-        description: "Success to refresh the log"
+        description: 'Success to refresh the log',
       });
-    }
-  }
-
+    },
+  },
 };
 </script>
