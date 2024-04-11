@@ -1,6 +1,7 @@
 package com._4paradigm.openmldb.featureplatform.dao.model;
 
 import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
 

@@ -1,6 +1,9 @@
 package com._4paradigm.openmldb.featureplatform.client;
 
-import com._4paradigm.openmldb.featureplatform.dao.model.*;
+import com._4paradigm.openmldb.featureplatform.dao.model.Feature;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureService;
+import com._4paradigm.openmldb.featureplatform.dao.model.FeatureView;
+import com._4paradigm.openmldb.featureplatform.dao.model.SimpleTableInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
