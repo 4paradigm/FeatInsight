@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
-        interceptorRegistry.addInterceptor(sqlExecutorInterceptor);
+        interceptorRegistry.addInterceptor(sqlExecutorInterceptor)
+                .addPathPatterns("/api/**");
     }
 
     @Override
