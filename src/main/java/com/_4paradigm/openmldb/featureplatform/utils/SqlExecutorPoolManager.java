@@ -37,6 +37,12 @@ public class SqlExecutorPoolManager {
 
 
     public String createSqlExecutor(String username, String password) throws SqlException {
+        String uuid = UUID.randomUUID().toString();
+        this.createSqlExecutor(username, password, uuid);
+        return uuid;
+    }
+
+    public SqlClusterExecutor createSqlExecutor(String username, String password, String uuid) throws SqlException {
         String zkHost = env.getProperty("openmldb.zk_cluster");
         String zkPath = env.getProperty("openmldb.zk_path");
 
@@ -49,18 +55,16 @@ public class SqlExecutorPoolManager {
         SqlClusterExecutor sqlExecutor = null;
         sqlExecutor = new SqlClusterExecutor(option);
 
-        String uuid = UUID.randomUUID().toString();
         executorPool.put(uuid, new ExpiringSqlExecutor(sqlExecutor, lifetimeInSeconds));
-        return uuid;
+        return sqlExecutor;
     }
 
 
     public SqlClusterExecutor getSqlExecutor(String uuid) {
         ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
-        if(expiringSqlExecutor == null || expiringSqlExecutor.isExpired()) {
+        if (expiringSqlExecutor == null || expiringSqlExecutor.isExpired()) {
             return null;
-        }
-        else {
+        } else {
             expiringSqlExecutor.setExpiryTime(Instant.now().plusSeconds(lifetimeInSeconds));
             return expiringSqlExecutor.getSqlExecutor();
         }
@@ -78,7 +82,7 @@ public class SqlExecutorPoolManager {
     private synchronized static void cleanUp() {
         executorPool.keySet().removeIf(uuid -> {
             ExpiringSqlExecutor expiringSqlExecutor = executorPool.get(uuid);
-            if(expiringSqlExecutor != null && expiringSqlExecutor.isExpired()) {
+            if (expiringSqlExecutor != null && expiringSqlExecutor.isExpired()) {
                 expiringSqlExecutor.closeSqlExecutor();
                 return true;
             }

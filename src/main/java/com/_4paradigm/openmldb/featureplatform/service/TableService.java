@@ -49,10 +49,29 @@ public class TableService {
         return simpleTableInfo;
     }
 
+    public NS.TableInfo getTableInfo(String db, String table) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+        return sqlExecutor.getTableInfo(db, table);
+    }
+
     public String getTableSchema(String db, String table) throws SQLException {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Schema schema = sqlExecutor.getTableSchema(db, table);
         return schema.toString();
+    }
+
+    public boolean isExistTable(String db, String table) throws SQLException {
+        try {
+            SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+            Schema schema = sqlExecutor.getTableSchema(db, table);
+            return null != schema;
+        } catch (SQLException e) {
+            if (e.getMessage().contains("not found")) {
+                return false;
+            } else {
+                throw e;
+            }
+        }
     }
 
     public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {
@@ -67,8 +86,7 @@ public class TableService {
 
             String selectSql = OpenmldbSqlUtil.removeDeployFromSql(featureService.getSql());
 
-            List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(selectSql,
-                    featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+            List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(selectSql, featureService.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
             for (Pair<String, String> tableItem : dependentTables) {
                 String currentDb = tableItem.getKey();
@@ -93,8 +111,7 @@ public class TableService {
         List<FeatureView> allFeatureViews = featureViewService.getFeatureViews();
 
         for (FeatureView featureView : allFeatureViews) {
-            List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(featureView.getSql(),
-                    featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
+            List<Pair<String, String>> dependentTables = SqlClusterExecutor.getDependentTables(featureView.getSql(), featureView.getDb(), OpenmldbTableUtil.getSystemSchemaMaps(sqlExecutor));
 
             for (Pair<String, String> tableItem : dependentTables) {
                 String currentDb = tableItem.getKey();
@@ -128,10 +145,10 @@ public class TableService {
         // For example: ["name", "name,age"]
         List<String> indexColumnNames = new ArrayList<>();
 
-        for (Common.ColumnKey columnKey: tableInfo.getColumnKeyList()) {
-            if(columnKey.getFlag() == 0){
+        for (Common.ColumnKey columnKey : tableInfo.getColumnKeyList()) {
+            if (columnKey.getFlag() == 0) {
                 List<String> columnNameList = new ArrayList<>();
-                for (String columnName: columnKey.getColNameList()) {
+                for (String columnName : columnKey.getColNameList()) {
                     columnNameList.add(columnName);
                 }
 
