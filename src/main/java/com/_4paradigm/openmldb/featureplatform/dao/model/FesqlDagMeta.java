@@ -1,4 +1,5 @@
 package com._4paradigm.openmldb.featureplatform.dao.model;
+
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class FesqlDagMeta {
         private ArrayList<String> parents = new ArrayList<>();
         private ArrayList<String> inputTables = new ArrayList<>();
         private Map<String, String> tableNameMap = new HashMap<>();
-        private String nodeFlag;    // 可选：InputNode/OutputNode
+        private List<String> nodeFlags = new ArrayList<>();    // 可选：InputNode/OutputNode
 
     }
 

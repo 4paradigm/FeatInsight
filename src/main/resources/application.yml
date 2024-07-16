@@ -6,4 +6,7 @@ openmldb:
   apiserver: 127.0.0.1:9080
   skip_index_check: false
   username: root
-  password: 123456
+  password:
+prophet:
+  token_auth_enabled: true
+  pdms_uri: http://telamon

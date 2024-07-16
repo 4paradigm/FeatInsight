@@ -43,23 +43,26 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
             return true;
         }
         if ("true".equalsIgnoreCase(prophetTokenAuthEnabled)) {
-            String userToken = null;
+            String userTokenOrAccessKey = null;
             if (null != request.getCookies()) {
                 for (Cookie cookie : request.getCookies()) {
                     if ("User-Token".equals(cookie.getName())) {
-                        userToken = cookie.getValue();
+                        userTokenOrAccessKey = cookie.getValue();
                         break;
                     }
                 }
             }
-            if (null == userToken) {
-                userToken = request.getHeader("User-Token");
+            if (null == userTokenOrAccessKey) {
+                userTokenOrAccessKey = request.getHeader("User-Token");
             }
-            if (null != userToken) {
-                SqlClusterExecutor sqlExecutor = sqlExecutorPoolManager.getSqlExecutor(userToken);
+            if (null == userTokenOrAccessKey) {
+                userTokenOrAccessKey = request.getHeader("Access-Key");
+            }
+            if (null != userTokenOrAccessKey) {
+                SqlClusterExecutor sqlExecutor = sqlExecutorPoolManager.getSqlExecutor(userTokenOrAccessKey);
                 if (sqlExecutor == null) {
                     try {
-                        sqlExecutor = sqlExecutorPoolManager.createSqlExecutor(openmldbUsername, openmldbPassword, userToken);
+                        sqlExecutor = sqlExecutorPoolManager.createSqlExecutor(openmldbUsername, openmldbPassword, userTokenOrAccessKey);
                     } catch (SqlException e) {
                         throw new RuntimeException(e);
                     }

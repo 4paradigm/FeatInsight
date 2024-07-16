@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ProphetTelamonClient {
 
@@ -22,14 +23,12 @@ public class ProphetTelamonClient {
 
     private final CloseableHttpClient httpClient;
     private final String apiEndpoint;
-    private final String userToken;
-    private final String workspaceId;
+    private final Map<String, String> headers;
 
-    public ProphetTelamonClient(String apiEndpoint, String userToken, String workspaceId) {
+    public ProphetTelamonClient(String apiEndpoint, Map<String, String> headers) {
         this.httpClient = HttpClients.createDefault();
         this.apiEndpoint = apiEndpoint;
-        this.userToken = userToken;
-        this.workspaceId = workspaceId;
+        this.headers = headers;
     }
 
     /**
@@ -41,8 +40,9 @@ public class ProphetTelamonClient {
     public List<FesqlTableColumn> getTableSchema(String tablePrn) throws Exception {
         String endpoint = String.format("%s/v1/tables?prn=%s", this.apiEndpoint, tablePrn);
         HttpGet request = new HttpGet(endpoint);
-        request.setHeader("X-Prophet-Workspace-Id", workspaceId);
-        request.setHeader("User-Token", userToken);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            request.setHeader(entry.getKey(), entry.getValue());
+        }
         HttpResponse response = httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         String responseBody = EntityUtils.toString(entity);

@@ -74,6 +74,11 @@ public class TableService {
         }
     }
 
+    public boolean createDB(String db) throws SQLException {
+        SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
+        return sqlExecutor.createDB(db);
+    }
+
     public List<FeatureService> getRelatedFeatureServices(String db, String table) throws SQLException {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         List<FeatureService> relatedFeatureServices = new ArrayList<>();

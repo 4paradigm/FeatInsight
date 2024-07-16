@@ -46,25 +46,16 @@ public class FesqlPredictorController {
     @Autowired
     private SqlService sqlService;
 
-    @GetMapping("/parseDag")
-    public FesqlParseDagResponse parseDag(@RequestBody FesqlParseDagRequest dagRequest, HttpServletRequest request) {
+    @PostMapping("/parseDag")
+    public FesqlParseDagResponse parseDag(@RequestBody FesqlParseDagRequest dagRequest, @RequestHeader Map<String, String> headers) {
         FesqlParseDagResponse response = new FesqlParseDagResponse();
         try {
-            String userToken = request.getHeader("User-Token");
-            String workspaceId = request.getHeader("X-Prophet-Workspace-Id");
-            if (null != request.getCookies()) {
-                for (Cookie cookie : request.getCookies()) {
-                    if ("User-Token".equals(cookie.getName())) {
-                        userToken = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-            if (null == userToken || null == workspaceId) {
+            String workspaceId = headers.get("x-prophet-workspace-id");
+            if (null == workspaceId) {
                 throw new MsgExcepiton("userToken或workspaceId为空，无法获取数据schema");
             }
             String dbName = String.format("aios_ws_%s", workspaceId);
-            ProphetTelamonClient telamonClient = new ProphetTelamonClient(telnetUri, userToken, workspaceId);
+            ProphetTelamonClient telamonClient = new ProphetTelamonClient(telnetUri, headers);
             if (!this.isRunSucceedByDag(dagRequest.getDag())) {
                 throw new MsgExcepiton("dag未执行成功，无法获取数据schema");
             }
@@ -203,10 +194,10 @@ public class FesqlPredictorController {
         // 标记输入节点和输出节点
         for (FesqlDagMeta.MetaNode metaNode : fesqlDagMeta.getNodes()) {
             if (!notInputNodeIds.contains(metaNode.getUuid())) {
-                metaNode.setNodeFlag("InputNode");
+                metaNode.getNodeFlags().add("INPUT_NODE");
             }
             if (outputNode.getId().equals(metaNode.getUuid())) {
-                metaNode.setNodeFlag("OutputNode");
+                metaNode.getNodeFlags().add("OUTPUT_NODE");
             }
         }
         // 获取fesql算子输入表的schema信息
@@ -263,12 +254,14 @@ public class FesqlPredictorController {
         Map<String, FesqlDagMeta.MetaSchema> metaSchemaMap = fesqlDagMeta.getSchemas().stream().collect(Collectors.toMap(FesqlDagMeta.MetaSchema::getPrn, Function.identity()));
         List<FesqlTable> fesqlTableList = new ArrayList<>();
         for (FesqlDagMeta.MetaNode metaNode : fesqlDagMeta.getNodes()) {
-            for (Map.Entry<String, String> entry : metaNode.getTableNameMap().entrySet()) {
-                FesqlTable fesqlTable = new FesqlTable();
-                fesqlTable.setDb(dbName);
-                fesqlTable.setTable(entry.getKey());
-                fesqlTable.setSchema(metaSchemaMap.get(entry.getValue()).getCols());
-                fesqlTableList.add(fesqlTable);
+            if (metaNode.getNodeFlags().contains("INPUT_NODE")) {
+                for (Map.Entry<String, String> entry : metaNode.getTableNameMap().entrySet()) {
+                    FesqlTable fesqlTable = new FesqlTable();
+                    fesqlTable.setDb(dbName);
+                    fesqlTable.setTable(entry.getKey());
+                    fesqlTable.setSchema(metaSchemaMap.get(entry.getValue()).getCols());
+                    fesqlTableList.add(fesqlTable);
+                }
             }
         }
         Map<String, FesqlDagMeta.MetaNode> metaNodeMap = fesqlDagMeta.getNodes().stream().collect(Collectors.toMap(FesqlDagMeta.MetaNode::getUuid, Function.identity()));
@@ -291,7 +284,7 @@ public class FesqlPredictorController {
         // 标记输入表记录
         for (FesqlTable fesqlTable : fesqlTableList) {
             if (inputNode != null && fesqlTable.getTable().equals(inputNode.getInputTables().get(0))) {
-                fesqlTable.setTableTag("INPUT_TABLE");
+                fesqlTable.setTableTag("REQUEST_TABLE");
             }
         }
         return fesqlTableList;
@@ -341,6 +334,7 @@ public class FesqlPredictorController {
         FesqlCreateTableResponse response = new FesqlCreateTableResponse();
         List<FesqlTable> newCreateTableList = new ArrayList<>();
         try {
+
             for (FesqlTable cTable : config.getTables()) {
                 String newDbSchema = ProphetUtil.prophetSchemaToDbSchema(cTable.getSchema());
                 if (tableService.isExistTable(cTable.getDb(), cTable.getTable())) {
@@ -362,7 +356,16 @@ public class FesqlPredictorController {
                         String optionsString = String.join(", ", options);
                         createTableSql = String.format("%s  OPTIONS (%s);", createTableSql, optionsString);
                     }
-                    sqlService.executeOnlineSql(createTableSql, "");
+                    try {
+                        sqlService.executeOnlineSql(createTableSql, "");
+                    } catch (SQLException e) {
+                        if (e.getMessage().contains("database not found")) {
+                            tableService.createDB(cTable.getDb());
+                            sqlService.executeOnlineSql(createTableSql, "");
+                        } else {
+                            throw e;
+                        }
+                    }
                     newCreateTableList.add(cTable);
                 }
             }
@@ -393,7 +396,7 @@ public class FesqlPredictorController {
         return response;
     }
 
-    @GetMapping("/queryTable")
+    @PostMapping("/queryTable")
     public FesqlQueryTableResponse queryTable(@RequestBody FesqlConfig config) {
         FesqlQueryTableResponse response = new FesqlQueryTableResponse();
         try {
