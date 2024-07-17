@@ -427,8 +427,10 @@ public class FesqlPredictorController {
 
                 FesqlTable tableStatus = tableStatusMap.get(String.format("%s.%s", qTable.getDb(), qTable.getTable()));
                 if (null != tableStatus) {
+                    qTable.setId(tableStatus.getId());
                     qTable.setUseMemory(tableStatus.getUseMemory());
                     qTable.setRows(tableStatus.getRows());
+                    qTable.setPartitionUnalive(tableStatus.getPartitionUnalive());
                 }
             }
             response.setData(config);
@@ -457,8 +459,10 @@ public class FesqlPredictorController {
             List<String> lineStr = resList.get(i);
             String key = String.format("%s.%s", lineStr.get(2), lineStr.get(1));
             FesqlTable fesqlTable = new FesqlTable();
+            fesqlTable.setId(lineStr.get(0));
             fesqlTable.setRows(Long.parseLong(lineStr.get(4)));
             fesqlTable.setUseMemory(Double.parseDouble(lineStr.get(5)));
+            fesqlTable.setPartitionUnalive(Integer.parseInt(lineStr.get(8)));
             resMap.put(key, fesqlTable);
         }
         return resMap;
