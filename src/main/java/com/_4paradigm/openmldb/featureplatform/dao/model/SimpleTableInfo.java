@@ -2,11 +2,20 @@ package com._4paradigm.openmldb.featureplatform.dao.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SimpleTableInfo {
+    private String id;
     private String db;
     private String table;
     private String schema;
+    private Integer replica;
+    private Integer partition;
+    private Integer partitionUnalive;
+    private Long rows;
+    private Double useMemory;
+    private List<String> columnKey;
 
     public SimpleTableInfo() {
 

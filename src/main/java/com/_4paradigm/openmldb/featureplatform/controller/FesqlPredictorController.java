@@ -80,6 +80,7 @@ public class FesqlPredictorController {
             if (null == fesqlString) {
                 throw new MsgExcepiton("解析fesql脚本失败");
             }
+            this.setDefaultValueToTableList(fesqlTableList);
             FesqlConfig fesqlConfig = new FesqlConfig();
             fesqlConfig.setTables(fesqlTableList);
             fesqlConfig.setFesql(fesqlString);
@@ -244,6 +245,13 @@ public class FesqlPredictorController {
         return resFesqlTableList;
     }
 
+    private void setDefaultValueToTableList(List<FesqlTable> fesqlTableList) {
+        for (FesqlTable fesqlTable : fesqlTableList) {
+            fesqlTable.setPartition(8);
+            fesqlTable.setReplica(2);
+        }
+    }
+
     /**
      * 解析预估fesql-meta信息获取mldb建表信息
      *
@@ -401,37 +409,21 @@ public class FesqlPredictorController {
         FesqlQueryTableResponse response = new FesqlQueryTableResponse();
         try {
             String dbName = config.getTables().get(0).getDb();
-            Map<String, FesqlTable> tableStatusMap = this.getTableStatus(dbName);
-            for (FesqlTable qTable : config.getTables()) {
-                String dbSchema = tableService.getTableSchema(qTable.getDb(), qTable.getTable());
-                qTable.setSchema(ProphetUtil.dbSchemaToProphetSchema(dbSchema));
-                NS.TableInfo tableInfo = tableService.getTableInfo(qTable.getDb(), qTable.getTable());
-                qTable.setPartition(tableInfo.getPartitionNum());
-                qTable.setReplica(tableInfo.getReplicaNum());
-                List<String> columnKeyStringList = new ArrayList<>();
-                for (Common.ColumnKey columnKey : tableInfo.getColumnKeyList()) {
-                    String colNameList = String.join(",", columnKey.getColNameList());
-                    String ttlString = null;
-                    if (columnKey.getTtl().hasAbsTtl() && columnKey.getTtl().hasLatTtl()) {
-                        ttlString = String.format("%smin&&%s", columnKey.getTtl().getAbsTtl(), columnKey.getTtl().getLatTtl());
-                    } else if (columnKey.getTtl().hasAbsTtl()) {
-                        ttlString = String.format("%smin", columnKey.getTtl().getAbsTtl());
-                    } else if (columnKey.getTtl().hasLatTtl()) {
-                        ttlString = String.format("%s", columnKey.getTtl().getLatTtl());
-                    }
-                    if (null != ttlString) {
-                        columnKeyStringList.add(String.format("keys=[%s]:ts=%s:ttl=%s", colNameList, columnKey.getTsName(), ttlString));
-                    }
-                }
-                qTable.setColumnKey(columnKeyStringList);
+            Map<String, SimpleTableInfo> tableInfoMap = tableService.getTablesByDB(dbName).stream().collect(Collectors.toMap(SimpleTableInfo::getTable, value -> value));
 
-                FesqlTable tableStatus = tableStatusMap.get(String.format("%s.%s", qTable.getDb(), qTable.getTable()));
-                if (null != tableStatus) {
-                    qTable.setId(tableStatus.getId());
-                    qTable.setUseMemory(tableStatus.getUseMemory());
-                    qTable.setRows(tableStatus.getRows());
-                    qTable.setPartitionUnalive(tableStatus.getPartitionUnalive());
+            for (FesqlTable qTable : config.getTables()) {
+                SimpleTableInfo tableInfo = tableInfoMap.get(qTable.getTable());
+                if (null == tableInfo) {
+                    throw new MsgExcepiton(String.format("[%s.%s]表已存在", qTable.getDb(), qTable.getTable()));
                 }
+                qTable.setId(tableInfo.getId());
+                qTable.setSchema(ProphetUtil.dbSchemaToProphetSchema(tableInfo.getSchema()));
+                qTable.setReplica(tableInfo.getReplica());
+                qTable.setPartition(tableInfo.getPartition());
+                qTable.setPartitionUnalive(tableInfo.getPartitionUnalive());
+                qTable.setColumnKey(tableInfo.getColumnKey());
+                qTable.setUseMemory(tableInfo.getUseMemory());
+                qTable.setRows(tableInfo.getRows());
             }
             response.setData(config);
             response.setStatus(0);
@@ -449,22 +441,5 @@ public class FesqlPredictorController {
             response.setMsg("未知异常");
         }
         return response;
-    }
-
-    private Map<String, FesqlTable> getTableStatus(String dbName) throws SQLException {
-        Map<String, FesqlTable> resMap = new HashMap<>();
-        String sqlString = String.format("USE %s;SHOW TABLE STATUS;", dbName);
-        List<List<String>> resList = sqlService.executeOnlineSql(sqlString, "");
-        for (int i = 1; i < resList.size(); i++) {
-            List<String> lineStr = resList.get(i);
-            String key = String.format("%s.%s", lineStr.get(2), lineStr.get(1));
-            FesqlTable fesqlTable = new FesqlTable();
-            fesqlTable.setId(lineStr.get(0));
-            fesqlTable.setRows(Long.parseLong(lineStr.get(4)));
-            fesqlTable.setUseMemory(Double.parseDouble(lineStr.get(5)));
-            fesqlTable.setPartitionUnalive(Integer.parseInt(lineStr.get(8)));
-            resMap.put(key, fesqlTable);
-        }
-        return resMap;
     }
 }

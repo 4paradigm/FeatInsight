@@ -52,6 +52,10 @@ public class SqlService {
                 "options string, job_id int, db string, sql string, INDEX(KEY=job_id))";
         statement.execute(sql);
 
+        sql = "CREATE TABLE IF NOT EXISTS SYSTEM_FEATURE_PLATFORM.table_jobs (job_id int, job_type string, db string, "
+                + "table string, sql string, INDEX(KEY=job_id))";
+        statement.execute(sql);
+
         statement.close();
     }
 

@@ -15,6 +15,8 @@ public class OfflineJobInfo {
     private String cluster;
     private String applicationId;
     private String error;
+    private String db;
+    private String table;
 
     public OfflineJobInfo() {
 
