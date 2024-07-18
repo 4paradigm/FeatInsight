@@ -64,6 +64,9 @@ public class OfflineJobService {
     }
 
     private List<OfflineJobInfo> supplyOfflineJobList(List<OfflineJobInfo> offlineJobInfos) throws SQLException {
+        if (offlineJobInfos.isEmpty()) {
+            return offlineJobInfos;
+        }
         Map<Integer, TableJob> tableJobMap = this.getAllTableJob().stream().collect(Collectors.toMap(TableJob::getJobId, Function.identity()));
         for (OfflineJobInfo offlineJobInfo : offlineJobInfos) {
             TableJob tableJob = tableJobMap.get(offlineJobInfo.getId());
@@ -118,7 +121,7 @@ public class OfflineJobService {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
-        String sql = String.format("SELECT job_id, job_type, db, table, sql SYSTEM_FEATURE_PLATFORM.table_jobs WHERE job_id=%d", jobId);
+        String sql = String.format("SELECT job_id, job_type, db, table, sql from SYSTEM_FEATURE_PLATFORM.table_jobs WHERE job_id=%d", jobId);
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
 
@@ -133,7 +136,7 @@ public class OfflineJobService {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
         statement.execute("SET @@execute_mode='online'");
-        String sql = "SELECT job_id, job_type, db, table, sql SYSTEM_FEATURE_PLATFORM.table_jobs";
+        String sql = "SELECT job_id, job_type, db, table, sql from SYSTEM_FEATURE_PLATFORM.table_jobs";
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
         List<TableJob> tableJobList = new ArrayList<>();
@@ -161,9 +164,7 @@ public class OfflineJobService {
         OfflineJobInfo jobInfo = this.getOfflineJobInfo(jobId);
         String[] dbAndTable = this.parseDbTableBySql(sql);
         if (null != dbAndTable && dbAndTable.length == 2) {
-            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.table_jobs (job_id, job_type, db, table, sql) "
-                            + "values ('%s', '%s', '%s', '%s', '%s')",
-                    jobInfo.getId(), jobInfo.getJobType(), dbAndTable[0], dbAndTable[1], sql);
+            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.table_jobs (job_id, job_type, db, table, sql) " + "values ('%s', '%s', '%s', '%s', '%s')", jobInfo.getId(), jobInfo.getJobType(), dbAndTable[0], dbAndTable[1], sql);
             statement.execute(sql);
         }
         return jobId;
