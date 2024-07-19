@@ -39,7 +39,7 @@ public class SqlExecutorInterceptor implements HandlerInterceptor {
         }
 
         String URI = request.getRequestURI();
-        if (URI.equals("/api/login")) {
+        if (URI.endsWith("/api/login")) {
             return true;
         }
         if ("true".equalsIgnoreCase(prophetTokenAuthEnabled)) {

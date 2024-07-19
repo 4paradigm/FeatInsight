@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,6 +46,11 @@ public class OfflineJobService {
         return this.supplyOfflineJobList(offlineJobInfos);
     }
 
+    public OfflineJobInfo getOfflineJobInfoOfDbAndTable(int id) throws SQLException {
+        OfflineJobInfo offlineJobInfo = this.getOfflineJobInfo(id);
+        return this.supplyOfflineJobInfo(offlineJobInfo);
+    }
+
     public OfflineJobInfo getOfflineJobInfo(int id) throws SQLException {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
@@ -60,14 +66,17 @@ public class OfflineJobService {
         OfflineJobInfo offlineJobInfo = resultSetToOfflineJobInfo(resultSet);
 
         statement.close();
-        return this.supplyOfflineJobInfo(offlineJobInfo);
+        return offlineJobInfo;
     }
 
     private List<OfflineJobInfo> supplyOfflineJobList(List<OfflineJobInfo> offlineJobInfos) throws SQLException {
         if (offlineJobInfos.isEmpty()) {
             return offlineJobInfos;
         }
-        Map<Integer, TableJob> tableJobMap = this.getAllTableJob().stream().collect(Collectors.toMap(TableJob::getJobId, Function.identity()));
+        Map<Integer, TableJob> tableJobMap = new HashMap<>();
+        for (TableJob tableJob : this.getAllTableJob()) {
+            tableJobMap.put(tableJob.getJobId(), tableJob);
+        }
         for (OfflineJobInfo offlineJobInfo : offlineJobInfos) {
             TableJob tableJob = tableJobMap.get(offlineJobInfo.getId());
             if (null != tableJob) {
@@ -124,10 +133,10 @@ public class OfflineJobService {
         String sql = String.format("SELECT job_id, job_type, db, table, sql from SYSTEM_FEATURE_PLATFORM.table_jobs WHERE job_id=%d", jobId);
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
-
-        ResultSetUtil.assertSizeIsOne(resultSet);
-        resultSet.next();
-        TableJob tableJob = resultSetToTableJob(resultSet);
+        TableJob tableJob = null;
+        if (resultSet.next()) {
+            tableJob = resultSetToTableJob(resultSet);
+        }
         statement.close();
         return tableJob;
     }
@@ -149,7 +158,7 @@ public class OfflineJobService {
 
     public TableJob resultSetToTableJob(ResultSet resultSet) throws SQLException {
         TableJob tableJob = new TableJob();
-        tableJob.setJobId(resultSet.getInt("1"));
+        tableJob.setJobId(resultSet.getInt(1));
         tableJob.setJobType(resultSet.getString(2));
         tableJob.setDb(resultSet.getString(3));
         tableJob.setTable(resultSet.getString(4));
@@ -157,14 +166,15 @@ public class OfflineJobService {
         return tableJob;
     }
 
-    public int addTableJob(int jobId, String sql) throws SQLException {
+    public int addTableJob(int jobId, String sqlString) throws SQLException {
         SqlClusterExecutor sqlExecutor = ThreadLocalSqlExecutor.getSqlExecutor();
         Statement statement = sqlExecutor.getStatement();
 
         OfflineJobInfo jobInfo = this.getOfflineJobInfo(jobId);
-        String[] dbAndTable = this.parseDbTableBySql(sql);
+        String[] dbAndTable = this.parseDbTableBySql(sqlString);
         if (null != dbAndTable && dbAndTable.length == 2) {
-            sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.table_jobs (job_id, job_type, db, table, sql) " + "values ('%s', '%s', '%s', '%s', '%s')", jobInfo.getId(), jobInfo.getJobType(), dbAndTable[0], dbAndTable[1], sql);
+            sqlString = sqlString.replace("'", "\\'");
+            String sql = String.format("INSERT INTO SYSTEM_FEATURE_PLATFORM.table_jobs (job_id, job_type, db, table, sql) " + "values (%s, '%s', '%s', '%s', '%s')", jobInfo.getId(), jobInfo.getJobType(), dbAndTable[0], dbAndTable[1], sqlString);
             statement.execute(sql);
         }
         return jobId;

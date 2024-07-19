@@ -1,5 +1,7 @@
 server:
   port: 8888
+  servlet:
+    context-path: /openmldb-featinsight
 openmldb:
   zk_cluster: 127.0.0.1:2181
   zk_path: /openmldb

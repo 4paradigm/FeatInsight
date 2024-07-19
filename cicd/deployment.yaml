@@ -8,7 +8,7 @@ metadata:
     app: openmldb-featinsight
     enable-on-api-gw: "true"
   annotations:
-    api-gw-conf: '{"gw-api-confs":[{"listen-paths":"/openmldb-featinsight","enable-auth":false,"stripe-url":true}]}'
+    api-gw-conf: '{"gw-api-confs":[{"listen-paths":"/openmldb-featinsight","enable-auth":false}]}'
 spec:
   type: ClusterIP
   selector:
@@ -119,9 +119,9 @@ data:
     server:
       port: 80
     openmldb:
-      zk_cluster: 172.27.128.190:2185
+      zk_cluster: 172.27.231.51:2181
       zk_path: /openmldb
-      apiserver: 172.27.128.190:9080
+      apiserver: 172.27.231.51:9080
       skip_index_check: false
       username: root
       password:

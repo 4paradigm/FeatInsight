@@ -35,7 +35,7 @@ public class OfflineJobController {
     @GetMapping("/{id}")
     public OfflineJobInfo getOfflineJobInfo(@PathVariable int id) throws SQLException {
         try {
-            return offlineJobService.getOfflineJobInfo(id);
+            return offlineJobService.getOfflineJobInfoOfDbAndTable(id);
         } catch (SQLException e) {
             logger.info(String.format("Call getOfflineJobInfo with %d but get exception: %s", id, e.getMessage()));
             throw e;
