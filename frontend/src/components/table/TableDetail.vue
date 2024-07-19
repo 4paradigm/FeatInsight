@@ -9,6 +9,13 @@
   <a-descriptions bordered>
     <a-descriptions-item :span="24" :label="$t('Database')">{{ data.db }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Table Name')">{{ data.table }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="`${$t('Table')}${$t('ID')}`">{{ data.id }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('TTL')">{{ data.columnKey?.join(',') }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Partition')">{{ data.partition }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Unalive Partition')">{{ data.partitionUnalive }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Replica')">{{ data.replica }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Table Rows')">{{ data.rows }}</a-descriptions-item>
+    <a-descriptions-item :span="24" :label="$t('Use Memory')">{{ data.useMemory }}</a-descriptions-item>
     <a-descriptions-item :span="24" :label="$t('Schema')">
       <a-list size="small" item-layout="horizontal" :data-source="tableSchemaList">
         <template #renderItem="{ item }">

@@ -64,6 +64,16 @@ export default {
         key: 'jobType',
       },
       {
+        title: this.$t('Table DB'),
+        dataIndex: 'db',
+        key: 'db',
+      },
+      {
+        title: `${this.$t('Data Table')}${this.$t('Name')}`,
+        dataIndex: 'table',
+        key: 'table',
+      },
+      {
         title: this.$t('Start Time'),
         dataIndex: 'startTime',
         key: 'startTime',
