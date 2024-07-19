@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:aios": "vite build --mode aios",
     "preview": "vite preview"
   },
   "dependencies": {
