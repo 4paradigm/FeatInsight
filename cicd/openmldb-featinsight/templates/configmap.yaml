@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: openmldb-featinsight
+  name: openmldb-featinsight-configmap
+  namespace: prophet
+data:
+  application.yml: |-
+    server:
+      port: 80
+    openmldb:
+      zk_cluster: {{ .Values.openmldb.zk_cluster }}
+      zk_path: {{ .Values.openmldb.zk_path }}
+      apiserver: {{ .Values.openmldb.apiserver }}
+      skip_index_check: {{ .Values.openmldb.skip_index_check }}
+      username: {{ .Values.openmldb.username }}
+      password: {{ .Values.openmldb.password }}
+    prophet:
+      token_auth_enabled: {{ .Values.prophet.token_auth_enabled }}
+      pdms_uri: {{ .Values.prophet.pdms_uri }}

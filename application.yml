@@ -1,3 +1,4 @@
+debug: true
 server:
   port: 8888
   servlet:
@@ -11,4 +12,4 @@ openmldb:
   password:
 prophet:
   token_auth_enabled: true
-  pdms_uri: http://172.27.128.190:40121/telamon
+  pdms_uri: http://172.27.128.190:40121
