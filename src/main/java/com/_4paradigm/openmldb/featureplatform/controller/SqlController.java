@@ -4,6 +4,7 @@ import com._4paradigm.openmldb.featureplatform.dao.model.OfflineJobInfo;
 import com._4paradigm.openmldb.featureplatform.dao.model.OfflineSqlRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SimpleSqlRequest;
 import com._4paradigm.openmldb.featureplatform.dao.model.SqlRequest;
+import com._4paradigm.openmldb.featureplatform.service.OfflineJobService;
 import com._4paradigm.openmldb.featureplatform.service.SqlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,13 @@ public class SqlController {
     private static final Logger logger = LoggerFactory.getLogger(FeatureController.class);
 
     private final SqlService sqlService;
+    private final OfflineJobService offlineJobService;
+
 
     @Autowired
-    public SqlController(SqlService sqlService) {
+    public SqlController(SqlService sqlService, OfflineJobService offlineJobService) {
         this.sqlService = sqlService;
+        this.offlineJobService = offlineJobService;
     }
 
     @PostMapping("/online")
@@ -69,6 +73,9 @@ public class SqlController {
     public int importSql(@RequestBody SqlRequest sqlRequest) throws SQLException {
         try {
             int jobId = sqlService.importData(sqlRequest.getSql(), sqlRequest.isOnline(), sqlRequest.getSparkConfig());
+            if(jobId > 0){
+                offlineJobService.addTableJob(jobId, sqlRequest.getSql());
+            }
             return jobId;
         } catch (SQLException e) {
             logger.info(String.format("Call importSql with %s but get exception: %s", sqlRequest, e.getMessage()));

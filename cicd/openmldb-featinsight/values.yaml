@@ -1,0 +1,19 @@
+# Default values for openmldb-featinsight.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: harbor.4pd.io/studio/openmldb-featinsight:v0.1.1
+
+openmldb:
+  zk_cluster: 172.27.231.51:2181
+  zk_path: /openmldb
+  apiserver: 172.27.231.51:9080
+  skip_index_check: false
+  username: root
+  password:
+prophet:
+  token_auth_enabled: true
+  pdms_uri: http://telamon

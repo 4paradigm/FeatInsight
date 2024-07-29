@@ -5,25 +5,16 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SimpleTableInfo {
+public class FesqlTable {
     private String id;
     private String db;
     private String table;
-    private String schema;
+    private List<FesqlTableColumn> schema;
     private Integer replica;
     private Integer partition;
     private Integer partitionUnalive;
+    private String tableTag; // 可选：INPUT_TABLE
     private Long rows;
-    private Double useMemory;
     private List<String> columnKey;
-
-    public SimpleTableInfo() {
-
-    }
-
-    public SimpleTableInfo(String db, String table, String schema) {
-        this.db = db;
-        this.table = table;
-        this.schema = schema;
-    }
+    private Double useMemory;
 }

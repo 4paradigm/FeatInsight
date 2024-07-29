@@ -2,4 +2,4 @@
 
 set -ex
 
-docker build -t registry.cn-shenzhen.aliyuncs.com/tobe43/featinsight .
+docker build -t harbor.4pd.io/studio/openmldb-featinsight:v0.1.1 .
