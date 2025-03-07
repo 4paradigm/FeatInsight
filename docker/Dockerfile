@@ -8,7 +8,7 @@ WORKDIR /app
 FROM base AS base_amd64
 ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}.jar /app/
 
-FROM base AS base_aarch64
+FROM base AS base_arm64
 ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}-linux-aarch64.jar /app/featinsight-${VERSION}.jar
 
 FROM base_${TARGETARCH}
