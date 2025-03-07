@@ -6,9 +6,10 @@ on:
       - main
     tags:
       - v*
+  pull_request:
 
 jobs:
-  java-sdk:
+  featinsight:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +35,7 @@ jobs:
 
       - name: build backend
         run: |
-          mvn clean build
+          mvn clean compile
 
       - name: package
         run: |
@@ -45,4 +46,11 @@ jobs:
         with:
           name: feat-insight-jar
           path: |
+            target/featinsight-*.jar
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
             target/featinsight-*.jar
