@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  java-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+
+      - name: install yarn
+        run: |
+          npm install -g yarn
+
+      - name: build frontend
+        run: |
+          yarn
+          yarn build
+        working-directory: frontend
+
+      - name: build backend
+        run: |
+          mvn clean build
+
+      - name: package
+        run: |
+          mvn package
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: feat-insight-jar
+          path: |
+            target/featinsight-*.jar

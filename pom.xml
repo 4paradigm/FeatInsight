@@ -106,14 +106,12 @@
     <dependency>
       <groupId>com.4paradigm.openmldb</groupId>
       <artifactId>openmldb-native</artifactId>
-      <version>0.8.5-allinone</version>
-      <!-- <version>0.8.4-SNAPSHOT</version> -->
+      <version>0.9.3</version>
     </dependency>
     <dependency>
       <groupId>com.4paradigm.openmldb</groupId>
       <artifactId>openmldb-jdbc</artifactId>
-      <version>0.8.5</version>
-      <!-- <version>0.8.4-SNAPSHOT</version> -->
+      <version>0.9.3</version>
     </dependency>
 
   </dependencies>
