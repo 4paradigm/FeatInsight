@@ -8,6 +8,11 @@ on:
       - v*
   pull_request:
   workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'target version of image'
+        required: true
+        default: '0.2.0'
 
 permissions:
   packages: write
@@ -43,7 +48,7 @@ jobs:
             latest=false
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
-            type=ref,event=workflow_dispatch,enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ github.event.inputs.VERSION }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
