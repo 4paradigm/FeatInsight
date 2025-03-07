@@ -6,13 +6,13 @@ ARG TARGETARCH
 WORKDIR /app
 
 FROM base AS base_amd64
-ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}.jar /app/
+ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}.jar /app/featinsight.jar
 
 FROM base AS base_arm64
-ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}-linux-aarch64.jar /app/featinsight-${VERSION}.jar
+ONBUILD ADD https://github.com/4paradigm/FeatInsight/releases/download/v${VERSION}/featinsight-${VERSION}-linux-aarch64.jar /app/featinsight.jar
 
 FROM base_${TARGETARCH}
 
 EXPOSE 8888
 
-CMD ["java", "-jar", "/app/featinsight-${VRESION}.jar"]
+CMD ["java", "-jar", "/app/featinsight.jar"]
