@@ -78,6 +78,16 @@ export default {
         slots: { customRender: 'table' }
       },
       {
+        title: this.$t('Table Rows'),
+        dataIndex: 'rows',
+        key: 'rows',
+      },
+      {
+        title: this.$t('Table Use Memory'),
+        dataIndex: 'useMemory',
+        key: 'useMemory',
+      },
+      {
         title: this.$t('Actions'),
         key: 'actions',
         slots: { customRender: 'custom' },
